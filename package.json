@@ -1,5 +1,6 @@
 {
   "name": "VenCá projeto",
+  "private": true,
   "version": "1.0.0",
   "description": "VenCá é um marketplace de serviços pet on-demand que conecta tutores e cuidadores de forma rápida e simples. Usuários podem cadastrar pets, criar anúncios de passeios, alimentação, cuidados especiais ou urgentes, enquanto cuidadores visualizam oportunidades, enviam propostas e conversam via chat. Projeto focado em boas práticas e escalabilidade",
   "main": "index.js",
@@ -12,5 +13,8 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.26.1"
+  "packageManager": "pnpm@10.26.1",
+  "devDependencies": {
+    "@vue/tsconfig": "^0.8.1"
+  }
 }
