@@ -1,0 +1,1 @@
+export type ServiceType = "WALK" | "FEEDING" | "SPECIAL_CARE"
