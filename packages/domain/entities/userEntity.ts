@@ -1,7 +1,6 @@
+import { UserRole } from "../../types/userType";
 import { Email } from "../valuesObjects/Email";
 import { Rating } from "../valuesObjects/Rating";
-
-export type UserRole = 'OWNER' | 'CAREGIVER';
 
 export class Users {
   constructor(

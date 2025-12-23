@@ -1,13 +1,5 @@
-import { ServiceType } from "../../types/ServiceType";
+import { ServiceRequestStatus, ServiceType, UrgencyType } from "../../types/ServiceType";
 import { Address } from "../valuesObjects/address";
-
-export type ServiceRequestStatus =
-  | 'OPEN'
-  | 'ACCEPTED'
-  | 'CANCELLED'
-  | 'COMPLETED';
-
-export type UrgencyType = 'NOW' | 'SCHEDULED';
 
 export class ServiceRequest {
   constructor(
