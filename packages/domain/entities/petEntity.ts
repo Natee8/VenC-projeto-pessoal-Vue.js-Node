@@ -1,4 +1,4 @@
-import { PetSpecies } from "../../types/petTypes";
+import { PetSpecies, sizePets } from "../../types/petTypes";
 import { Users } from "./UserEntity";
 
 export class Pet {
@@ -7,10 +7,11 @@ export class Pet {
         private readonly owner: Users,
         private name: string,
         private readonly species: PetSpecies,
+        private size: sizePets,
         private breed: string,
         private birthDate: Date,
         private specialNeeds: string | null,
-        private readonly CreatedAt: Date,
+        private readonly createdAt: Date,
         private updatedAt: Date
     ) {
         this.validate()
@@ -39,6 +40,9 @@ export class Pet {
   getName() {
     return this.name;
   }
+    getSize() {
+    return this.size;
+  }
   getSpecies() {
     return this.species;
   }
@@ -46,7 +50,7 @@ export class Pet {
     return this.breed;
   }
   getBirthDate() {
-    return this,this.birthDate;
+    return this.birthDate;
   }
   getSpecialNeeds() {
     return this.specialNeeds;

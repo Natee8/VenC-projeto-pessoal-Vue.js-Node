@@ -1,13 +1,17 @@
-import { PetSpecies } from "../../../../../packages/types/petTypes"
+import { PetSpecies, sizePets } from "../../../../../packages/types/petTypes";
 
-export interface PetDTO {
-  id: number;
+export type CreatePetParams = {
   ownerId: string;
   name: string;
   species: PetSpecies;
-  breed: string;
-  age: number;
-  specialNeeds: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
+  breed?: string;
+  age?: number;
+  size?: sizePets
+};
+
+export type UpdatePetParams = {
+  name?: string;
+  breed?: string;
+  age?: number;
+  size?: sizePets
+};

@@ -1,15 +1,17 @@
-import { ServiceType } from '../../../../../packages/types/serviceType'
-import { AddressDTO } from "./address.dto";
+import { ServiceType } from "../../../../../packages/types/serviceType";
+import { IAddress } from "../entities/IAddressEntity";
+import { IPrice } from "../entities/IServiceOfferEntity";
 
-export interface ServiceOfferDTO {
-  id: string;
+export type CreateServiceOfferParams = {
   caregiverId: string;
   type: ServiceType;
   description: string;
-  price: number;
-  currency: string;
-  locality:AddressDTO;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
+  price: IPrice
+  locality: IAddress
+};
+
+export type UpdateServiceOfferParams = {
+  description?: string;
+  price?:IPrice
+  locality?: IAddress
+};

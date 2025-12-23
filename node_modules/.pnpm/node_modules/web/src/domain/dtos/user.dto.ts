@@ -1,12 +1,13 @@
 import { UserRole } from '../../../../../packages/types/userType'
 
-export interface UserDTO {
-  id: string;
+export type CreateUserParams = {
   name: string;
   email: string;
+  password: string;
   role: UserRole;
-  rating: number;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
+};
+
+export type UpdateUserParams = {
+  name?: string;
+  email?: string;
+};

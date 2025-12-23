@@ -3,6 +3,12 @@ export type LoginParams = {
   password: string;
 };
 
+export type AuthSession = {
+  accessToken: string;
+  refreshToken: string;
+  expiresAt: Date;
+};
+
 export type VerifyResetCodeParams = {
   email: string;
   code: string;
