@@ -9,12 +9,15 @@ export default {
       colors: {
         primary: '#F07142',
         secondary: '#12354D',
-
+        bgColor: '#FFFCFB',
         texts: {
           primary: '#614B44',
           'primary-dark': '#4A342D',
           default: '#897872',
         },
+        borders: {
+          borderDefault: '#F1EDE8'
+        }
       },
     },
   },
