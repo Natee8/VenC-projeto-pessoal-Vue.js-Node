@@ -8,12 +8,13 @@ export default {
     extend: {
       colors: {
         primary: '#F07142',
+        primaryHover: '#C9552A',
         secondary: '#12354D',
         bgColor: '#FFFCFB',
         headerColor: '#FFFDF9',
         texts: {
           primary: '#614B44',
-          'primary-dark': '#4A342D',
+          'primary-dark': '#3B2923',
           default: '#897872',
         },
         borders: {
