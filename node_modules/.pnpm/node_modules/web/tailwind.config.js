@@ -10,6 +10,7 @@ export default {
         primary: '#F07142',
         secondary: '#12354D',
         bgColor: '#FFFCFB',
+        headerColor: '#FFFDF9',
         texts: {
           primary: '#614B44',
           'primary-dark': '#4A342D',
