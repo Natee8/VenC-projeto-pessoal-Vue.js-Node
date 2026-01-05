@@ -6,8 +6,8 @@ import { popularServices } from '../../../../config/home/popular';
 
 <template>
   <section
-    class="w-full h-screen bg-[url('/assets/home/bones.svg')]
-           bg-repeat bg-[length:1900px_1880px] bg-center"
+    class="w-full h-[100vh] bg-[url('/assets/home/bones.svg')]
+           bg-repeat bg-[length:1500px_1580px] bg-center"
   >
     <div class="flex justify-between items-center px-20 py-10 gap-32">
 
@@ -49,9 +49,9 @@ import { popularServices } from '../../../../config/home/popular';
               type="text"
               placeholder="O que você precisa?"
               class="w-full h-16 pl-12 pr-4 rounded-xl
-                     border border-texts-primary-dark
+                     border border-texts-primary
                      focus:outline-none focus:ring-2
-                     focus:ring-primary/40"
+                     focus:ring-primary/30"
             />
           </div>
 
