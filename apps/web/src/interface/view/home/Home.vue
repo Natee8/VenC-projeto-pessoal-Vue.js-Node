@@ -5,7 +5,6 @@
     </main>
 </template>
 <script  setup lang="ts">
-import SearchMain from './sections/searchMain.vue';
-import VideoSection from './sections/videoSection.vue';
-
+import SearchMain from './sections/SearchMain.vue';
+import VideoSection from './sections/VideoSection.vue';
 </script>

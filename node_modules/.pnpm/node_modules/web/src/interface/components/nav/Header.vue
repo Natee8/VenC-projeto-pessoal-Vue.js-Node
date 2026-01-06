@@ -49,7 +49,7 @@ const headerItems = computed(() => {
         </nav>
           <div v-if="showAuthButtons" class="flex items-center gap-6">
           <button
-            class="w-32 rounded-xl h-10 border border-primary/50
+            class="w-32 rounded-xl h-8 border border-primary/50
                   hover:bg-secondary transition-all
                   hover:border-secondary hover:text-white
                   text-texts-primary font-semibold"
@@ -58,7 +58,7 @@ const headerItems = computed(() => {
           </button>
 
           <button
-            class="w-32 h-10 rounded-xl bg-primary
+            class="w-32 h-8 rounded-xl bg-primary
                   hover:bg-primaryHover transition-all
                   text-white font-semibold"
           >

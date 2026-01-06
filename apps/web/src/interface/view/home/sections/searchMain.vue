@@ -22,18 +22,18 @@ import { ArrowRightIcon } from '@heroicons/vue/16/solid';
         </div>
 
         <div class="flex flex-col gap-1">
-          <h1 class="text-6xl font-bold text-texts-primary-dark">
+          <h1 class="text-5xl font-bold text-texts-primary-dark">
             O cuidado que seu
           </h1>
 
           <div class="flex flex-col gap-2">
-            <h1 class="text-6xl font-bold text-primary">
+            <h1 class="text-5xl font-bold text-primary">
               Pet merece,
             </h1>
-            <img width="400" src="/assets/home/line.svg" alt="" />
+            <img width="300" src="/assets/home/line.svg" alt="" />
           </div>
 
-          <h1 class="text-6xl font-bold text-texts-primary-dark">
+          <h1 class="text-5xl font-bold text-texts-primary-dark">
             pertinho de você
           </h1>
         </div>
@@ -48,7 +48,7 @@ import { ArrowRightIcon } from '@heroicons/vue/16/solid';
             <input
               type="text"
               placeholder="O que você precisa?"
-              class="w-full h-16 pl-12 pr-4 rounded-xl
+              class="w-full h-14 pl-10 pr-3 rounded-xl
                      border border-texts-primary
                      focus:outline-none focus:ring-2
                      focus:ring-primary/30"
@@ -56,7 +56,7 @@ import { ArrowRightIcon } from '@heroicons/vue/16/solid';
           </div>
 
           <button
-            class="flex items-center gap-2 h-16 px-6
+            class="flex items-center gap-2 h-14 px-6
                    rounded-xl bg-primary text-white
                    font-semibold hover:bg-primaryHover
                    transition-all cursor-pointer"
@@ -73,7 +73,7 @@ import { ArrowRightIcon } from '@heroicons/vue/16/solid';
             <div
             v-for="service in popularServices"
             :key="service.id"
-            class="w-36 h-12 font-semibold text-white bg-secondary
+            class="w-32 h-10 font-semibold text-white bg-secondary
                     rounded-full flex items-center justify-center
                     cursor-pointer hover:bg-secondary/90 transition"
             >
@@ -83,7 +83,7 @@ import { ArrowRightIcon } from '@heroicons/vue/16/solid';
       </div>
 
       <div>
-        <img width="1300" src="/assets/home/dogBall.svg" alt="" />
+        <img width="1200" src="/assets/home/dogBall.svg" alt="" />
       </div>
 
     </div>

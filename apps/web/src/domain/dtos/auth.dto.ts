@@ -1,6 +1,14 @@
+import { UserRole } from "../../../../../packages/types/userType";
+
 export type LoginParams = {
   email: string;
   password: string;
+};
+
+export type AuthAccount = {
+  id: number;
+  email?: string;
+  role: UserRole;
 };
 
 export type AuthSession = {
