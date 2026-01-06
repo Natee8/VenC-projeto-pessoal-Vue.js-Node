@@ -1,23 +1,24 @@
 
 <script setup lang="ts">
+import { StarIcon } from '@heroicons/vue/16/solid';
 import { popularServices } from '../../../../config/home/popular';
 import { ArrowRightIcon } from '@heroicons/vue/16/solid';
 </script>
 
 <template>
   <section
-    class="w-full h-[100vh] bg-[url('/assets/home/bones.svg')]
-           bg-repeat bg-[length:1500px_1580px] bg-center"
+    class="w-full h-[90vh] bg-[url('/assets/home/bones.svg')]
+           bg-repeat bg-[length:1000px_1080px] bg-center"
   >
-    <div class="flex justify-between items-center px-20 py-10 gap-32">
+    <div class="flex justify-between items-center px-20 py-10 gap-24">
 
       <div class="flex flex-col gap-10 w-full">
 
         <div
-          class="w-60 h-12 rounded-xl bg-primary/25 font-extrabold
+          class="w-60 h-12 rounded-xl bg-primary/25 font-bold
                  flex items-center justify-center gap-3 text-primary"
         >
-          <Star class="w-6 h-6" fill="currentColor" />
+          <StarIcon class="w-6 h-6" fill="currentColor" />
           <p>+50 mil Pets Felizes</p>
         </div>
 
@@ -83,7 +84,7 @@ import { ArrowRightIcon } from '@heroicons/vue/16/solid';
       </div>
 
       <div>
-        <img width="1200" src="/assets/home/dogBall.svg" alt="" />
+        <img width="1250" src="/assets/home/dogBall.svg" alt="" />
       </div>
 
     </div>

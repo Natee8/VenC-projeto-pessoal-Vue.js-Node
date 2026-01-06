@@ -8,15 +8,21 @@ export class Users {
     private name: string,
     private email: Email,
     private passwordHash: string,
+    private address: Address,
     private role: UserRole,
-    private rating: Rating,
+    private ImgUrl: string,
     private isActive: boolean,
+    private birthDate: BirthDate,
     public readonly createdAt: Date,
     private updatedAt: Date
   ) {}
 
   getName() {
     return this.name;
+  }
+
+  getImgUrl() {
+    return this.ImgUrl;
   }
 
   getUpdatedAt() {
@@ -36,16 +42,20 @@ export class Users {
     return this.email.value;
   }
 
+    getBirthDate() {
+    return this.birthDate.getValue();
+  }
+
   getRole() {
     return this.role;
   }
 
-  getRating() {
-    return this.rating.value;
-  }
-
   isEnabled() {
     return this.isActive;
+  }
+
+    getAddress() {
+    return this.address;
   }
 
   deactivate() {
