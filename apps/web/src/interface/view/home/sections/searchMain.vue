@@ -1,7 +1,7 @@
 
 <script setup lang="ts">
-import { ArrowRight, Search, Star } from 'lucide-vue-next'
 import { popularServices } from '../../../../config/home/popular';
+import { ArrowRightIcon } from '@heroicons/vue/16/solid';
 </script>
 
 <template>
@@ -62,7 +62,7 @@ import { popularServices } from '../../../../config/home/popular';
                    transition-all cursor-pointer"
           >
             Buscar cuidadores
-            <ArrowRight class="w-5 h-5" />
+            <ArrowRightIcon class="w-4 h-4" />
           </button>
 
         </div>
