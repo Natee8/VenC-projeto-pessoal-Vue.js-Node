@@ -1,6 +1,7 @@
-import { Pet } from './Pet';
+
 import { Address } from '../valuesObjects/Address';
-import { Phone } from '../valuesObjects/Phone';
+import { Pet } from './petEntity';
+import { Phone } from '../valuesObjects/phone';
 
 export class OwnerProfile {
   constructor(
@@ -8,9 +9,9 @@ export class OwnerProfile {
     private pets: Pet[],
     private address: Address,
     private phone: Phone,
-    private searchRadiusKm?: number;
     private createdAt: Date,
-    private updatedAt: Date
+    private updatedAt: Date,
+    private searchRadiusKm?: number,
   ) {}
 
   getPets() {
@@ -22,13 +23,17 @@ export class OwnerProfile {
     this.updatedAt = new Date();
   }
 
-  removePet(petId: string) {
-    this.pets = this.pets.filter(pet => pet.id !== petId);
-    this.updatedAt = new Date();
+  removePet(petId: number) {
+  this.pets = this.pets.filter(pet => pet.getId() !== petId);
+  this.updatedAt = new Date();
   }
 
   getAddress() {
     return this.address;
+  }
+
+    getCreatedAt(): Date {
+    return this.createdAt
   }
 
   updateAddress(address: Address) {

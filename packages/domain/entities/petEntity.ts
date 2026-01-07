@@ -1,5 +1,5 @@
 import { PetSpecies, sizePets } from "../../types/petTypes";
-import { Users } from "./UserEntity";
+import { Users } from '../entities/userAuthEntity'
 
 export class Pet {
     constructor(

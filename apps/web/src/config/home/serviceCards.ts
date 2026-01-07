@@ -1,5 +1,4 @@
 import { IServiceCardConfigDto } from "../../domain/dtos/serviceOffer.dto";
-import { ServiceTypeLabelTypeof, ServiceTypeLabels } from "../../infrastructure/utils/ServiceTypesLabels";
 
 export const servicesConfig: IServiceCardConfigDto[] = [
   {
