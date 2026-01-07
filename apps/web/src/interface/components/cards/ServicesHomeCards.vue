@@ -13,7 +13,7 @@ const emit = defineEmits<{
 
 <template>
   <div
-    class="bg-white h-auto w-[24rem] shadow-md rounded flex flex-col justify-between p-10 gap-7
+    class="bg-white h-auto w-[27rem] shadow-md rounded-xl flex flex-col justify-between p-10 gap-7
            transition-transform duration-200 hover:scale-[1.02]"
   >
     <div class="flex flex-col gap-5">

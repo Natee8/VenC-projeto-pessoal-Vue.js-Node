@@ -1,6 +1,6 @@
 <template>
   <section>
-    <div class="w-full h-[700px] bg-[url('/assets/home/bgWaves.svg')] bg-cover bg-no-repeat bg-center relative">
+    <div class="w-full h-[800px] bg-[url('/assets/home/bgWaves.svg')] bg-cover bg-no-repeat bg-center relative">
 
       <div class="absolute left-40 top-1/2 transform -translate-y-1/2 bg-white p-20 rounded-[10%] shadow w-auto max-w-[40%] h-auto flex flex-col gap-16">
         <div class="flex items-center justify-center gap-10">

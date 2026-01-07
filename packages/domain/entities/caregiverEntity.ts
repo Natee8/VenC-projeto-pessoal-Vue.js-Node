@@ -1,12 +1,10 @@
-import { Address } from '../valueObjects/Address';
-import { CPF } from '../valueObjects/CPF';
+import { CPF } from '../valuesObjects/cpf';
 
 export class Caregiver {
   constructor(
     public readonly id: string,
     public readonly userId: string,
     private cpf: CPF,
-    private address: Address,
     private offersHosting: boolean,
     private serviceRadiusKm: number,
     private isVerified: boolean,
@@ -17,14 +15,6 @@ export class Caregiver {
     if (serviceRadiusKm <= 0) {
       throw new Error('Raio de atendimento inválido');
     }
-  }
-
-  getCPF() {
-    return this.cpf.value;
-  }
-
-  getAddress() {
-    return this.address;
   }
 
   canHostPets() {

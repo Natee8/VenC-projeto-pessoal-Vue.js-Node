@@ -1,6 +1,7 @@
 import { UserRole } from "../../types/userType";
+import { Address } from "../valuesObjects/address";
 import { Email } from "../valuesObjects/Email";
-import { Rating } from "../valuesObjects/Rating";
+import { BirthDate } from '../valuesObjects/birthDate'
 
 export class Users {
   constructor(
