@@ -1,7 +1,7 @@
 
-import { Address } from '../valuesObjects/Address';
 import { Pet } from './petEntity';
 import { Phone } from '../valuesObjects/phone';
+import { Address } from '../valuesObjects/address';
 
 export class OwnerProfile {
   constructor(

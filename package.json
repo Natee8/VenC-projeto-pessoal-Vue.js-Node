@@ -16,6 +16,7 @@
   "license": "ISC",
   "packageManager": "pnpm@10.26.1",
   "devDependencies": {
+    "@types/node": "^24.10.4",
     "@typescript-eslint/eslint-plugin": "^8.52.0",
     "@typescript-eslint/parser": "^8.52.0",
     "@vue/tsconfig": "^0.8.1",
