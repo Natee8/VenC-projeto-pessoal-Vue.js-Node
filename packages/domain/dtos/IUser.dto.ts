@@ -2,15 +2,15 @@ import { UserRole } from "../../types/userType";
 import { IAddress } from "./IAddress.dto";
 
 export interface IUserDto {
-  id: string | number;
-  name: string;
-  email: string;
-  password: string;
+  id?: string | number;
+  name?: string;
+  email?: string;
+  password?: string;
   address?: IAddress;
-  role: UserRole;
-  ImgUrl: string;
-  isActive: boolean;
+  role?: UserRole;
+  ImgUrl?: string;
+  isActive?: boolean;
   birthDate?: Date;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }

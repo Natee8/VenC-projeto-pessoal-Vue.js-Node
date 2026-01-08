@@ -1,5 +1,6 @@
 import { Users } from '../../../../packages/domain/entities/userAuthEntity';
 import { PrismaClient } from '../generated/prisma'
+import { mapToUsersEntity } from '../utils/mapUsersEntity'
 
 export class UsersRepository {
     private prisma: PrismaClient;
@@ -9,11 +10,16 @@ export class UsersRepository {
     }
 
     async findById(id: string): Promise<Users | null> {
-        const user = await this.prisma.user.findUnique({
-            where: { id: Number((id)) },
-        })
-        if (!user) return null
+        const numericId = Number(id);
+        if (isNaN(numericId)) throw new Error('ID inválido');
 
-        return this.mapToUsersEntity(user);
+        const user = await this.prisma.user.findUnique({
+            where: { id: numericId },
+        });
+
+        if (!user) return null;
+
+        return mapToUsersEntity(user);
     }
+
 }
