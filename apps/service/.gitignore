@@ -1,0 +1,50 @@
+# Dependencies
+node_modules
+.pnpm-store
+
+# Environment variables
+.env
+.env.*
+postgres.env
+
+# Build / Output
+dist
+build
+out
+coverage
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Runtime
+*.pid
+*.seed
+*.pid.lock
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE / Editor
+.vscode
+.idea
+*.swp
+*.swo
+
+# Docker
+docker-data
+postgres_data
+
+# Tests
+__tests__
+*.spec.ts
+*.test.ts
+
+# Docs
+docs
+
+/src/generated/prisma
