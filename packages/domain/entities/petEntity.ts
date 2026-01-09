@@ -1,10 +1,10 @@
 import { PetSpecies, sizePets } from "../../types/petTypes";
-import { Users } from '../entities/userAuthEntity'
+import { UserProfile } from "./userProfile";
 
 export class Pet {
     constructor(
         private readonly id: number,
-        private readonly owner: Users,
+        private readonly owner: UserProfile,
         private name: string,
         private readonly species: PetSpecies,
         private size: sizePets,

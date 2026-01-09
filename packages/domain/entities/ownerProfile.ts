@@ -2,10 +2,11 @@
 import { Pet } from './petEntity';
 import { Phone } from '../valuesObjects/phone';
 import { Address } from '../valuesObjects/address';
+import { UserId } from '../valuesObjects/userID';
 
 export class OwnerProfile {
   constructor(
-    public readonly userId: string,
+    public readonly userId: UserId,
     private pets: Pet[],
     private address: Address,
     private phone: Phone,

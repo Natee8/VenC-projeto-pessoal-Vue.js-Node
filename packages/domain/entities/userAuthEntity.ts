@@ -1,69 +1,46 @@
-import { UserRole } from "../../types/userType";
-import { Address } from "../valuesObjects/address";
-import { Email } from "../valuesObjects/Email";
-import { BirthDate } from '../valuesObjects/birthDate'
+import { Email } from "../valuesObjects/Email"
+import { UserId } from "../valuesObjects/userID"
 
-export class Users {
+export class UserAuth {
   constructor(
-    public readonly id: string,
-    private name: string,
+    public readonly id: UserId,
     private email: Email,
     private passwordHash: string,
-    private address: Address,
-    private role: UserRole,
-    private ImgUrl: string,
     private isActive: boolean,
-    private birthDate: BirthDate,
     public readonly createdAt: Date,
     private updatedAt: Date
   ) {}
 
-  getName() {
-    return this.name;
+  changePassword(newHash: string) {
+    if (!newHash) throw new Error('Senha inválida')
+    this.passwordHash = newHash
+    this.touch()
   }
 
-  getImgUrl() {
-    return this.ImgUrl;
-  }
-
-  getUpdatedAt() {
-    return this.updatedAt;
-  }
-
-  changePassword(newPasswordHash: string) {
-    if (!newPasswordHash) {
-      throw new Error('Senha inválida');
-    }
-
-    this.passwordHash = newPasswordHash;
-    this.updatedAt = new Date();
-  }
-
-  getEmail() {
-    return this.email.value;
-  }
-
-    getBirthDate() {
-    return this.birthDate.getValue();
-  }
-
-  getRole() {
-    return this.role;
-  }
-
-  isEnabled() {
-    return this.isActive;
-  }
-
-    getAddress() {
-    return this.address;
+  getPasswordHash(): string {
+    return this.passwordHash
   }
 
   deactivate() {
-    if (!this.isActive) {
-      throw new Error('Esse usúario está inativo!');
+    if (!this.isActive) throw new Error('Usuário já inativo')
+    this.isActive = false
+    this.touch()
+  }
+
+  isEnabled() {
+    return this.isActive
+  }
+
+  getEmail() {
+    return this.email.value
+  }
+  
+    getId(): string {
+    return this.id.toString()
     }
-    this.isActive = false;
-    this.updatedAt = new Date();
+
+
+  private touch() {
+    this.updatedAt = new Date()
   }
 }
