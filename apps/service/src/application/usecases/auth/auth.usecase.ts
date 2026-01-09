@@ -1,7 +1,7 @@
 import { PasswordComparer } from "../../../../../../packages/core/domain/passwordComparer";
 import { UserAuth } from "../../../../../../packages/domain/entities/userAuthEntity";
 import { Email } from "../../../../../../packages/domain/valuesObjects/Email";
-import { UsersRepository } from "../../../domain/repositories/authUsers.repository";
+import { UsersRepository } from "../../../infrastructure/repositories/authUsers.repository";
 
 export class AuthenticateUserUseCase  {
     constructor(

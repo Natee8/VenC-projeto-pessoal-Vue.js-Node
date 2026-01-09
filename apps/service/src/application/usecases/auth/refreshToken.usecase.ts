@@ -1,3 +1,5 @@
+import { RefreshTokenRepository, TokenGenerator } from "../../../../../../packages/domain/repositories/Auth.repositories"
+
 export class RefreshTokenUseCase {
   constructor(
     private readonly refreshTokenRepository: RefreshTokenRepository,
@@ -6,15 +8,17 @@ export class RefreshTokenUseCase {
 
   async execute(refreshToken: string): Promise<{ accessToken: string }> {
     const storedToken = await this.refreshTokenRepository.find(refreshToken)
-    if (!storedToken) throw new Error('Refresh token inválido')
-
-    if (storedToken.isExpired()) {
-      throw new Error('Refresh token expirado')
+    
+    if (!storedToken) {
+      throw new Error('Token inválido') 
     }
 
-    const accessToken = this.tokenGenerator.generateAccessToken(
-      storedToken.getUser()
-    )
+    if (storedToken.isExpired()) {
+      throw new Error('Token expirado') 
+    }
+
+    const user = storedToken.getUser()
+    const accessToken = await this.tokenGenerator.generateAccessToken(user)
 
     return { accessToken }
   }
