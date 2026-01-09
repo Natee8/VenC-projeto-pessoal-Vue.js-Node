@@ -1,25 +1,12 @@
-
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL") 
+  url      = env("DATABASE_URL")
 }
 
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
 }
-
-model UserProfile {
-  id        Int      @id @default(autoincrement())
-  userId    Int      @unique
-  name      String
-  birthDate DateTime?
-  imgUrl    String?
-  createdAt DateTime @default(now())
-
-  user UserAuth @relation(fields: [userId], references: [id])
-}
-
 
 model UserAuth {
   id           Int      @id @default(autoincrement())
@@ -29,5 +16,26 @@ model UserAuth {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  profile UserProfile?
+  profile       UserProfile?
+  refreshTokens RefreshToken[] // relação inversa
+}
+
+model UserProfile {
+  id        Int       @id @default(autoincrement())
+  userId    Int       @unique
+  name      String
+  birthDate DateTime?
+  imgUrl    String?
+  createdAt DateTime  @default(now())
+
+  user UserAuth @relation(fields: [userId], references: [id])
+}
+
+model RefreshToken {
+  token     String   @id
+  userId    Int
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  user UserAuth @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

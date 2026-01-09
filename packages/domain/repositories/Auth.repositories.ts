@@ -13,10 +13,11 @@ export interface RefreshTokenRepository {
   save(token: RefreshToken): Promise<void>
   find(token: string): Promise<RefreshToken | null>
   revoke(token: string): Promise<void>
+  findByUserId(userId: number): Promise<RefreshToken[]> 
 }
-
 
 export interface TokenGenerator {
   generateAccessToken(user: UserAuth): Promise<string>
-  generateRefreshToken(user: UserAuth): Promise<RefreshToken>
+  generateRefreshToken(user: UserAuth): Promise<RefreshToken> 
 }
+
