@@ -1,15 +1,15 @@
 import * as bcrypt from 'bcrypt';
 
 export interface PasswordComparer {
-  compare(plain: string, hash: string): boolean;
+  compare(plain: string, hash: string): Promise<boolean>;
 }
 
-export class PasswordService {
+export class PasswordService implements PasswordComparer {
   async hash(password: string): Promise<string> {
     return bcrypt.hash(password, 10);
   }
 
-  async compare(password: string, hashed: string): Promise<boolean> {
-    return bcrypt.compare(password, hashed);
+  async compare(plain: string, hash: string): Promise<boolean> {
+    return bcrypt.compare(plain, hash);
   }
 }

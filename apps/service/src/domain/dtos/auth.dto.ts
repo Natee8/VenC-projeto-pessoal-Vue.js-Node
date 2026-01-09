@@ -11,3 +11,8 @@ export interface LoginResponseDTO {
   role: UserRole;
   name: string;
 }
+
+export interface IRefreshResponse {
+  accessToken: string
+  refreshToken: string
+}
