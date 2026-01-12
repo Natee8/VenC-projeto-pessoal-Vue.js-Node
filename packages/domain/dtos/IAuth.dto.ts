@@ -13,6 +13,7 @@ export interface RefreshToken {
   createdAt: Date
   expiresAt: Date
   revokedAt?: Date
+
   getUser(): UserAuth
   isExpired(): boolean
 }

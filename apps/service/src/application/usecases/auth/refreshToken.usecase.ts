@@ -1,32 +1,17 @@
-import { IEither, left, right } from "../../../core/interface/IEighter"
-import { RefreshTokenRepository, TokenGenerator } from "../../../../../../packages/domain/repositories/Auth.repositories"
-import { IRefreshResponse } from "../../../domain/dtos/auth.dto"
+import { RefreshTokenRepository, TokenGenerator } from '../../../../../../packages/domain/repositories/Auth.repositories.js'
+import { IEither, left, right } from '../../../core/interface/IEighter.js'
 
 export class RefreshTokenUseCase {
   constructor(
-    private readonly refreshTokenRepository: RefreshTokenRepository,
+    private readonly refreshTokenRepo: RefreshTokenRepository,
     private readonly tokenGenerator: TokenGenerator
   ) {}
 
-  async execute(refreshToken: string): Promise<IEither<{ message: string }, IRefreshResponse>> {
-    try {
-      const storedToken = await this.refreshTokenRepository.find(refreshToken)
+  async execute(refreshToken: string): Promise<IEither<{ message: string }, { accessToken: string }>> {
+    const tokenRecord = await this.refreshTokenRepo.find(refreshToken)
+    if (!tokenRecord) return left({ message: 'Refresh token inválido' })
 
-      if (!storedToken) return left({ message: "Token inválido" })
-      if (storedToken.isExpired()) return left({ message: "Token expirado" })
-
-      const user = storedToken.getUser()
-      const accessToken = await this.tokenGenerator.generateAccessToken(user)
-      const newRefreshToken = await this.tokenGenerator.generateRefreshToken(user)
-
-      const response: IRefreshResponse = {
-        accessToken,
-        refreshToken: newRefreshToken.token 
-      }
-
-      return right(response)
-    } catch (err) {
-      return left({ message: (err as Error).message })
-    }
+    const newAccessToken = this.tokenGenerator.generateAccessToken(tokenRecord.user)
+    return right({ accessToken: newAccessToken })
   }
 }
