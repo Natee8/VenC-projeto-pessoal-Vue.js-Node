@@ -1,19 +1,23 @@
 export class UserId {
-  private constructor(private readonly value: string) {}
+  private readonly _value: number
 
-  static create(id: string | number): UserId {
-    if (!id) {
+  private constructor(value: number) {
+    this._value = value
+  }
+
+  static create(value: number): UserId {
+    if (!value) {
       throw new Error('UserId inválido')
     }
 
-    return new UserId(String(id))
+    return new UserId(value)
   }
 
-  getValue(): string {
-    return this.value
+  getValue(): number {
+    return this._value
   }
 
-  toString(): string {
-    return this.value
+  tonumber(): number {
+    return this._value
   }
 }

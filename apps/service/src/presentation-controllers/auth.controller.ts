@@ -1,26 +1,25 @@
-// auth.routes.ts
 import { Router } from 'express'
 
 import { UsersRepository } from '../infrastructure/repositories/auth/authLogin.repository'
-
 import { PasswordService } from '../../../../packages/core/domain/passwordComparer'
 
 import { AuthenticateUserUseCase } from '../application/usecases/auth/auth.usecase'
 import { GenerateTokenUseCase } from '../application/usecases/auth/generateToken.usecase'
 import { RefreshTokenUseCase } from '../application/usecases/auth/refreshToken.usecase'
-import { LogoutUseCase } from '../application/usecases/auth/logout.usecase'
 
-import { IEither } from '../core/interface/IEighter'
+import { JwtTokenGenerator } from '../infrastructure/repositories/auth/tokenGenerator'
+import { RefreshTokenRepository } from '../infrastructure/repositories/auth/refreshToken.repository'
+import { Email } from '../../../../packages/domain/valuesObjects/Email'
+import { getErrorMessage } from '../utils/getErrorMessage'
+
 
 const router = Router()
 
-// ================= INFRA =================
 const usersRepo = new UsersRepository()
-const refreshTokenRepo = new PrismaRefreshTokenRepository()
+const refreshTokenRepo = new RefreshTokenRepository()
 const passwordService = new PasswordService()
 const tokenGenerator = new JwtTokenGenerator()
 
-// ================= USE CASES =================
 const authUseCase = new AuthenticateUserUseCase(usersRepo, passwordService)
 const generateTokenUseCase = new GenerateTokenUseCase(
   tokenGenerator,
@@ -32,35 +31,55 @@ const refreshTokenUseCase = new RefreshTokenUseCase(
   tokenGenerator
 )
 
-const logoutUseCase = new LogoutUseCase(refreshTokenRepo)
-
-// ================= LOGIN =================
+/**
+ * LOGIN
+ */
 router.post('/login', async (req, res) => {
   const { email, password } = req.body
 
-  const authResult = await authUseCase.execute(email, password)
+  let emailVO: Email
 
-  if (!authResult.isSuccess()) {
-    return res.status(401).json({ message: authResult.value.message })
+  try {
+    emailVO = Email.create(email)
+  }  catch (error: unknown) {
+    return res.status(400).json({
+      message: getErrorMessage(error)
+    })
   }
+
+  const authResult = await authUseCase.execute(
+    emailVO,
+    password
+  )
+
+  if (authResult.isException()) {
+  return res.status(401).json({
+    message: authResult.error.message
+  })
+}
+
 
   const tokenResult = await generateTokenUseCase.execute(authResult.value)
 
   return res.json({
     message: 'Login ok',
-    data: tokenResult
+    data: tokenResult.value
   })
 })
 
-// ================= REFRESH =================
+/**
+ * REFRESH TOKEN
+ */
 router.post('/refresh', async (req, res) => {
   const { refreshToken } = req.body
 
   const result = await refreshTokenUseCase.execute(refreshToken)
 
-  if (!result.isSuccess()) {
-    return res.status(401).json({ message: result.value.message })
-  }
+  if (result.isException()) {
+  return res.status(401).json({
+    message: result.error.message
+  })
+}
 
   return res.json({
     message: 'Token renovado com sucesso',
@@ -68,13 +87,14 @@ router.post('/refresh', async (req, res) => {
   })
 })
 
-// ================= LOGOUT =================
 router.post('/logout', async (req, res) => {
   const { refreshToken } = req.body
 
   await refreshTokenRepo.revoke(refreshToken)
 
-  return res.json({ message: 'Logout realizado com sucesso' })
+  return res.json({
+    message: 'Logout realizado com sucesso'
+  })
 })
 
 export default router

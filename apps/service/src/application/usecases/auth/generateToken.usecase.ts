@@ -1,7 +1,7 @@
 import { JwtTokenGenerator } from '../../../infrastructure/repositories/auth/tokenGenerator.js'
 import { RefreshTokenRepository } from '../../../infrastructure/repositories/auth/refreshToken.repository.js'
-import { UserAuth } from '../../../generated/prisma/index.js';
-import { IEither } from '../../../core/interface/IEighter.js';
+import { Either, left, right } from '../../../core/interface/IEighter.js';
+import { UserAuth } from '../../../../../../packages/domain/entities/userAuthEntity.js';
 
 export class GenerateTokenUseCase {
   constructor(
@@ -9,14 +9,22 @@ export class GenerateTokenUseCase {
     private readonly refreshTokenRepo: RefreshTokenRepository
   ) {}
 
-  async execute(user: UserAuth): Promise<IEither<{ message: string }, { accessToken: string; refreshToken: string }>> {
-    try {
-      const accessToken = this.tokenGenerator.generateAccessToken(user)
-      const refreshToken = await this.refreshTokenRepo.create(user)
+ async execute(
+  user: UserAuth
+): Promise<Either<{ message: string }, { accessToken: string; refreshToken: string }>> {
+  try {
+    const accessToken = await this.tokenGenerator.generateAccessToken(
+        user.getId()
+    )
+    const refreshToken = await this.refreshTokenRepo.create(user)
 
-      return right({ accessToken, refreshToken })
-    } catch (err) {
-      return left({ message: 'Erro ao gerar tokens' })
-    }
+    return right({
+      accessToken,
+      refreshToken: refreshToken.getToken()
+    })
+  } catch (err) {
+    return left({ message: 'Erro ao gerar tokens', err })
   }
+}
+
 }

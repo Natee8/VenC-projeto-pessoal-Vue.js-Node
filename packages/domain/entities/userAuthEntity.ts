@@ -35,8 +35,8 @@ export class UserAuth {
     return this.email.value
   }
   
-    getId(): string {
-    return this.id.toString()
+    getId(): UserId {
+    return this.id
     }
 
 

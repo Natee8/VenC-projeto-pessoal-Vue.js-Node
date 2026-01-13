@@ -1,17 +1,19 @@
-import { RefreshTokenRepository, TokenGenerator } from '../../../../../../packages/domain/repositories/Auth.repositories.js'
-import { IEither, left, right } from '../../../core/interface/IEighter.js'
+import { IRefreshTokenRepository, TokenGenerator } from '../../../../../../packages/domain/repositories/Auth.repositories.js'
+import { Either, left, right } from '../../../core/interface/IEighter.js'
 
 export class RefreshTokenUseCase {
   constructor(
-    private readonly refreshTokenRepo: RefreshTokenRepository,
+    private readonly refreshTokenRepo: IRefreshTokenRepository,
     private readonly tokenGenerator: TokenGenerator
   ) {}
 
-  async execute(refreshToken: string): Promise<IEither<{ message: string }, { accessToken: string }>> {
+  async execute(refreshToken: string): Promise<Either<{ message: string }, { accessToken: string }>> {
     const tokenRecord = await this.refreshTokenRepo.find(refreshToken)
     if (!tokenRecord) return left({ message: 'Refresh token inválido' })
 
-    const newAccessToken = this.tokenGenerator.generateAccessToken(tokenRecord.user)
+    const newAccessToken = await this.tokenGenerator.generateAccessToken(
+      tokenRecord.userId
+    )
     return right({ accessToken: newAccessToken })
   }
 }

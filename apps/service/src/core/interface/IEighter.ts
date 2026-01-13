@@ -1,40 +1,55 @@
+export type Either<L, R> = Left<L> | Right<R>
+
 export interface IEither<L, R> {
-  isException(): this is Left<L, R>
-  isSuccess(): this is Right<L, R>
-  value: L | R
+  isException(): this is Left<L>
+  isSuccess(): this is Right<R>
 }
 
-export class Right<L, R> implements IEither<L, R> {
-  readonly value: R
 
-  constructor(value: R) {
-    this.value = value
+export class Left<L> {
+  readonly type = 'left'
+  constructor(private readonly _value: L) {}
+
+  get value(): never {
+    throw new Error('Tentou acessar Right em Left')
   }
 
-  isException(): this is Left<L, R> {
-    return false
+  get error(): L {
+    return this._value
   }
 
-  isSuccess(): this is Right<L, R> {
-    return true
-  }
-}
-
-export class Left<L, R> implements IEither<L, R> {
-  readonly value: L
-
-  constructor(value: L) {
-    this.value = value
-  }
-
-  isException(): this is Left<L, R> {
+  isException(): this is Left<L> {
     return true
   }
 
-  isSuccess(): this is Right<L, R> {
+  isSuccess(): this is Right<never> {
     return false
   }
 }
 
-export const left = <L, R>(value: L): IEither<L, R> => new Left<L, R>(value)
-export const right = <L, R>(value: R): IEither<L, R> => new Right<L, R>(value)
+export class Right<R> {
+  readonly type = 'right'
+  constructor(private readonly _value: R) {}
+
+  get value(): R {
+    return this._value
+  }
+
+  get error(): never {
+    throw new Error('Tentou acessar Left em Right')
+  }
+
+  isException(): this is Left<never> {
+    return false
+  }
+
+  isSuccess(): this is Right<R> {
+    return true
+  }
+}
+
+export const left = <L>(value: L): Either<L, never> =>
+  new Left(value)
+
+export const right = <R>(value: R): Either<never, R> =>
+  new Right(value)

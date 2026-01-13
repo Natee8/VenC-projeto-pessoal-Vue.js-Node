@@ -1,15 +1,16 @@
 import { UserAuth } from "../entities/userAuthEntity"
+import { UserId } from "../valuesObjects/userID"
 
 export interface IRefreshToken {
   token: string
-  userId: number
+  userId: UserId
   createdAt: Date
   expiresAt: Date
 }
 
 export interface RefreshToken {
   token: string
-  userId: number
+  userId: UserId
   createdAt: Date
   expiresAt: Date
   revokedAt?: Date
