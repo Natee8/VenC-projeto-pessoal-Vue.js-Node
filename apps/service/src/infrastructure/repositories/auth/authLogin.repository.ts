@@ -1,7 +1,7 @@
-import { UserAuth } from '../../../../../../packages/domain/entities/userAuthEntity'
-import { Email } from '../../../../../../packages/domain/valuesObjects/Email'
-import { UserId } from '../../../../../../packages/domain/valuesObjects/userID'
-import { PrismaClient, UserAuth as PrismaUserAuth } from '../../../generated/prisma'
+import { UserAuth } from '../../../../../../packages/src/domain/entities/userAuthEntity.js'
+import { Email } from '../../../../../../packages/src/valuesObjects/email.js'
+import { UserId } from '../../../../../../packages/src/valuesObjects/userId.js'
+import { PrismaClient, UserAuth as PrismaUserAuth } from '../../../generated/prisma/index.js'
 
 export class UsersRepository {
   private prisma = new PrismaClient()

@@ -1,12 +1,11 @@
-// src/controllers/authRoute.ts
-import { Router } from 'express';
-import { PasswordService } from '../../../../packages/core/domain/passwordComparer.js';
+import { UsersRepository } from '../infrastructure/repositories/auth/authLogin.repository.js';
+import { RefreshTokenRepository } from '../infrastructure/repositories/auth/refreshToken.repository.js';
+import { PasswordService } from '../application/service/passwordComparer.js';
+import { JwtTokenGenerator } from '../infrastructure/repositories/auth/tokenGenerator.js';
 import { AuthenticateUserUseCase } from '../application/usecases/auth/auth.usecase.js';
 import { GenerateTokenUseCase } from '../application/usecases/auth/generateToken.usecase.js';
 import { RefreshTokenUseCase } from '../application/usecases/auth/refreshToken.usecase.js';
-import { JwtTokenGenerator } from '../infrastructure/repositories/auth/tokenGenerator.js';
-import { RefreshTokenRepository } from '../infrastructure/repositories/auth/refreshToken.repository.js';
-import { UsersRepository } from '../infrastructure/repositories/auth/authLogin.repository.js';
+import { Router } from 'express';
 
 const usersRepo = new UsersRepository();
 const refreshTokenRepo = new RefreshTokenRepository();
@@ -17,15 +16,20 @@ const authUseCase = new AuthenticateUserUseCase(usersRepo, passwordService);
 const generateTokenUseCase = new GenerateTokenUseCase(tokenGenerator, refreshTokenRepo);
 const refreshTokenUseCase = new RefreshTokenUseCase(refreshTokenRepo, tokenGenerator);
 
-const router = Router();
+export const router: Router = Router();
 
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
   const authResult = await authUseCase.execute(email, password);
 
-  if (authResult.type === 'left') {
-    return res.status(401).json({ message: authResult.value.message });
+        if (authResult.type === 'left') {
+          if (authResult.type === 'left') {
+        return res.status(401).json({
+          message: authResult.error.message
+        })
+      }
+
   }
 
   const tokenResult = await generateTokenUseCase.execute(authResult.value);
@@ -42,8 +46,11 @@ router.post('/refresh', async (req, res) => {
   const result = await refreshTokenUseCase.execute(refreshToken);
 
   if (result.type === 'left') {
-    return res.status(401).json({ message: result.value.message });
-  }
+  return res.status(401).json({
+    message: result.error.message
+  })
+}
+
 
   return res.json({
     message: 'Token renovado com sucesso',

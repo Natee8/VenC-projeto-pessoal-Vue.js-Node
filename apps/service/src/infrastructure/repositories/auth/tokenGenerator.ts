@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
-import { UserId } from '../../../../../../packages/domain/valuesObjects/userID'
-import { TokenGenerator } from '../../../../../../packages/domain/repositories/Auth.repositories'
+import { UserId } from '../../../../../../packages/src/valuesObjects/userId.js'
+import { TokenGenerator } from '../../../../../../packages/src/domain/repositories/Auth.repositories.js'
 
 export class JwtTokenGenerator implements TokenGenerator {
   async generateAccessToken(userId: UserId): Promise<string> {

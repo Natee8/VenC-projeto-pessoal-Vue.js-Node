@@ -1,5 +1,5 @@
-import { IRefreshTokenRepository } from "../../../../../../packages/domain/repositories/Auth.repositories";
-import { UserId } from "../../../../../../packages/domain/valuesObjects/userID";
+import { IRefreshTokenRepository } from "../../../../../../packages/src/domain/repositories/Auth.repositories.js";
+import { UserId } from "../../../../../../packages/src/valuesObjects/userId.js";
 
 export class LogoutUseCase {
   constructor(private readonly refreshTokenRepository: IRefreshTokenRepository) {}

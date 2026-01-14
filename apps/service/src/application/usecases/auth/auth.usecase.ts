@@ -1,8 +1,8 @@
-import { PasswordService } from '../../../../../../packages/core/domain/passwordComparer.js'
-import { UserAuth } from '../../../../../../packages/domain/entities/userAuthEntity.js'
-import { Either, left, right } from '../../../core/interface/IEighter.js'
-import { UsersRepository } from '../../../infrastructure/repositories/auth/authLogin.repository.js'
-import { Email } from '../../../../../../packages/domain/valuesObjects/Email.js'
+import { PasswordService } from "../../service/passwordComparer.js"
+import { UserAuth } from "../../../../../../packages/src/domain/entities/userAuthEntity.js"
+import { Email } from "../../../../../../packages/src/valuesObjects/email.js"
+import { Either, left, right } from "../../../core/interface/IEighter.js"
+import { UsersRepository } from "../../../infrastructure/repositories/auth/authLogin.repository.js"
 
 export class AuthenticateUserUseCase {
   constructor(

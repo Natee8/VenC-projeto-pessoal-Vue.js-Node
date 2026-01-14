@@ -1,4 +1,4 @@
-import { IServiceCardConfigDto } from "../../domain/dtos/serviceOffer.dto";
+import { IServiceCardConfigDto } from "../../domain/dtos/serviceOffer.dto.js";
 
 export const servicesConfig: IServiceCardConfigDto[] = [
   {

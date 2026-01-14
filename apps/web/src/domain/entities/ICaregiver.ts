@@ -1,5 +1,5 @@
-import { UserRole } from "../../../../../packages/types/userType";
-import { IAddress } from "./IAddressEntity";
+import { IAddress } from "../../../../../packages/src/domain/dtos/IAddress.dto.js";
+import { UserRole } from "../../../../../packages/src/types/userType.js";
 
 export interface ICaregiver {
   id: string;

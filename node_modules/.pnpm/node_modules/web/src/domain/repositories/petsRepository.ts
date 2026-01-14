@@ -1,5 +1,5 @@
-import { CreatePetParams, UpdatePetParams } from "../dtos/pet.dto";
-import { IPet } from "../entities/IPetEntity";
+import { CreatePetParams, UpdatePetParams } from "../dtos/pet.dto.js";
+import { IPet } from "../entities/IPetEntity.js";
 
 
 export interface PetRepository {

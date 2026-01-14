@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { settingInitialState } from './initinalState';
-import { ISettingsState } from './types/ISettingsState';
+import { settingInitialState } from './initinalState.js';
+import { ISettingsState } from './types/ISettingsState.js';
 
 export const SettingsSlice = createSlice({
   name: 'settings',

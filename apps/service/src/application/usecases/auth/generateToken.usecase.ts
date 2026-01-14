@@ -1,7 +1,7 @@
-import { JwtTokenGenerator } from '../../../infrastructure/repositories/auth/tokenGenerator.js'
-import { RefreshTokenRepository } from '../../../infrastructure/repositories/auth/refreshToken.repository.js'
-import { Either, left, right } from '../../../core/interface/IEighter.js';
-import { UserAuth } from '../../../../../../packages/domain/entities/userAuthEntity.js';
+import { UserAuth } from "../../../../../../packages/src/domain/entities/userAuthEntity.js";
+import { Either, left, right } from "../../../core/interface/IEighter.js";
+import { RefreshTokenRepository } from "../../../infrastructure/repositories/auth/refreshToken.repository.js";
+import { JwtTokenGenerator } from "../../../infrastructure/repositories/auth/tokenGenerator.js";
 
 export class GenerateTokenUseCase {
   constructor(

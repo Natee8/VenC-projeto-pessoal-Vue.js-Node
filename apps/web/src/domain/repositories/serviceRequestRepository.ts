@@ -1,5 +1,5 @@
-import { CreateServiceRequestParams } from "../dtos/serviceRequest.dto";
-import { IServiceRequest } from "../entities/IServiceRequest";
+import { CreateServiceRequestParams } from "../dtos/serviceRequest.dto.js";
+import { IServiceRequest } from "../entities/IServiceRequest.js";
 
 export interface ServiceRequestRepository {
   create(

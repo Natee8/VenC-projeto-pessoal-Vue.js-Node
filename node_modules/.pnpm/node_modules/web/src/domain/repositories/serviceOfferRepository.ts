@@ -1,5 +1,5 @@
-import { CreateServiceOfferParams, UpdateServiceOfferParams } from "../dtos/serviceOffer.dto";
-import { IServiceOffer } from "../entities/IServiceOfferEntity";
+import { CreateServiceOfferParams, UpdateServiceOfferParams } from "../dtos/serviceOffer.dto.js";
+import { IServiceOffer } from "../entities/IServiceOfferEntity.js";
 
 export interface ServiceOfferRepository {
   create(params: CreateServiceOfferParams): Promise<IServiceOffer>;

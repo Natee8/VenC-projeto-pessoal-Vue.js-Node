@@ -1,4 +1,4 @@
-import { AuthSession, LoginParams, ResetPasswordParams, VerifyResetCodeParams } from "../dtos/auth.dto";
+import { AuthSession, LoginParams, ResetPasswordParams, VerifyResetCodeParams } from "../dtos/auth.dto.js";
 
 export interface AuthRepository {
     login(params: LoginParams): Promise<AuthSession>;

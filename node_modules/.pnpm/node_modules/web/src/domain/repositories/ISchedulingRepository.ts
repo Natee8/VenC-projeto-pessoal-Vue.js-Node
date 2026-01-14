@@ -1,5 +1,5 @@
-import { CreateSchedulingParams } from "../dtos/scheduling.dto";
-import { IScheduling } from "../entities/IScheduling";
+import { CreateSchedulingParams } from "../dtos/scheduling.dto.js";
+import { IScheduling } from "../entities/IScheduling.js";
 
 export interface SchedulingRepository {
   create(

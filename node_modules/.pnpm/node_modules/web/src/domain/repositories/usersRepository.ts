@@ -1,6 +1,6 @@
-import { CreateUserParams, UpdateUserParams } from "../dtos/user.dto";
-import { IPet } from "../entities/IPetEntity";
-import { UserAuth } from '../../../../../packages/domain/entities/userAuthEntity'
+import { UserAuth } from "../../../../../packages/src/domain/entities/userAuthEntity.js";
+import { CreateUserParams, UpdateUserParams } from "../dtos/user.dto.js";
+import { IPet } from "../entities/IPetEntity.js";
 
 export interface UserRepository {
     create(params: CreateUserParams): Promise<UserAuth>;

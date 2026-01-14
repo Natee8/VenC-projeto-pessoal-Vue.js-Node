@@ -1,4 +1,4 @@
-import { IAppState } from './types/IAppState';
+import { IAppState } from "./types/IAppState.js";
 
 export const appInitialState: IAppState = {
 	user: undefined,

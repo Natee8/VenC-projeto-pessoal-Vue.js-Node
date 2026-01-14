@@ -1,14 +1,14 @@
-import { PrismaClient, RefreshToken as PrismaRefreshToken } from '../../../generated/prisma'
-import { RefreshTokenEntity } from '../../../../../../packages/domain/entities/refreshTokenEntity'
-import { UserId } from '../../../../../../packages/domain/valuesObjects/userID'
+import { RefreshTokenEntity } from '../../../../../../packages/src/domain/entities/refreshTokenEntity.js'
+import { UserAuth } from '../../../../../../packages/src/domain/entities/userAuthEntity.js'
+import { IRefreshTokenRepository } from '../../../../../../packages/src/domain/repositories/Auth.repositories.js'
+import { UserId } from '../../../../../../packages/src/valuesObjects/userId.js'
+import { PrismaClient, RefreshToken } from  '../../../generated/prisma/index.js'
 import jwt from 'jsonwebtoken'
-import { UserAuth } from '../../../../../../packages/domain/entities/userAuthEntity'
-import { IRefreshTokenRepository } from '../../../../../../packages/domain/repositories/Auth.repositories'
 
 export class RefreshTokenRepository implements IRefreshTokenRepository {
   private prisma = new PrismaClient()
 
-  private mapToEntity(record: PrismaRefreshToken): RefreshTokenEntity {
+  private mapToEntity(record: RefreshToken): RefreshTokenEntity {
     return new RefreshTokenEntity({
       token: record.token,
       userId: UserId.create(record.userId),

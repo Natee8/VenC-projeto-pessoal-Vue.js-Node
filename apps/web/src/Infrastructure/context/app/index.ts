@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IAppState } from './types/IAppState';
-import { appInitialState } from './initinalState';
+import { IAppState } from './types/IAppState.js';
+import { appInitialState } from './initinalState.js';
 
 export const AppContextSlice = createSlice({
 	name: 'app',

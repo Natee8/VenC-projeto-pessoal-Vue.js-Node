@@ -1,4 +1,4 @@
-import { PetSpecies, sizePets } from "../../../../../packages/types/petTypes";
+import { PetSpecies, sizePets } from "../../../../../packages/src/types/petTypes.js";
 
 export type CreatePetParams = {
   ownerId: string;

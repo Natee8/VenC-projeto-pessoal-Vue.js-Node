@@ -1,10 +1,10 @@
-import { ServiceType } from "../../../../../packages/types/serviceType";
-import { IAddress } from "./IAddressEntity";
+import { IAddress } from "../../../../../packages/src/domain/dtos/IAddress.dto.js";
+import { ServiceTypes } from "../../../../../packages/src/types/serviceType.js";
 
 export interface IServiceOffer {
     id: string,
     caregiverId: string,
-    type: ServiceType,
+    type: ServiceTypes,
     description: string,
     price: IPrice,
     locality: IAddress,

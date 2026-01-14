@@ -1,5 +1,5 @@
-import env from './env'
-import logger from './logger'
-import { paginateArray } from './paginate'
+import env from './env.js'
+import logger from './logger.js'
+import { paginateArray } from './paginate.js'
 
 export { env, logger, paginateArray }

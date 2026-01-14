@@ -1,5 +1,5 @@
-// import { storages } from '../../utils/localStorage';
-import { ISettingsState } from "./types/ISettingsState"
+// import { storages } from '../../utils/localStorage.js';
+import { ISettingsState } from "./types/ISettingsState.js"
 
 // const storedSettings =
 // 	storages('local').getStorage<ISettingsState>('@settings:');

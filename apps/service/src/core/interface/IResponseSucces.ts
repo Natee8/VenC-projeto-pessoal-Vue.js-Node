@@ -1,4 +1,4 @@
-import { code } from '../constante/StatusCode'
+import { code } from "../constante/index.js"
 
 export interface IResponseSuccess<T> {
   message: string

@@ -1,11 +1,11 @@
-import { SchedulingStatus } from "../../../../../packages/types/schedulingTypes";
-import { IServiceRequest } from "./IServiceRequest";
-import { IUser } from "./IUserEntity";
+import { IUserDto } from "../../../../../packages/src/domain/dtos/IUser.dto.js";
+import { SchedulingStatus } from "../../../../../packages/src/types/schedulingTypes.js";
+import { IServiceRequest } from "./IServiceRequest.js";
 
 export interface IScheduling {
     id: number,
     serviceRequest: IServiceRequest,
-    caregiver: IUser,
+    caregiver: IUserDto,
     scheduledAt: Date,
     status: SchedulingStatus,
     createdAt: Date,

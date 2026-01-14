@@ -1,11 +1,11 @@
-import { ServiceType } from "../../../../../packages/types/serviceType";
-import { ServiceTypeLabelTypeof } from "../../infrastructure/utils/ServiceTypesLabels";
-import { IAddress } from "../entities/IAddressEntity";
-import { IPrice } from "../entities/IServiceOfferEntity";
+import { IAddress } from "../../../../../packages/src/domain/dtos/IAddress.dto.js";
+import { ServiceTypes } from "../../../../../packages/src/types/serviceType.js";
+import { ServiceTypeLabelTypeof } from "../../infrastructure/utils/ServiceTypesLabels.js";
+import { IPrice } from "../entities/IServiceOfferEntity.js";
 
 export type CreateServiceOfferParams = {
   caregiverId: string;
-  type: ServiceType;
+  type: ServiceTypes;
   description: string;
   price: IPrice
   locality: IAddress

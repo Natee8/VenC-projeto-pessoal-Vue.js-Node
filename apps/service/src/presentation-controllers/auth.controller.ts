@@ -1,19 +1,19 @@
 import { Router } from 'express'
 
-import { UsersRepository } from '../infrastructure/repositories/auth/authLogin.repository'
-import { PasswordService } from '../../../../packages/core/domain/passwordComparer'
+import { UsersRepository } from '../infrastructure/repositories/auth/authLogin.repository.js'
 
-import { AuthenticateUserUseCase } from '../application/usecases/auth/auth.usecase'
-import { GenerateTokenUseCase } from '../application/usecases/auth/generateToken.usecase'
-import { RefreshTokenUseCase } from '../application/usecases/auth/refreshToken.usecase'
+import { AuthenticateUserUseCase } from '../application/usecases/auth/auth.usecase.js'
+import { GenerateTokenUseCase } from '../application/usecases/auth/generateToken.usecase.js'
+import { RefreshTokenUseCase } from '../application/usecases/auth/refreshToken.usecase.js'
 
-import { JwtTokenGenerator } from '../infrastructure/repositories/auth/tokenGenerator'
-import { RefreshTokenRepository } from '../infrastructure/repositories/auth/refreshToken.repository'
-import { Email } from '../../../../packages/domain/valuesObjects/Email'
-import { getErrorMessage } from '../utils/getErrorMessage'
+import { JwtTokenGenerator } from '../infrastructure/repositories/auth/tokenGenerator.js'
+import { RefreshTokenRepository } from '../infrastructure/repositories/auth/refreshToken.repository.js'
+import { getErrorMessage } from '../utils/getErrorMessage.js'
+import { PasswordService } from '../application/service/passwordComparer.js'
+import { Email } from '../../../../packages/src/valuesObjects/email.js'
 
 
-const router = Router()
+export const router: Router = Router();
 
 const usersRepo = new UsersRepository()
 const refreshTokenRepo = new RefreshTokenRepository()

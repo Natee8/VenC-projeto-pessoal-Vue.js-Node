@@ -1,11 +1,11 @@
-import { ServiceRequestStatus, ServiceType, UrgencyType } from '../../../../../packages/types/serviceType';
-import { IAddress } from './IAddressEntity';
+import { IAddress } from "../../../../../packages/src/domain/dtos/IAddress.dto.js";
+import { ServiceRequestStatus, ServiceTypes, UrgencyType } from "../../../../../packages/src/types/serviceType.js";
 
 export interface IServiceRequest {
   id: string;
   ownerId: string;
   petId: string;
-  type: ServiceType;
+  type: ServiceTypes;
   description: string;
   status: ServiceRequestStatus;
   location: IAddress;

@@ -1,4 +1,5 @@
-import { IFormattedPagingResponseProps, IPaginationResponse } from '../core/interface/IPaginationResponse.ts'
+import { IFormattedPagingResponseProps } from "../core/interface/IPage.js"
+import { IPaginationResponse } from "../core/interface/IPaginationResponse.js"
 
 export interface IPaginateArrayProps<T> {
   array: Array<T>

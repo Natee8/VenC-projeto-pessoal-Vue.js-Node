@@ -1,6 +1,6 @@
-import { UserRole } from "../../../../../packages/types/userType";
-import { IAddress } from "./IAddressEntity";
-import { IPet } from "./IPetEntity";
+import { IAddress } from "../../../../../packages/src/domain/dtos/IAddress.dto.js";
+import { UserRole } from "../../../../../packages/src/types/userType.js";
+import { IPet } from "./IPetEntity.js";
 
 export interface IOwner {
   id: string;

@@ -1,7 +1,7 @@
-import { UserAuth as PrismaUserAuth } from '../generated/prisma'
-import { Email } from '../../../../packages/domain/valuesObjects/Email'
-import { UserAuth } from '../../../../packages/domain/entities/userAuthEntity'
-import { UserId } from '../../../../packages/domain/valuesObjects/userID'
+import { UserAuth } from '../../../../packages/src/domain/entities/userAuthEntity.js'
+import { Email } from '../../../../packages/src/valuesObjects/email.js'
+import { UserId } from '../../../../packages/src/valuesObjects/userId.js'
+import { UserAuth as PrismaUserAuth } from '../generated/prisma/index.js'
 
 export const mapPrismaUserAuthToEntity = (
   user: PrismaUserAuth

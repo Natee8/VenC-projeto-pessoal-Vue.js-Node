@@ -1,4 +1,4 @@
-import { ICode } from './IStatusCode';
+import { ICode } from "./IStatusCode.js";
 
 export interface IResponse<T> {
 	data?: T;
