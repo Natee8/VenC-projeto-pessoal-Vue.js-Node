@@ -18,3 +18,5 @@ export interface RefreshToken {
   getUser(): UserAuth
   isExpired(): boolean
 }
+
+

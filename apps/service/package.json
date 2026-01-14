@@ -7,7 +7,9 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "start": "node --loader ts-node/esm src/index.ts"
+    "start": "node --loader ts-node/esm src/index.ts",
+    "seed": "node --loader ts-node/esm src/infrastructure/database/index.dev.ts"
+
   },
   "keywords": [],
   "author": "",

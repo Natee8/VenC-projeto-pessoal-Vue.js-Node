@@ -1,9 +1,7 @@
 import { RefreshTokenEntity } from '../../../../../../packages/src/domain/entities/refreshTokenEntity.js'
-import { UserAuth } from '../../../../../../packages/src/domain/entities/userAuthEntity.js'
 import { IRefreshTokenRepository } from '../../../../../../packages/src/domain/repositories/Auth.repositories.js'
 import { UserId } from '../../../../../../packages/src/valuesObjects/userId.js'
-import { PrismaClient, RefreshToken } from  '../../../generated/prisma/index.js'
-import jwt from 'jsonwebtoken'
+import { PrismaClient, RefreshToken } from '../../../generated/prisma/index.js'
 
 export class RefreshTokenRepository implements IRefreshTokenRepository {
   private prisma = new PrismaClient()
@@ -19,14 +17,14 @@ export class RefreshTokenRepository implements IRefreshTokenRepository {
 
   async save(token: RefreshTokenEntity): Promise<void> {
     await this.prisma.refreshToken.upsert({
-      where: { token: token.token },
+      where: { token: token.getToken() },
       update: {
         userId: token.userId.getValue(),
         expiresAt: token.expiresAt,
         createdAt: token.createdAt
       },
       create: {
-        token: token.token,
+        token: token.getToken(),
         userId: token.userId.getValue(),
         createdAt: token.createdAt,
         expiresAt: token.expiresAt
@@ -36,8 +34,7 @@ export class RefreshTokenRepository implements IRefreshTokenRepository {
 
   async find(token: string): Promise<RefreshTokenEntity | null> {
     const record = await this.prisma.refreshToken.findUnique({ where: { token } })
-    if (!record) return null
-    return this.mapToEntity(record)
+    return record ? this.mapToEntity(record) : null
   }
 
   async revoke(token: string): Promise<void> {
@@ -50,23 +47,5 @@ export class RefreshTokenRepository implements IRefreshTokenRepository {
     })
 
     return records.map(r => this.mapToEntity(r))
-  }
-
-  async create(user: UserAuth): Promise<RefreshTokenEntity> {
-    const token = jwt.sign(
-      { sub: user.id.getValue() },
-      process.env.JWT_REFRESH_SECRET!,
-      { expiresIn: '7d' }
-    )
-
-    const entity = new RefreshTokenEntity({
-      token,
-      userId: user.id,
-      createdAt: new Date(),
-      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-    })
-
-    await this.save(entity)
-    return entity
   }
 }

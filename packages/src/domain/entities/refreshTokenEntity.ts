@@ -1,28 +1,34 @@
 import { UserId } from "../../valuesObjects/userId.js"
 import { IRefreshToken } from "../dtos/IAuth.dto.js"
 
-export class RefreshTokenEntity  {
-  token: string
-  userId: UserId
-  createdAt: Date
-  expiresAt: Date
-  
-  constructor(data: IRefreshToken) {
-    this.token = data.token
-    this.userId = data.userId
-    this.createdAt = data.createdAt
-    this.expiresAt = data.expiresAt
+export class RefreshTokenEntity {
+  private props: IRefreshToken
+
+  constructor(props: IRefreshToken) {
+    this.props = props
   }
 
-    getUserId(): number {
-    return this.userId.getValue();
+  getToken(): string {
+    return this.props.token
+  }
+
+  getUserId(): number {
+    return this.props.userId.getValue()
+  }
+
+  get userId(): UserId {
+    return this.props.userId
+  }
+
+  get createdAt(): Date {
+    return this.props.createdAt
+  }
+
+  get expiresAt(): Date {
+    return this.props.expiresAt
   }
 
   isExpired(): boolean {
-    return new Date() > this.expiresAt
-  }
-
-   getToken(): string {
-    return this.token
+    return new Date() > this.props.expiresAt
   }
 }
