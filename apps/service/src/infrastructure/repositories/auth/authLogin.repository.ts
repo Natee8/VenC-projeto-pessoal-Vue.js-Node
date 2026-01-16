@@ -31,17 +31,17 @@ export class UsersRepository {
 
   async save(user: UserAuth): Promise<void> {
     await this.prisma.userAuth.upsert({
-        where: { id: Number(user.getId()) },
+        where: { email: user.getEmail() }, // ⚡ email é único
         update: {
-        email: user.getEmail(),
-        passwordHash: user.getPasswordHash(),
-        isActive: user.isEnabled()
-      },
-      create: {
-        email: user.getEmail(),
-        passwordHash: user.getPasswordHash(),
-        isActive: user.isEnabled()
-      }
+            passwordHash: user.getPasswordHash(),
+            isActive: user.isEnabled()
+        },
+        create: {
+            email: user.getEmail(),
+            passwordHash: user.getPasswordHash(),
+            isActive: user.isEnabled()
+        }
     })
-  }
+}
+
 }
