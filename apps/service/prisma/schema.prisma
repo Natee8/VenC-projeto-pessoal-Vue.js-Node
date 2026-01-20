@@ -4,8 +4,9 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+  output        = "../src/generated/prisma"
 }
 
 model UserAuth {
@@ -15,9 +16,8 @@ model UserAuth {
   isActive     Boolean  @default(true)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-
-  profile       UserProfile?
-  refreshTokens RefreshToken[] // relação inversa
+  profile      UserProfile?
+  refreshTokens RefreshToken[]
 }
 
 model UserProfile {
@@ -27,8 +27,7 @@ model UserProfile {
   birthDate DateTime?
   imgUrl    String?
   createdAt DateTime  @default(now())
-
-  user UserAuth @relation(fields: [userId], references: [id])
+  user      UserAuth  @relation(fields: [userId], references: [id])
 }
 
 model RefreshToken {
@@ -36,6 +35,5 @@ model RefreshToken {
   userId    Int
   createdAt DateTime @default(now())
   expiresAt DateTime
-
-  user UserAuth @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      UserAuth @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

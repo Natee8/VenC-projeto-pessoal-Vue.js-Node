@@ -13,7 +13,7 @@ export class LogoutUseCase {
 
     // Revoga todos os tokens
     await Promise.all(
-      tokens.map(token => this.refreshTokenRepository.revoke(token.token))
+      tokens.map(token => this.refreshTokenRepository.revoke(token.getToken()))
     );
   }
 }
