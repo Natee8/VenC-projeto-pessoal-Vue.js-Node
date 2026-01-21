@@ -41,31 +41,34 @@ router.post('/login', async (req, res) => {
 
   try {
     emailVO = Email.create(email)
-  }  catch (error: unknown) {
+  } catch (error: unknown) {
     return res.status(400).json({
-      message: getErrorMessage(error)
+      message: getErrorMessage(error),
     })
   }
 
-  const authResult = await authUseCase.execute(
-    emailVO,
-    password
-  )
+  const authResult = await authUseCase.execute(emailVO, password)
 
   if (authResult.isException()) {
-  return res.status(401).json({
-    message: authResult.error.message
-  })
-}
-
+    return res.status(401).json({
+      message: authResult.error.message,
+    })
+  }
 
   const tokenResult = await generateTokenUseCase.execute(authResult.value)
 
-  return res.json({
+  if (tokenResult.isException()) {
+    return res.status(500).json({
+      message: tokenResult.error.message,
+    })
+  }
+
+  return res.status(200).json({
     message: 'Login ok',
-    data: tokenResult.value
+    data: tokenResult.value,
   })
 })
+
 
 /**
  * REFRESH TOKEN
@@ -76,25 +79,16 @@ router.post('/refresh', async (req, res) => {
   const result = await refreshTokenUseCase.execute(refreshToken)
 
   if (result.isException()) {
-  return res.status(401).json({
-    message: result.error.message
-  })
-}
+    return res.status(401).json({
+      message: result.error.message,
+    })
+  }
 
-  return res.json({
+  return res.status(200).json({
     message: 'Token renovado com sucesso',
-    data: result.value
+    data: result.value,
   })
 })
 
-router.post('/logout', async (req, res) => {
-  const { refreshToken } = req.body
-
-  await refreshTokenRepo.revoke(refreshToken)
-
-  return res.json({
-    message: 'Logout realizado com sucesso'
-  })
-})
 
 export default router

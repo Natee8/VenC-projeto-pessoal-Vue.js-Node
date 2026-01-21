@@ -9,7 +9,8 @@ COPY apps ./apps
 COPY packages ./packages
 
 # Instala pnpm e tsx globalmente
-RUN npm install -g pnpm tsx
+RUN corepack enable \
+ && corepack prepare pnpm@10.26.1 --activate
 
 # Instala todas as deps do workspace já com os links internos corretos
 RUN pnpm install --frozen-lockfile
