@@ -3,19 +3,13 @@
     "target": "ES2022",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "strict": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true,
-    "baseUrl": ".",
-    "paths": {
-      "@values/*": ["packages/values-objects/src/*"]
-    }
+    "outDir": "dist",
+    "rootDir": ".",
+    "strict": true
   },
   "include": [
-    "apps/web/src/**/*.ts",
-    "apps/service/src/**/*.ts",
-    "packages/values-objects/src/**/*.ts"
+    "apps/**/src/**/*.ts",
+    "packages/**/src/**/*.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "dist"]
 }

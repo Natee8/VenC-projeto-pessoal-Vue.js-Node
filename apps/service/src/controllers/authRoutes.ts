@@ -23,25 +23,35 @@ router.post('/login', async (req, res) => {
 
   const authResult = await authUseCase.execute(email, password);
 
-        if (authResult.type === 'left') {
           if (authResult.type === 'left') {
         return res.status(401).json({
           message: authResult.error.message
         })
       }
 
-  }
+  
+const tokenResult = await generateTokenUseCase.execute(authResult.value)
 
-  const tokenResult = await generateTokenUseCase.execute(authResult.value);
+if (tokenResult.type === 'left') {
+  return res.status(500).json({
+    message: tokenResult.error.message
+  })
+}
 
-  return res.json({
-    message: 'Login realizado com sucesso',
-    data: tokenResult
-  });
+return res.json({
+  message: 'Login realizado com sucesso',
+  data: tokenResult.value
+})
 });
 
 router.post('/refresh', async (req, res) => {
   const { refreshToken } = req.body;
+
+    if (!refreshToken) {
+    return res.status(400).json({
+      message: 'Refresh token é obrigatório'
+    })
+}
 
   const result = await refreshTokenUseCase.execute(refreshToken);
 
@@ -58,12 +68,21 @@ router.post('/refresh', async (req, res) => {
   });
 });
 
+
 router.post('/logout', async (req, res) => {
-  const { refreshToken } = req.body;
+  const { refreshToken } = req.body
 
-  await refreshTokenRepo.revoke(refreshToken);
+  if (!refreshToken) {
+    return res.status(400).json({
+      message: 'Refresh token é obrigatório'
+    })
+  }
 
-  return res.json({ message: 'Logout realizado com sucesso' });
-});
+  await refreshTokenRepo.revoke(refreshToken)
+
+  return res.json({ message: 'Logout realizado com sucesso' })
+})
+
+
 
 export default router;
