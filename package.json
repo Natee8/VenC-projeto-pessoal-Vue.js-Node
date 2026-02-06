@@ -17,16 +17,26 @@
   "packageManager": "pnpm@10.26.1",
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
-    "@types/node": "^24.10.4",
+    "@types/body-parser": "^1.19.6",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^24.10.9",
     "@typescript-eslint/eslint-plugin": "^8.52.0",
     "@typescript-eslint/parser": "^8.52.0",
+    "@vitejs/plugin-vue": "^6.0.3",
     "@vue/tsconfig": "^0.8.1",
     "eslint": "^9.39.2",
-    "tsx": "^4.21.0"
+    "tsx": "^4.21.0",
+    "typescript": "~5.9.3",
+    "vite": "^7.3.1",
+    "vue-tsc": "^3.2.2"
   },
   "dependencies": {
+    "@heroicons/vue": "^2.2.0",
     "@prisma/client": "6.19.1",
+    "@reduxjs/toolkit": "^2.11.2",
     "express": "^5.2.1",
-    "prisma": "6.19.1"
+    "prisma": "6.19.1",
+    "vue-router": "^4.6.4"
   }
 }

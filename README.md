@@ -3,16 +3,15 @@
 Marketplace pet on-demand que conecta tutores e cuidadores de forma rápida e simples.
 
 Aujuda é um marketplace de serviços pet on-demand onde tutores podem cadastrar seus pets
-e criar anúncios de passeios, alimentação, cuidados especiais ou urgentes. 
+e criar anúncios de passeios, alimentação, cuidados especiais ou urgentes.
 Cuidadores visualizam oportunidades, enviam propostas e se comunicam via chat.
 
 ## Estrutura do Monorepo
 
 apps/
-  web/        → Front-end (Vue.js)
+web/ → Front-end (Vue.js)
 services/
-  api/        → API REST
-
+api/ → API REST
 
 ## Features
 
@@ -21,7 +20,6 @@ services/
 - Propostas de cuidadores
 - Chat entre contratante e contratado
 - Filtro por tipo de serviço e urgência
-
 
 ## Tech Stack
 
@@ -33,8 +31,15 @@ services/
 ## Rodando o projeto
 
 pnpm install
-pnpm dev
 pnpm build
+pnpm dev
+
+## Como subir os containers no docker
+docker compose up --build
+docker ps (verificar se esta rodando)
+
+postgres (PostgreSQL 16)
+service (seu backend Node)
 
 > Projeto em desenvolvimento
 
