@@ -1,26 +1,20 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { ref, computed } from "vue";
 import { Routes } from "../../../router/routes";
-import NavAnimation from "../texts/NavAnimation.vue";
 import { HeaderByRole } from "../../../config/home/headerConfig";
-import { UserIcon } from "@heroicons/vue/16/solid";
-import { ArrowRightEndOnRectangleIcon } from "@heroicons/vue/24/outline";
-
-// 🔥 MOCK DE AUTH (TESTE LOCAL)
+import ModalRegister from "../../components/modal/ModalRegister.vue";
 
 const isAuthenticated = ref(false);
-
-// muda aqui pra testar 👇
-// 'OWNER' | 'CAREGIVER' | null
 const userRole = ref<"OWNER" | "CAREGIVER" | null>(null);
+const modalAberta = ref(false); // controla a modal do header
 
 const headerItems = computed(() => {
   if (!isAuthenticated.value || !userRole.value) {
     return HeaderByRole.DEFAULT;
   }
-
   return HeaderByRole[userRole.value];
 });
+
 const showAuthButtons = computed(() => !isAuthenticated.value);
 </script>
 
@@ -32,6 +26,7 @@ const showAuthButtons = computed(() => !isAuthenticated.value);
       <RouterLink :to="Routes.home" class="flex items-center">
         <img width="90" src="/assets/logos/logoBlue.svg" alt="Logotipo Venca" />
       </RouterLink>
+
       <nav>
         <ul
           class="flex items-center gap-20 font-semibold text-texts-primary-dark"
@@ -41,20 +36,24 @@ const showAuthButtons = computed(() => !isAuthenticated.value);
             :key="item.id"
             class="group cursor-pointer"
           >
-            <NavAnimation>
-              {{ item.label }}
-            </NavAnimation>
+            <RouterLink :to="item.to">
+              <NavAnimation>{{ item.label }}</NavAnimation>
+            </RouterLink>
           </li>
         </ul>
       </nav>
+
       <div v-if="showAuthButtons" class="flex items-center gap-6">
-        <button
-          class="w-32 rounded-xl h-8 border border-primary/50 hover:bg-secondary transition-all hover:border-secondary hover:text-white text-texts-primary font-semibold"
-        >
-          Login
-        </button>
+        <RouterLink :to="Routes.login">
+          <button
+            class="w-32 rounded-xl h-8 border border-primary/50 hover:bg-secondary transition-all hover:border-secondary hover:text-white text-texts-primary font-semibold"
+          >
+            Login
+          </button>
+        </RouterLink>
 
         <button
+          @click="modalAberta = true"
           class="w-32 h-8 rounded-xl bg-primary hover:bg-primaryHover transition-all text-white font-semibold"
         >
           Cadastrar
@@ -77,4 +76,10 @@ const showAuthButtons = computed(() => !isAuthenticated.value);
       </div>
     </div>
   </header>
+
+  <ModalRegister
+    v-if="modalAberta"
+    :show="modalAberta"
+    @close="modalAberta = false"
+  />
 </template>
