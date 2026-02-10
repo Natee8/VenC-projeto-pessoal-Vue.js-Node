@@ -3,10 +3,11 @@ import { ref, computed } from "vue";
 import { Routes } from "../../../router/routes";
 import { HeaderByRole } from "../../../config/home/headerConfig";
 import ModalRegister from "../../components/modal/ModalRegister.vue";
+import NavAnimation from "../texts/NavAnimation.vue";
 
 const isAuthenticated = ref(false);
 const userRole = ref<"OWNER" | "CAREGIVER" | null>(null);
-const modalAberta = ref(false); // controla a modal do header
+const modalAberta = ref(false);
 
 const headerItems = computed(() => {
   if (!isAuthenticated.value || !userRole.value) {

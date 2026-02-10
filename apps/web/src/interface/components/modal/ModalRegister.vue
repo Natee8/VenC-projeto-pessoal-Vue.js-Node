@@ -42,7 +42,8 @@ const props = defineProps({
           <button
             class="flex items-center justify-center gap-3 w-48 h-16 font-semibold bg-primary text-white rounded-xl transition-transform transform hover:scale-105 hover:bg-primaryHover"
           >
-            <i class="fas fa-user-tie text-lg"></i>
+            <i class="fas fa-paw text-lg"></i>
+
             Sou Dono
           </button>
         </RouterLink>
@@ -51,7 +52,7 @@ const props = defineProps({
           <button
             class="flex items-center justify-center gap-3 w-48 h-16 font-semibold bg-secondary text-white rounded-xl transition-transform transform hover:scale-105 hover:bg-secondary/90"
           >
-            <i class="fas fa-hands-helping text-lg"></i>
+            <i class="fas fa-heart text-lg"></i>
             Sou Cuidador
           </button>
         </RouterLink>
