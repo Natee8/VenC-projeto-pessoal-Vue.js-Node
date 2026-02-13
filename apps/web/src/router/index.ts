@@ -3,10 +3,18 @@ import { Routes } from "./routes";
 
 const Home = () => import("../interface/view/home/Home.vue");
 const Login = () => import("../interface/view/auth/Login.vue");
-const RegisterCarrehiver = () =>
-  import("../interface/view/auth/register/RegisterCarrehiver.vue");
+const RegisterBase = () =>
+  import("../interface/view/auth/register/RegisterBase.vue");
 const RegisterOwner = () =>
   import("../interface/view/auth/register/RegisterOwner.vue");
+const RegisterCarrehiver = () =>
+  import("../interface/view/auth/register/RegisterCarrehiver.vue");
+const SendEmail = () =>
+  import("../interface/view/auth/resetPassword/SendEmail.vue");
+const SendCode = () =>
+  import("../interface/view/auth/resetPassword/SendCode.vue");
+const ResetPassword = () =>
+  import("../interface/view/auth/resetPassword/ResetPassword.vue");
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -21,7 +29,11 @@ export const router = createRouter({
       name: "login",
       component: Login,
     },
-
+    {
+      path: Routes.register,
+      name: "register",
+      component: RegisterBase,
+    },
     {
       path: Routes.registerCarrehiver,
       name: "register-carrehiver",
@@ -35,20 +47,17 @@ export const router = createRouter({
     {
       path: Routes.sendEmail,
       name: "send-email",
-      component: () =>
-        import("../interface/view/auth/resetPassword/SendEmail.vue"),
+      component: SendEmail,
     },
     {
       path: Routes.sendCode,
       name: "send-code",
-      component: () =>
-        import("../interface/view/auth/resetPassword/SendCode.vue"),
+      component: SendCode,
     },
     {
       path: Routes.resetPassword,
       name: "reset-password",
-      component: () =>
-        import("../interface/view/auth/resetPassword/ResetPassword.vue"),
+      component: ResetPassword,
     },
   ],
 });

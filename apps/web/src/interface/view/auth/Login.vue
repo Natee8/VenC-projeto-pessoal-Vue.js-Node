@@ -46,8 +46,8 @@ const handleLogin = async (e: Event) => {
 
 <template>
   <AuthLayout>
-    <div class="mx-60">
-      <div class="bg-secondary rounded-2xl p-28 shadow min-h-screen">
+    <div class="flex justify-center items-center h-full">
+      <div class="bg-secondary rounded-2xl p-28 shadow min-h-screen w-[60%]">
         <div class="flex flex-col items-center text-center gap-3 mb-8">
           <img src="/assets/logos/logoWhite.svg" alt="Logo vencá" width="160" />
           <p class="text-white/80 text-[1.2rem]">

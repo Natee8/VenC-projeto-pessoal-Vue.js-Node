@@ -1,12 +1,10 @@
 import { Address } from "../../valuesObjects/address.js";
-import { CPF } from "../../valuesObjects/cpf.js";
 import { UserId } from "../../valuesObjects/userId.js";
 
 export class Caregiver {
   constructor(
     public readonly id: string,
     public readonly userId: UserId,
-    private cpf: CPF,
     private offersHosting: boolean,
     private address: Address,
     private serviceRadiusKm: number,

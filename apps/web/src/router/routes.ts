@@ -1,8 +1,9 @@
 export const Routes = {
   home: "/",
   login: "/login",
-  registerOwner: "/register-Owner",
-  registerCarrehiver: "/RegisterCarrehiver",
+  register: "/register",
+  registerOwner: "/owner",
+  registerCarrehiver: "/carrehiver",
   sendEmail: "/send-email",
   sendCode: "/send-code",
   resetPassword: "/reset-password",

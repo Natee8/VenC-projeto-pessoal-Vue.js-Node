@@ -1,3 +1,3 @@
 <template>
-  <h1>test2e</h1>
+  <h1>Register Owner</h1>
 </template>
