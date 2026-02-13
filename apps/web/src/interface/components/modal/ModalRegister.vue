@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import ModalBase from "./ModalBase.vue";
-import { Routes } from "../../../router/routes";
 
 const props = defineProps({
   show: {
@@ -38,17 +37,16 @@ const props = defineProps({
       </div>
 
       <div class="flex gap-6 mt-10">
-        <RouterLink :to="Routes.registerOwner">
+        <RouterLink :to="{ name: 'register-owner' }">
           <button
             class="flex items-center justify-center gap-3 w-48 h-16 font-semibold bg-primary text-white rounded-xl transition-transform transform hover:scale-105 hover:bg-primaryHover"
           >
             <i class="fas fa-paw text-lg"></i>
-
             Sou Dono
           </button>
         </RouterLink>
 
-        <RouterLink :to="Routes.registerCarrehiver">
+        <RouterLink :to="{ name: 'register-carrehiver' }">
           <button
             class="flex items-center justify-center gap-3 w-48 h-16 font-semibold bg-secondary text-white rounded-xl transition-transform transform hover:scale-105 hover:bg-secondary/90"
           >

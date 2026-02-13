@@ -1,8 +1,6 @@
 <template>
   <section>
-    <div
-      class="w-full min-h-[400px] bg-secondary flex justify-between px-36 py-10"
-    >
+    <div class="w-full min-h-[400px] bg-secondary flex justify-between px-32">
       <div
         class="w-[50%] flex flex-col items-start justify-center py-32 gap-24"
       >
@@ -23,7 +21,7 @@
         </button>
       </div>
       <div class="w-[40%] h-auto flex items-end justify-end pt-12">
-        <img width="600" height="600" src="/assets/home/catHome.svg" alt="" />
+        <img width="900" height="900" src="/assets/home/catHome.svg" alt="" />
       </div>
     </div>
   </section>

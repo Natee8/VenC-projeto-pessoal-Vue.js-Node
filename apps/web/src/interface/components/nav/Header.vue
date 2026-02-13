@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { Routes } from "../../../router/routes";
 import { HeaderByRole } from "../../../config/home/headerConfig";
 import ModalRegister from "../../components/modal/ModalRegister.vue";
 import NavAnimation from "../texts/NavAnimation.vue";
+import { useRoute } from "vue-router";
 
 const isAuthenticated = ref(false);
 const userRole = ref<"OWNER" | "CAREGIVER" | null>(null);
@@ -17,6 +18,14 @@ const headerItems = computed(() => {
 });
 
 const showAuthButtons = computed(() => !isAuthenticated.value);
+
+const route = useRoute();
+watch(
+  () => route.fullPath,
+  () => {
+    modalAberta.value = false;
+  },
+);
 </script>
 
 <template>
