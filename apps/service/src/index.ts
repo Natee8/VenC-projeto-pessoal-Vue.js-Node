@@ -1,13 +1,22 @@
-import express from 'express'
-import bodyParser from 'body-parser'
-import { router as auth } from './presentation-controllers/auth.controller.js'
+import express from "express";
+import bodyParser from "body-parser";
+import { router as auth } from "./presentation-controllers/auth.controller.js";
+import cors from "cors";
+import "dotenv/config";
 
-const app = express()
-const PORT = process.env.APP_PORT || 3000
+const app = express();
+const PORT = process.env.APP_PORT || 3000;
 
-app.use(bodyParser.json())
-app.use('/auth', auth)
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  }),
+);
+
+app.use(bodyParser.json());
+app.use("/auth", auth);
 
 app.listen(PORT, () => {
-    console.log(`Server rodando na porta ${PORT}`)
-})
+  console.log(`Server rodando na porta ${PORT}`);
+});

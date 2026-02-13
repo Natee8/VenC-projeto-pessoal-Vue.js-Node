@@ -16,7 +16,7 @@ export default {
       />
     </div>
 
-    <div class="flex-1 px-28 pb-44 pt-10">
+    <div class="flex-1 px-32 pb-64 pt-20">
       <div class="flex items-center h-28">
         <ButtonBack />
       </div>

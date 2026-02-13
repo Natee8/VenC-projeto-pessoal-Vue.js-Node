@@ -5,7 +5,7 @@ import { apiInstance } from "../config/ApiConfig";
 
 export const authRepository: AuthRepository = {
   async login({ email, password }) {
-    const { data } = await apiInstance.post("/login", {
+    const { data } = await apiInstance.post("/auth/login", {
       email,
       password,
     });
