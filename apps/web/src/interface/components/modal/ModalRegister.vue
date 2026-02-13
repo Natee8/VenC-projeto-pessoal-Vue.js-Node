@@ -37,7 +37,7 @@ const props = defineProps({
       </div>
 
       <div class="flex gap-6 mt-10">
-        <RouterLink :to="{ name: 'register', query: { role: 'owner' } }">
+        <RouterLink :to="{ name: 'register', query: { user: 'owner' } }">
           <button
             class="flex items-center justify-center gap-3 w-48 h-16 font-semibold bg-primary text-white rounded-xl transition-transform transform hover:scale-105 hover:bg-primaryHover"
           >
@@ -46,7 +46,7 @@ const props = defineProps({
           </button>
         </RouterLink>
 
-        <RouterLink :to="{ name: 'register', query: { role: 'carrehiver' } }">
+        <RouterLink :to="{ name: 'register', query: { user: 'carrehiver' } }">
           <button
             class="flex items-center justify-center gap-3 w-48 h-16 font-semibold bg-secondary text-white rounded-xl transition-transform transform hover:scale-105 hover:bg-secondary/90"
           >

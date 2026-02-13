@@ -25,7 +25,6 @@ export default {
 
 <template>
   <teleport to="body">
-    <!-- REMOVA o v-if daqui! O pai controla a renderização -->
     <div
       class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60"
       v-show="show"

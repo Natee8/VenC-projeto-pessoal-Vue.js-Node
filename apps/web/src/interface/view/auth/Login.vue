@@ -3,6 +3,7 @@ import { ref } from "vue";
 import AuthLayout from "../../layout/auth/authLayout.vue";
 import { authRepository } from "../../../infrastructure/repositories/authRepository";
 import { useRouter } from "vue-router";
+import Snackbar from "../../components/utils/snackbar.vue";
 
 const email = ref("");
 const password = ref("");
