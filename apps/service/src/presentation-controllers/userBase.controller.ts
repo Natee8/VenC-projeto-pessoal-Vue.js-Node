@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { PasswordService } from "../application/service/passwordComparer.js";
 import { UsersRepository } from "../infrastructure/repositories/auth/authLogin.repository.js";
-import { CreateUserBaseUseCase } from "../application/usecases/auth/createUserBase.usecase.js";
+import { CreateUserBaseUseCase } from "../application/usecases/profiles/createUserBase.usecase.js";
 import { CreateUserBaseController } from "../controllers/createUserBase.js";
 
 const router = Router();

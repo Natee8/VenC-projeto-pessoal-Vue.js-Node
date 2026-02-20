@@ -1,4 +1,4 @@
-import { CreateUserBaseUseCase } from "../application/usecases/auth/createUserBase.usecase.js";
+import { CreateUserBaseUseCase } from "../application/usecases/profiles/createUserBase.usecase.js";
 import { Request, Response } from "express";
 
 export class CreateUserBaseController {
