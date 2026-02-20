@@ -14,20 +14,41 @@ model UserAuth {
   email        String   @unique
   passwordHash String
   isActive     Boolean  @default(true)
+  birthDate    DateTime
+  cpf          String @unique
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-  profile      UserProfile?
+
+  ownerProfile  OwnerProfile?
+  caregiver     Caregiver?
   refreshTokens RefreshToken[]
 }
 
-model UserProfile {
-  id        Int       @id @default(autoincrement())
-  userId    Int       @unique
-  name      String
-  birthDate DateTime?
-  imgUrl    String?
-  createdAt DateTime  @default(now())
-  user      UserAuth  @relation(fields: [userId], references: [id])
+model OwnerProfile {
+  id             Int      @id @default(autoincrement())
+  userId         Int      @unique
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  searchRadiusKm Float?
+  pets           Json? // se quiser guardar pets como JSON
+  address        String?
+  phone          String?
+
+  user UserAuth @relation(fields: [userId], references: [id])
+}
+
+model Caregiver {
+  id              Int      @id @default(autoincrement())
+  userId          Int      @unique
+  offersHosting   Boolean
+  serviceRadiusKm Float
+  isVerified      Boolean  @default(false)
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  address         String?
+
+  user UserAuth @relation(fields: [userId], references: [id])
 }
 
 model RefreshToken {

@@ -5,13 +5,13 @@ import { UserId } from "../../valuesObjects/userId.js";
 
 export class UserAuth {
   constructor(
-    public readonly id: UserId,
+    public readonly id: UserId | null,
     private email: Email,
     private passwordHash: string,
     private isActive: boolean,
     private birthDate: BirthDate,
-    public readonly createdAt: Date,
     private cpf: CPF,
+    public readonly createdAt: Date,
     private updatedAt: Date,
   ) {}
 
@@ -35,11 +35,19 @@ export class UserAuth {
     return this.isActive;
   }
 
+  getBirthDate(): Date {
+    return this.birthDate.getValue();
+  }
+
+  getCpf(): string {
+    return this.cpf.getValue();
+  }
+
   getEmail() {
     return this.email.value;
   }
 
-  getId(): UserId {
+  getId(): UserId | null {
     return this.id;
   }
 
