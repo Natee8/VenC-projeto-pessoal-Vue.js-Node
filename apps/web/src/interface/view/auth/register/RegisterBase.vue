@@ -2,8 +2,8 @@
 import { ref } from "vue";
 import AuthLayout from "../../../layout/auth/authLayout.vue";
 import {
-  RegisterData,
-  UserDTO,
+  RegisterInput,
+  RegisterOutput,
 } from "../../../../../../../packages/src/domain/dtos/IUser.dto";
 import { registerRepository } from "../../../../infrastructure/repositories/userBaseRepository";
 import { useNotyf } from "../../../../infrastructure/utils/notifyFunction";
@@ -25,7 +25,7 @@ const handleSubmit = async () => {
     return;
   }
 
-  const registerData: RegisterData = {
+  const registerData: RegisterInput = {
     name: name.value,
     email: email.value,
     birthDate: birthDate.value,
@@ -35,7 +35,8 @@ const handleSubmit = async () => {
 
   try {
     isLoading.value = true;
-    const user: UserDTO = await registerRepository.register(registerData);
+    const user: RegisterOutput =
+      await registerRepository.register(registerData);
 
     notyf.success(`Usuário ${user.email} registrado com sucesso!`);
 
