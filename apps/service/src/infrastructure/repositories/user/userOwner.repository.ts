@@ -2,59 +2,67 @@ import { PrismaClient } from "../../../generated/prisma/index.js";
 import type { OwnerProfile as PrismaOwnerProfile } from "../../../generated/prisma/index.js";
 
 import { OwnerProfile } from "../../../../../../packages/src/domain/entities/ownerProfile.js";
+import { UserId } from "../../../../../../packages/src/valuesObjects/userId.js";
+import { Address } from "../../../../../../packages/src/valuesObjects/address.js";
+import { Phone } from "../../../../../../packages/src/valuesObjects/phone.js";
+import { AddressPrimitives } from "../../../../../../packages/src/types/address.js";
 
 export class OwnerProfileUseCase {
   private prisma = new PrismaClient();
 
-  private maptoentity(record: PrismaOwnerProfile): OwnerProfile {
+  private mapToEntity(record: PrismaOwnerProfile): OwnerProfile {
+    if (!record.address) {
+      throw new Error("OwnerProfile sem endereço (estado inválido)");
+    }
+
     return new OwnerProfile(
       UserId.create(record.userId),
 
-      (record.pets ?? []).map((pet) => Pet.restore(pet)),
-      // 👈 importante (já explico)
-
-      Address.restore(record.address),
-      Phone.restore(record.phone),
+      Address.restore(record.address as AddressPrimitives),
+      
+      record.phone ? Phone.restore(record.phone) : null,
 
       record.createdAt,
       record.updatedAt,
-      record.searchRadiusKm,
+
+      record.searchRadiusKm ?? undefined,
     );
   }
 
   async save(ownerProfile: OwnerProfile): Promise<OwnerProfile> {
     const record = await this.prisma.ownerProfile.upsert({
-      where: { userId: ownerProfile.userId },
+      where: { userId: ownerProfile.getUserId().getValue() },
+
       update: {
-        pets: ownerProfile.pets || [],
-        address: ownerProfile.address,
-        phone: ownerProfile.phone,
-        searchRadiusKm: ownerProfile.searchRadiusKm,
+        address: ownerProfile.getAddress().toPrimitives(),
+        phone: ownerProfile.getPhone()?.toPrimitives() ?? null,
+        searchRadiusKm: ownerProfile.getSearchRadius(),
         updatedAt: new Date(),
       },
+
       create: {
-        userId: ownerProfile.userId,
-        pets: ownerProfile.pets || [],
-        address: ownerProfile.address,
-        phone: ownerProfile.phone,
-        searchRadiusKm: ownerProfile.searchRadiusKm,
+        userId: ownerProfile.getUserId().getValue(),
+        address: ownerProfile.getAddress().toPrimitives(),
+        phone: ownerProfile.getPhone()?.toPrimitives() ?? null,
+        searchRadiusKm: ownerProfile.getSearchRadius(),
       },
     });
-    return this.maptoentity(record);
+
+    return this.mapToEntity(record);
   }
 
   async findByUserId(userId: number): Promise<OwnerProfile | null> {
     const record = await this.prisma.ownerProfile.findUnique({
       where: { userId },
     });
-    if (!record) {
-      return null;
-    }
-    return record ? this.maptoentity(record) : null;
+
+    if (!record) return null;
+
+    return this.mapToEntity(record);
   }
 
-  async findall(): Promise<OwnerProfile[]> {
+  async findAll(): Promise<OwnerProfile[]> {
     const records = await this.prisma.ownerProfile.findMany();
-    return records.map((record) => this.maptoentity(record));
+    return records.map(this.mapToEntity);
   }
 }

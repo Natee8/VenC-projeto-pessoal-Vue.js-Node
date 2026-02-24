@@ -30,8 +30,7 @@ model OwnerProfile {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   searchRadiusKm Float?
-  pets           Json? // se quiser guardar pets como JSON
-  address        String?
+  address        Json
   phone          String?
 
   user UserAuth @relation(fields: [userId], references: [id])
@@ -46,7 +45,7 @@ model Caregiver {
   isActive        Boolean  @default(true)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  address         String?
+  address         Json
 
   user UserAuth @relation(fields: [userId], references: [id])
 }

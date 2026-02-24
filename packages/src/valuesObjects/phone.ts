@@ -9,7 +9,7 @@ export class Phone {
     const normalized = Phone.normalize(rawPhone);
 
     if (!Phone.isValid(normalized)) {
-      throw new Error('Telefone inválido');
+      throw new Error("Telefone inválido");
     }
 
     return new Phone(normalized);
@@ -24,13 +24,13 @@ export class Phone {
   }
 
   private static normalize(phone: string): string {
-    return phone.replace(/\D/g, '');
+    return phone.replace(/\D/g, "");
   }
 
   private static isValid(phone: string): boolean {
     if (!phone) return false;
 
-    if (phone.startsWith('55') && phone.length > 11) {
+    if (phone.startsWith("55") && phone.length > 11) {
       phone = phone.substring(2);
     }
 
@@ -40,5 +40,13 @@ export class Phone {
     if (Number(ddd) < 11 || Number(ddd) > 99) return false;
 
     return true;
+  }
+
+  toPrimitives(): string {
+    return this.value;
+  }
+
+  static restore(raw: string): Phone {
+    return new Phone(raw);
   }
 }

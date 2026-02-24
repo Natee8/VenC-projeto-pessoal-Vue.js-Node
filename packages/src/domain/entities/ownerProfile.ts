@@ -1,13 +1,12 @@
 import { Phone } from "../../valuesObjects/phone.js";
 import { Address } from "../../valuesObjects/address.js";
-import { Pet } from "./petEntity.js";
 import { UserId } from "../../valuesObjects/userId.js";
 
 export class OwnerProfile {
   constructor(
     public readonly userId: UserId,
     private address: Address,
-    private phone: Phone,
+    private phone: Phone | null,
     private createdAt: Date,
     private updatedAt: Date,
     private searchRadiusKm?: number,
@@ -17,12 +16,34 @@ export class OwnerProfile {
     return this.address;
   }
 
+  getUserId() {
+    return this.userId;
+  }
+
+  getPhone() {
+    return this.phone;
+  }
+
+  getSearchRadius() {
+    return this.searchRadiusKm;
+  }
+
   getCreatedAt(): Date {
     return this.createdAt;
   }
 
   updateAddress(address: Address) {
     this.address = address;
+    this.updatedAt = new Date();
+  }
+
+  updatePhone(phone: Phone) {
+    this.phone = phone;
+    this.updatedAt = new Date();
+  }
+
+  updateSearchRadius(radius: number) {
+    this.searchRadiusKm = radius;
     this.updatedAt = new Date();
   }
 }
