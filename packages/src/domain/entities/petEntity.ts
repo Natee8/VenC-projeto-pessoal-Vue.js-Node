@@ -1,23 +1,23 @@
 import { PetSpecies, sizePets } from "../../types/petTypes.js";
-import { UserProfile } from "./userProfile.js";
+import { UserId } from "../../valuesObjects/userId.js";
 
 export class Pet {
-    constructor(
-        private readonly id: number,
-        private readonly owner: UserProfile,
-        private name: string,
-        private readonly species: PetSpecies,
-        private size: sizePets,
-        private breed: string,
-        private birthDate: Date,
-        private specialNeeds: string | null,
-        private readonly createdAt: Date,
-        private updatedAt: Date
-    ) {
-        this.validate()
-    }
+  constructor(
+    private readonly id: number,
+    private readonly ownerId: UserId,
+    private name: string,
+    private readonly species: PetSpecies,
+    private size: sizePets,
+    private breed: string,
+    private birthDate: Date,
+    private specialNeeds: string | null,
+    private readonly createdAt: Date,
+    private updatedAt: Date,
+  ) {
+    this.validate();
+  }
 
-      private validate() {
+  private validate() {
     if (!this.name || this.name.trim().length === 0) {
       throw new Error("O nome do pet é obrigatório");
     }
@@ -34,13 +34,13 @@ export class Pet {
   getId() {
     return this.id;
   }
-  getOwner() {
-    return this.owner;
+  getOwnerId() {
+    return this.ownerId;
   }
   getName() {
     return this.name;
   }
-    getSize() {
+  getSize() {
     return this.size;
   }
   getSpecies() {
@@ -56,25 +56,23 @@ export class Pet {
     return this.specialNeeds;
   }
 
-
   getAge(): number {
     const today = new Date();
     let age = today.getFullYear() - this.birthDate.getFullYear();
 
-    const hasHadBirthdayThisYear = 
-    today.getMonth() > this.birthDate.getMonth() ||
-    (today.getMonth() === this.birthDate.getMonth() &&
-     today.getDate() >= this.birthDate.getDate())
+    const hasHadBirthdayThisYear =
+      today.getMonth() > this.birthDate.getMonth() ||
+      (today.getMonth() === this.birthDate.getMonth() &&
+        today.getDate() >= this.birthDate.getDate());
 
-     
     if (!hasHadBirthdayThisYear) {
       age--;
     }
 
-    return age
+    return age;
   }
 
-   rename(newName: string) {
+  rename(newName: string) {
     if (!newName || newName.trim().length === 0) {
       throw new Error("O nome do pet não pode ser vazio");
     }

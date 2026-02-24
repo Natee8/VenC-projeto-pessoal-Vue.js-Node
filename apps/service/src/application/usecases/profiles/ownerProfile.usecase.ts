@@ -1,5 +1,8 @@
 export class OwnerProfileUseCase {
-  constructor() {}  
+  constructor(private ownerRepo: OwnerRepository) { 
+
+    
+  }
 
 
 }

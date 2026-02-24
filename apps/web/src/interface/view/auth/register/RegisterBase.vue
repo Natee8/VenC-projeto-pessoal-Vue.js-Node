@@ -8,7 +8,6 @@ import {
 import { registerRepository } from "../../../../infrastructure/repositories/userBaseRepository";
 import { useNotyf } from "../../../../infrastructure/utils/notifyFunction";
 import RegisterFormBase from "../../../components/form/RegisterFormBase.vue";
-import TestePinia from "../../../components/dev/testePinia.vue";
 
 const name = ref("");
 const email = ref("");
@@ -64,8 +63,6 @@ const handleSubmit = async () => {
             Preencha suas informações para personalizar sua experiência no Vencá
           </p>
         </div>
-
-        <TestePinia />
 
         <RegisterFormBase
           :name="name"
