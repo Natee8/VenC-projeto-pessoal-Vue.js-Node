@@ -4,7 +4,6 @@ import { OwnerProfile } from "../../../../../packages/src/domain/entities/ownerP
 import { UserId } from "../../../../../packages/src/valuesObjects/userId.js";
 import { Address } from "../../../../../packages/src/valuesObjects/address.js";
 import { Phone } from "../../../../../packages/src/valuesObjects/phone.js";
-import { AddressPrimitives } from "../../../../../packages/src/types/address.js";
 
 export class OwnerProfileMapper {
   static toEntity(record: PrismaOwnerProfile): OwnerProfile {
@@ -15,7 +14,7 @@ export class OwnerProfileMapper {
     return new OwnerProfile(
       UserId.create(record.userId),
 
-      Address.restore(record.address as AddressPrimitives),
+      Address.restore(record.address),
 
       record.phone ? Phone.restore(record.phone) : null,
 

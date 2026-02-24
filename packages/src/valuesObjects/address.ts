@@ -33,14 +33,20 @@ export class Address {
     };
   }
 
-  static restore(raw: AddressPrimitives): Address {
+  static restore(raw: unknown): Address {
+    if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
+      throw new Error("Endereço inválido");
+    }
+
+    const v = raw as AddressPrimitives;
+
     return new Address(
-      raw.street,
-      raw.number,
-      raw.neighborhood,
-      raw.city,
-      raw.zipCode,
-      raw.country,
+      v.street,
+      v.number,
+      v.neighborhood,
+      v.city,
+      v.zipCode,
+      v.country,
     );
   }
 }

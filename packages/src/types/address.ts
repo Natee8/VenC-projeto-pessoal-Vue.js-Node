@@ -28,7 +28,7 @@ export enum State {
   TO = "TO",
 }
 
-export interface AddressPrimitives {
+export interface AddressPrimitives extends Record<string, unknown> {
   street: string;
   number: string;
   neighborhood: string;
