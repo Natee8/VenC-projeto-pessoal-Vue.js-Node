@@ -3,7 +3,7 @@ import { UserId } from "../../valuesObjects/userId.js";
 
 export class Caregiver {
   constructor(
-    public readonly id: string,
+    public readonly id: number,
     public readonly userId: UserId,
     private offersHosting: boolean,
     private address: Address,
@@ -11,10 +11,10 @@ export class Caregiver {
     private isVerified: boolean,
     private isActive: boolean,
     public readonly createdAt: Date,
-    private updatedAt: Date
+    private updatedAt: Date,
   ) {
     if (serviceRadiusKm <= 0) {
-      throw new Error('Raio de atendimento inválido');
+      throw new Error("Raio de atendimento inválido");
     }
   }
 
@@ -33,10 +33,30 @@ export class Caregiver {
 
   deactivate() {
     if (!this.isActive) {
-      throw new Error('Cuidador já está desativado');
+      throw new Error("Cuidador já está desativado");
     }
     this.isActive = false;
     this.touch();
+  }
+
+  getUserId(): UserId {
+    return this.userId;
+  }
+
+  hasVerification(): boolean {
+    return this.isVerified;
+  }
+
+  isCurrentlyActive(): boolean {
+    return this.isActive;
+  }
+
+  getAddress(): Address {
+    return this.address;
+  }
+
+  getUpdatedAt(): Date {
+    return this.updatedAt;
   }
 
   isEnabled() {

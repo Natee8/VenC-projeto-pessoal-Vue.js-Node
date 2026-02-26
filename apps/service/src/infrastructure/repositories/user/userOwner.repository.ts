@@ -6,7 +6,7 @@ import { UserId } from "../../../../../../packages/src/valuesObjects/userId.js";
 import { Address } from "../../../../../../packages/src/valuesObjects/address.js";
 import { Phone } from "../../../../../../packages/src/valuesObjects/phone.js";
 
-export class OwnerProfileUseCase {
+export class OwnerProfileRepository {
   private prisma = new PrismaClient();
 
   private mapToEntity(record: PrismaOwnerProfile): OwnerProfile {

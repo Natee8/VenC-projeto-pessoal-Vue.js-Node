@@ -1,3 +1,5 @@
+import { Name } from "../../valuesObjects/name.js";
+
 //deto de saida do registro do usuario
 export interface RegisterOutput {
   id: number;
@@ -8,7 +10,7 @@ export interface RegisterOutput {
 //dto de usuario completo para ser utilizado em outras partes do sistema
 export interface IUserDTO {
   id: number;
-  name: string;
+  name: Name;
   email: string;
   cpf: string;
   birthDate: string;

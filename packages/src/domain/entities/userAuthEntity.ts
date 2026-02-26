@@ -1,11 +1,13 @@
 import { BirthDate } from "../../valuesObjects/birthDate.js";
 import { CPF } from "../../valuesObjects/cpf.js";
 import { Email } from "../../valuesObjects/email.js";
+import { Name } from "../../valuesObjects/name.js";
 import { UserId } from "../../valuesObjects/userId.js";
 
 export class UserAuth {
   constructor(
-    public readonly id: UserId | null,
+    public readonly id: UserId,
+    private name: Name,
     private email: Email,
     private passwordHash: string,
     private isActive: boolean,
@@ -23,6 +25,10 @@ export class UserAuth {
 
   getPasswordHash(): string {
     return this.passwordHash;
+  }
+
+  getName(): Name {
+    return this.name;
   }
 
   deactivate() {
@@ -47,7 +53,7 @@ export class UserAuth {
     return this.email.value;
   }
 
-  getId(): UserId | null {
+  getId(): UserId {
     return this.id;
   }
 

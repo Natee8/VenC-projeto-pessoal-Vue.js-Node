@@ -9,7 +9,7 @@ import { registerRepository } from "../../../../infrastructure/repositories/user
 import { useNotyf } from "../../../../infrastructure/utils/notifyFunction";
 import RegisterFormBase from "../../../components/form/RegisterFormBase.vue";
 
-const name = ref("");
+const userName = ref("");
 const email = ref("");
 const birthDate = ref("");
 const cpf = ref("");
@@ -26,7 +26,7 @@ const handleSubmit = async () => {
   }
 
   const registerData: RegisterInput = {
-    name: name.value,
+    name: userName.value,
     email: email.value,
     birthDate: birthDate.value,
     cpf: cpf.value,
@@ -40,7 +40,7 @@ const handleSubmit = async () => {
 
     notyf.success(`Usuário ${user.email} registrado com sucesso!`);
 
-    name.value = "";
+    userName.value = "";
     email.value = "";
     birthDate.value = "";
     cpf.value = "";
@@ -65,8 +65,8 @@ const handleSubmit = async () => {
         </div>
 
         <RegisterFormBase
-          :name="name"
-          @update:name="(val: string) => (name = val)"
+          :name="userName"
+          @update:name="(val: string) => (userName = val)"
           :email="email"
           @update:email="(val: string) => (email = val)"
           :birthDate="birthDate"

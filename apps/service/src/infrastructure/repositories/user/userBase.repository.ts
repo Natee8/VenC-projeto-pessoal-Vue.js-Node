@@ -8,6 +8,7 @@ import {
   UserAuth as PrismaUserAuth,
 } from "../../../generated/prisma/index.js";
 import { IUsersRepository } from "../../../../../../packages/src/domain/repositories/userBaseRepository.js";
+import { Name } from "../../../../../../packages/src/valuesObjects/name.js";
 
 export class UsersRepository implements IUsersRepository {
   private prisma = new PrismaClient();
@@ -15,6 +16,7 @@ export class UsersRepository implements IUsersRepository {
   private mapToEntity(record: PrismaUserAuth): UserAuth {
     return new UserAuth(
       UserId.create(record.id),
+      Name.create(record.name),
       Email.create(record.email),
       record.passwordHash,
       record.isActive,
@@ -49,6 +51,7 @@ export class UsersRepository implements IUsersRepository {
         updatedAt: new Date(),
       },
       create: {
+        name: user.getName().value,
         email: user.getEmail(),
         passwordHash: user.getPasswordHash(),
         isActive: user.isEnabled(),

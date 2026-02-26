@@ -4,7 +4,9 @@ import { CPF } from "../../../../../../packages/src/valuesObjects/cpf.js";
 import { Email } from "../../../../../../packages/src/valuesObjects/email.js";
 import { UsersRepository } from "../../../infrastructure/repositories/auth/authLogin.repository.js";
 import { PasswordService } from "../../service/passwordComparer.js";
-import { UserDTO } from "../../../../../../packages/src/domain/dtos/IUser.dto.js";
+import { IUserDTO } from "../../../../../../packages/src/domain/dtos/IUser.dto.js";
+import { Name } from "../../../../../../packages/src/valuesObjects/name.js";
+import { UserId } from "../../../../../../packages/src/valuesObjects/userId.js";
 
 export class CreateUserBaseUseCase {
   constructor(
@@ -18,10 +20,12 @@ export class CreateUserBaseUseCase {
     password: string;
     cpf: string;
     birthDate: string;
-  }): Promise<UserDTO> {
+  }): Promise<IUserDTO> {
     const birthDateVO = new BirthDate(new Date(input.birthDate));
     const emailVO = Email.create(input.email);
     const cpfVO = CPF.create(input.cpf);
+    const name = Name.create(input.name);
+    const id = UserId.create();
 
     const existingEmail = await this.usersRepo.findByEmail(emailVO);
     if (existingEmail) {
@@ -36,7 +40,8 @@ export class CreateUserBaseUseCase {
     const passwordHash = await this.passwordService.hash(input.password);
 
     const user = new UserAuth(
-      null,
+      id,
+      name,
       emailVO,
       passwordHash,
       true,
@@ -49,9 +54,11 @@ export class CreateUserBaseUseCase {
     const savedUser = await this.usersRepo.save(user);
 
     return {
-      id: savedUser.getId()?.getValue() || 0,
+      id: savedUser.getId().getValue(),
+      name: savedUser.getName(),
       email: savedUser.getEmail(),
       cpf: savedUser.getCpf(),
+      birthDate: savedUser.getBirthDate().toISOString(),
     };
   }
 }

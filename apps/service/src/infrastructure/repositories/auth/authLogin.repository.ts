@@ -3,6 +3,7 @@ import { BirthDate } from "../../../../../../packages/src/valuesObjects/birthDat
 import { CPF } from "../../../../../../packages/src/valuesObjects/cpf.js";
 import { Email } from "../../../../../../packages/src/valuesObjects/email.js";
 import { UserId } from "../../../../../../packages/src/valuesObjects/userId.js";
+import { Name } from "../../../../../../packages/src/valuesObjects/name.js";
 import {
   PrismaClient,
   UserAuth as PrismaUserAuth,
@@ -14,6 +15,7 @@ export class UsersRepository {
   private mapToEntity(record: PrismaUserAuth): UserAuth {
     return new UserAuth(
       UserId.create(record.id),
+      Name.create(record.name),
       Email.create(record.email),
       record.passwordHash,
       record.isActive,
@@ -41,6 +43,7 @@ export class UsersRepository {
   }
 
   async saveUserDirectly(data: {
+    name: string;
     email: string;
     passwordHash: string;
     isActive: boolean;
@@ -49,6 +52,7 @@ export class UsersRepository {
   }) {
     return this.prisma.userAuth.create({
       data: {
+        name: data.name,
         email: data.email,
         passwordHash: data.passwordHash,
         isActive: data.isActive,
@@ -75,6 +79,7 @@ export class UsersRepository {
         updatedAt: new Date(),
       },
       create: {
+        name: user.getName().value,
         email: user.getEmail(),
         passwordHash: user.getPasswordHash(),
         isActive: user.isEnabled(),
