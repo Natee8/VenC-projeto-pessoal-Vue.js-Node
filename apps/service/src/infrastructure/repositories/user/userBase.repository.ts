@@ -1,14 +1,16 @@
+import {
+  PrismaClient,
+  UserAuth as PrismaUserAuth,
+} from "../../../generated/prisma/index.js";
+import type { Prisma } from "../../../generated/prisma/index.js";
+
 import { UserAuth } from "../../../../../../packages/src/domain/entities/userAuthEntity.js";
 import { Email } from "../../../../../../packages/src/valuesObjects/email.js";
 import { UserId } from "../../../../../../packages/src/valuesObjects/userId.js";
 import { BirthDate } from "../../../../../../packages/src/valuesObjects/birthDate.js";
 import { CPF } from "../../../../../../packages/src/valuesObjects/cpf.js";
-import {
-  PrismaClient,
-  UserAuth as PrismaUserAuth,
-} from "../../../generated/prisma/index.js";
-import { IUsersRepository } from "../../../../../../packages/src/domain/repositories/userBaseRepository.js";
 import { Name } from "../../../../../../packages/src/valuesObjects/name.js";
+import { IUsersRepository } from "../../../../../../packages/src/domain/repositories/userBaseRepository.js";
 
 export class UsersRepository implements IUsersRepository {
   private prisma = new PrismaClient();
@@ -27,29 +29,46 @@ export class UsersRepository implements IUsersRepository {
     );
   }
 
-  async findById(id: number): Promise<UserAuth | null> {
-    const user = await this.prisma.userAuth.findUnique({ where: { id } });
+  async findById(
+    id: number,
+    tx?: Prisma.TransactionClient,
+  ): Promise<UserAuth | null> {
+    const client = tx ?? this.prisma;
+
+    const user = await client.userAuth.findUnique({ where: { id } });
     if (!user) return null;
+
     return this.mapToEntity(user);
   }
 
-  async findByEmail(email: Email): Promise<UserAuth | null> {
-    const user = await this.prisma.userAuth.findUnique({
+  async findByEmail(
+    email: Email,
+    tx?: Prisma.TransactionClient,
+  ): Promise<UserAuth | null> {
+    const client = tx ?? this.prisma;
+
+    const user = await client.userAuth.findUnique({
       where: { email: email.value },
     });
+
     if (!user) return null;
+
     return this.mapToEntity(user);
   }
 
-  async save(user: UserAuth): Promise<UserAuth> {
-    const record = await this.prisma.userAuth.upsert({
+  async save(user: UserAuth, tx?: unknown): Promise<UserAuth> {
+    const client = (tx as Prisma.TransactionClient) ?? this.prisma;
+
+    const record = await client.userAuth.upsert({
       where: { cpf: user.getCpf() },
+
       update: {
         passwordHash: user.getPasswordHash(),
         isActive: user.isEnabled(),
         birthDate: user.getBirthDate(),
         updatedAt: new Date(),
       },
+
       create: {
         name: user.getName().value,
         email: user.getEmail(),
@@ -63,5 +82,20 @@ export class UsersRepository implements IUsersRepository {
     });
 
     return this.mapToEntity(record);
+  }
+
+  async findByCpf(
+    cpf: CPF,
+    tx?: Prisma.TransactionClient,
+  ): Promise<UserAuth | null> {
+    const client = tx ?? this.prisma;
+
+    const user = await client.userAuth.findUnique({
+      where: { cpf: cpf.getValue() },
+    });
+
+    if (!user) return null;
+
+    return this.mapToEntity(user);
   }
 }

@@ -3,16 +3,21 @@ import { UserId } from "../../../../../../packages/src/valuesObjects/userId.js";
 import { Address } from "../../../../../../packages/src/valuesObjects/address.js";
 import type { AddressPrimitives } from "../../../../../../packages/src/types/address.js";
 import { CaregiverRepository } from "../../../infrastructure/repositories/user/userCaregiver.repository.js";
+import { Prisma } from "../../../generated/prisma/wasm.js";
+import { IAddress } from "../../../../../../packages/src/domain/dtos/IAddress.dto.js";
 
 export class CaregiverFacadeUseCase {
   constructor(private caregiverRepo: CaregiverRepository) {}
 
-  async save(input: {
-    userId: number;
-    offersHosting: boolean;
-    address: AddressPrimitives;
-    serviceRadiusKm: number;
-  }) {
+  async save(
+    input: {
+      userId: number;
+      offersHosting: boolean;
+      address: IAddress;
+      serviceRadiusKm: number;
+    },
+    tx?: Prisma.TransactionClient,
+  ) {
     const caregiver = new Caregiver(
       0,
       UserId.create(input.userId),
@@ -25,7 +30,7 @@ export class CaregiverFacadeUseCase {
       new Date(),
     );
 
-    const saved = await this.caregiverRepo.save(caregiver);
+    const saved = await this.caregiverRepo.save(caregiver, tx);
 
     return this.toDTO(saved);
   }

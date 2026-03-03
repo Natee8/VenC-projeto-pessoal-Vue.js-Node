@@ -1,7 +1,10 @@
 import { PrismaClient } from "../../../generated/prisma/index.js";
-import type { Caregiver as PrismaCaregiver } from "../../../generated/prisma/index.js";
-import { Caregiver } from "../../../../../../packages/src/domain/entities/caregiverEntity.js";
+import type {
+  Prisma,
+  Caregiver as PrismaCaregiver,
+} from "../../../generated/prisma/index.js";
 
+import { Caregiver } from "../../../../../../packages/src/domain/entities/caregiverEntity.js";
 import { UserId } from "../../../../../../packages/src/valuesObjects/userId.js";
 import { Address } from "../../../../../../packages/src/valuesObjects/address.js";
 
@@ -26,8 +29,13 @@ export class CaregiverRepository {
     );
   }
 
-  async save(caregiver: Caregiver): Promise<Caregiver> {
-    const record = await this.prisma.caregiver.upsert({
+  async save(
+    caregiver: Caregiver,
+    tx?: Prisma.TransactionClient,
+  ): Promise<Caregiver> {
+    const client = tx ?? this.prisma;
+
+    const record = await client.caregiver.upsert({
       where: { userId: caregiver.getUserId().getValue() },
 
       update: {
@@ -36,6 +44,7 @@ export class CaregiverRepository {
         serviceRadiusKm: caregiver.getServiceRadius(),
         isVerified: caregiver.hasVerification(),
         isActive: caregiver.isCurrentlyActive(),
+        updatedAt: new Date(),
       },
 
       create: {
@@ -45,14 +54,18 @@ export class CaregiverRepository {
         serviceRadiusKm: caregiver.getServiceRadius(),
         isVerified: caregiver.hasVerification(),
         isActive: caregiver.isCurrentlyActive(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
     });
 
     return this.mapToEntity(record);
   }
 
-  async findByUserId(userId: number) {
-    const record = await this.prisma.caregiver.findUnique({
+  async findByUserId(userId: number, tx?: Prisma.TransactionClient) {
+    const client = tx ?? this.prisma;
+
+    const record = await client.caregiver.findUnique({
       where: { userId },
     });
 

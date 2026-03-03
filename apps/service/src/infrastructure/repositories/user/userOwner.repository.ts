@@ -1,5 +1,8 @@
 import { PrismaClient } from "../../../generated/prisma/index.js";
-import type { OwnerProfile as PrismaOwnerProfile } from "../../../generated/prisma/index.js";
+import type {
+  Prisma,
+  OwnerProfile as PrismaOwnerProfile,
+} from "../../../generated/prisma/index.js";
 
 import { OwnerProfile } from "../../../../../../packages/src/domain/entities/ownerProfile.js";
 import { UserId } from "../../../../../../packages/src/valuesObjects/userId.js";
@@ -28,8 +31,13 @@ export class OwnerProfileRepository {
     );
   }
 
-  async save(ownerProfile: OwnerProfile): Promise<OwnerProfile> {
-    const record = await this.prisma.ownerProfile.upsert({
+  async save(
+    ownerProfile: OwnerProfile,
+    tx?: Prisma.TransactionClient,
+  ): Promise<OwnerProfile> {
+    const client = tx ?? this.prisma;
+
+    const record = await client.ownerProfile.upsert({
       where: { userId: ownerProfile.getUserId().getValue() },
 
       update: {
@@ -50,8 +58,13 @@ export class OwnerProfileRepository {
     return this.mapToEntity(record);
   }
 
-  async findByUserId(userId: number): Promise<OwnerProfile | null> {
-    const record = await this.prisma.ownerProfile.findUnique({
+  async findByUserId(
+    userId: number,
+    tx?: Prisma.TransactionClient,
+  ): Promise<OwnerProfile | null> {
+    const client = tx ?? this.prisma;
+
+    const record = await client.ownerProfile.findUnique({
       where: { userId },
     });
 
@@ -60,8 +73,10 @@ export class OwnerProfileRepository {
     return this.mapToEntity(record);
   }
 
-  async findAll(): Promise<OwnerProfile[]> {
-    const records = await this.prisma.ownerProfile.findMany();
+  async findAll(tx?: Prisma.TransactionClient): Promise<OwnerProfile[]> {
+    const client = tx ?? this.prisma;
+
+    const records = await client.ownerProfile.findMany();
     return records.map(this.mapToEntity);
   }
 }

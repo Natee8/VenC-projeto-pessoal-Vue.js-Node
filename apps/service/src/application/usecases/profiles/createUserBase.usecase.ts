@@ -7,6 +7,7 @@ import { PasswordService } from "../../service/passwordComparer.js";
 import { IUserDTO } from "../../../../../../packages/src/domain/dtos/IUser.dto.js";
 import { Name } from "../../../../../../packages/src/valuesObjects/name.js";
 import { UserId } from "../../../../../../packages/src/valuesObjects/userId.js";
+import { Prisma } from "../../../generated/prisma/index.js";
 
 export class CreateUserBaseUseCase {
   constructor(
@@ -14,13 +15,16 @@ export class CreateUserBaseUseCase {
     private passwordService: PasswordService,
   ) {}
 
-  async execute(input: {
-    name: string;
-    email: string;
-    password: string;
-    cpf: string;
-    birthDate: string;
-  }): Promise<IUserDTO> {
+  async execute(
+    input: {
+      name: string;
+      email: string;
+      password: string;
+      cpf: string;
+      birthDate: string;
+    },
+    tx?: Prisma.TransactionClient,
+  ): Promise<IUserDTO> {
     const birthDateVO = new BirthDate(new Date(input.birthDate));
     const emailVO = Email.create(input.email);
     const cpfVO = CPF.create(input.cpf);
@@ -51,11 +55,11 @@ export class CreateUserBaseUseCase {
       new Date(),
     );
 
-    const savedUser = await this.usersRepo.save(user);
+    const savedUser = await this.usersRepo.save(user, tx);
 
     return {
       id: savedUser.getId().getValue(),
-      name: savedUser.getName(),
+      name: savedUser.getName(), 
       email: savedUser.getEmail(),
       cpf: savedUser.getCpf(),
       birthDate: savedUser.getBirthDate().toISOString(),

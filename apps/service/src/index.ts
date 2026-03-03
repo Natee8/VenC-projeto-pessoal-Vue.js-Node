@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import { router as auth } from "./presentation-controllers/auth.controller.js";
-import { router as userBase } from "./presentation-controllers/userBase.controller.js";
+import { router as userBase } from "./presentation-controllers/user.controller.js";
 import cors from "cors";
 import "dotenv/config";
 
