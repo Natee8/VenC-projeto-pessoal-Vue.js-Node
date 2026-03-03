@@ -9,7 +9,7 @@ export class Caregiver {
     private address: Address,
     private serviceRadiusKm: number,
     private isVerified: boolean,
-    private isActive: boolean,
+    private isPublicProfile: boolean,
     public readonly createdAt: Date,
     private updatedAt: Date,
   ) {
@@ -31,12 +31,18 @@ export class Caregiver {
     this.touch();
   }
 
-  deactivate() {
-    if (!this.isActive) {
-      throw new Error("Cuidador já está desativado");
-    }
-    this.isActive = false;
+  makePublic() {
+    this.isPublicProfile = true;
     this.touch();
+  }
+
+  makePrivate() {
+    this.isPublicProfile = false;
+    this.touch();
+  }
+
+  isPublic() {
+    return this.isPublicProfile;
   }
 
   getUserId(): UserId {
@@ -47,20 +53,12 @@ export class Caregiver {
     return this.isVerified;
   }
 
-  isCurrentlyActive(): boolean {
-    return this.isActive;
-  }
-
   getAddress(): Address {
     return this.address;
   }
 
   getUpdatedAt(): Date {
     return this.updatedAt;
-  }
-
-  isEnabled() {
-    return this.isActive && this.isVerified;
   }
 
   private touch() {

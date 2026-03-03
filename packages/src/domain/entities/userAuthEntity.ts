@@ -11,6 +11,7 @@ export class UserAuth {
     private email: Email,
     private passwordHash: string,
     private isActive: boolean,
+    private profilePhotoUrl: string,
     private birthDate: BirthDate,
     private cpf: CPF,
     public readonly createdAt: Date,
@@ -29,6 +30,16 @@ export class UserAuth {
 
   getName(): Name {
     return this.name;
+  }
+
+  changeProfilePhoto(url: string) {
+    if (!url) throw new Error("Foto inválida");
+    this.profilePhotoUrl = url;
+    this.touch();
+  }
+
+  getProfilePhoto() {
+    return this.profilePhotoUrl;
   }
 
   deactivate() {
