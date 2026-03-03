@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { SnackbarProps } from "./types";
+import type { SnackbarProps } from "./types/types";
 
 defineProps<SnackbarProps>();
 </script>
