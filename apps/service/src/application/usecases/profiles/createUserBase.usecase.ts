@@ -22,9 +22,18 @@ export class CreateUserBaseUseCase {
       password: string;
       cpf: string;
       birthDate: string;
+      profilePhotoUrl?: string;
     },
     tx?: Prisma.TransactionClient,
   ): Promise<IUserDTO> {
+    // basic validation for profile photo (must be a string if provided)
+    if (
+      input.profilePhotoUrl !== undefined &&
+      typeof input.profilePhotoUrl !== "string"
+    ) {
+      throw new Error("URL da foto de perfil inválida");
+    }
+
     const birthDateVO = new BirthDate(new Date(input.birthDate));
     const emailVO = Email.create(input.email);
     const cpfVO = CPF.create(input.cpf);
@@ -49,6 +58,7 @@ export class CreateUserBaseUseCase {
       emailVO,
       passwordHash,
       true,
+      input.profilePhotoUrl ?? "",
       birthDateVO,
       cpfVO,
       new Date(),
@@ -59,10 +69,11 @@ export class CreateUserBaseUseCase {
 
     return {
       id: savedUser.getId().getValue(),
-      name: savedUser.getName(), 
+      name: savedUser.getName(),
       email: savedUser.getEmail(),
       cpf: savedUser.getCpf(),
       birthDate: savedUser.getBirthDate().toISOString(),
+      profilePhotoUrl: savedUser.getProfilePhoto(),
     };
   }
 }

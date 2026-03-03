@@ -23,7 +23,8 @@ export class CaregiverRepository {
       Address.restore(record.address),
       record.serviceRadiusKm,
       record.isVerified,
-      record.isActive,
+      // new field from schema
+      record.isPublicProfile ?? false,
       record.createdAt,
       record.updatedAt,
     );
@@ -43,7 +44,8 @@ export class CaregiverRepository {
         address: caregiver.getAddress().toPrimitives(),
         serviceRadiusKm: caregiver.getServiceRadius(),
         isVerified: caregiver.hasVerification(),
-        isActive: caregiver.isCurrentlyActive(),
+        // map public profile flag
+        isPublicProfile: caregiver.isPublic(),
         updatedAt: new Date(),
       },
 
@@ -53,7 +55,7 @@ export class CaregiverRepository {
         address: caregiver.getAddress().toPrimitives(),
         serviceRadiusKm: caregiver.getServiceRadius(),
         isVerified: caregiver.hasVerification(),
-        isActive: caregiver.isCurrentlyActive(),
+        isPublicProfile: caregiver.isPublic(),
         createdAt: new Date(),
         updatedAt: new Date(),
       },

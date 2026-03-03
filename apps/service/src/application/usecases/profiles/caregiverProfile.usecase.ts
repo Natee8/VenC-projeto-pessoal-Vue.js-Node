@@ -15,9 +15,15 @@ export class CaregiverFacadeUseCase {
       offersHosting: boolean;
       address: IAddress;
       serviceRadiusKm: number;
+      isPublicProfile?: boolean;
     },
     tx?: Prisma.TransactionClient,
   ) {
+    // validation
+    if (input.serviceRadiusKm <= 0) {
+      throw new Error("Raio de atendimento inválido");
+    }
+
     const caregiver = new Caregiver(
       0,
       UserId.create(input.userId),
@@ -25,7 +31,7 @@ export class CaregiverFacadeUseCase {
       Address.restore(input.address),
       input.serviceRadiusKm,
       false,
-      true,
+      input.isPublicProfile ?? true,
       new Date(),
       new Date(),
     );
@@ -48,8 +54,7 @@ export class CaregiverFacadeUseCase {
       address: caregiver.getAddress().toPrimitives(),
       serviceRadiusKm: caregiver.getServiceRadius(),
       isVerified: caregiver.hasVerification(),
-      isActive: caregiver.isCurrentlyActive(),
-      isEnabled: caregiver.isEnabled(),
+      isPublic: caregiver.isPublic(),
     };
   }
 }

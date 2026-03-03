@@ -21,6 +21,8 @@ export class UsersRepository implements IUsersRepository<Prisma.TransactionClien
       Email.create(record.email),
       record.passwordHash,
       record.isActive,
+      // assuming the prisma schema now has profilePhotoUrl
+      record.profilePhotoUrl ?? "",
       new BirthDate(record.birthDate),
       CPF.create(record.cpf),
       record.createdAt,
@@ -92,6 +94,8 @@ export class UsersRepository implements IUsersRepository<Prisma.TransactionClien
       update: {
         passwordHash: user.getPasswordHash(),
         isActive: user.isEnabled(),
+        // support profile photo update if user changed
+        profilePhotoUrl: user.getProfilePhoto(),
         updatedAt: new Date(),
       },
       create: {
@@ -99,6 +103,7 @@ export class UsersRepository implements IUsersRepository<Prisma.TransactionClien
         email: user.getEmail(),
         passwordHash: user.getPasswordHash(),
         isActive: user.isEnabled(),
+        profilePhotoUrl: user.getProfilePhoto(),
         birthDate: user.getBirthDate(),
         cpf: user.getCpf(),
         createdAt: new Date(),

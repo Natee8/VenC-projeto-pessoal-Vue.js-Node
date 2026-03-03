@@ -13,6 +13,8 @@ export const mapPrismaUserAuthToEntity = (user: PrismaUserAuth): UserAuth => {
     Email.create(user.email),
     user.passwordHash,
     user.isActive,
+    // prisma model should contain profilePhotoUrl after migration; fallback to empty string
+    user.profilePhotoUrl ?? "",
     new BirthDate(user.birthDate),
     CPF.create(user.cpf),
     user.createdAt,

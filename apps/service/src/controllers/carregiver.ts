@@ -6,13 +6,20 @@ export class CaregiverController {
 
   async save(req: Request, res: Response) {
     try {
-      const { userId, offersHosting, serviceRadiusKm, address } = req.body;
+      const {
+        userId,
+        offersHosting,
+        serviceRadiusKm,
+        address,
+        isPublicProfile,
+      } = req.body;
 
       const carregiver = await this.caregiverUseCase.save({
         userId,
         offersHosting,
         serviceRadiusKm,
         address,
+        isPublicProfile,
       });
       return res.status(201).json(carregiver);
     } catch (error) {

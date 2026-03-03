@@ -12,7 +12,7 @@ import { CPF } from "../../../../../../packages/src/valuesObjects/cpf.js";
 import { Name } from "../../../../../../packages/src/valuesObjects/name.js";
 import { IUsersRepository } from "../../../../../../packages/src/domain/repositories/userBaseRepository.js";
 
-export class UsersRepository implements IUsersRepository {
+export class UsersRepository implements IUsersRepository<Prisma.TransactionClient> {
   private prisma = new PrismaClient();
 
   private mapToEntity(record: PrismaUserAuth): UserAuth {
@@ -22,6 +22,8 @@ export class UsersRepository implements IUsersRepository {
       Email.create(record.email),
       record.passwordHash,
       record.isActive,
+      // profile photo field from database, if present
+      record.profilePhotoUrl ?? "",
       new BirthDate(record.birthDate),
       CPF.create(record.cpf),
       record.createdAt,
@@ -56,8 +58,8 @@ export class UsersRepository implements IUsersRepository {
     return this.mapToEntity(user);
   }
 
-  async save(user: UserAuth, tx?: unknown): Promise<UserAuth> {
-    const client = (tx as Prisma.TransactionClient) ?? this.prisma;
+  async save(user: UserAuth, tx?: Prisma.TransactionClient): Promise<UserAuth> {
+    const client = tx ?? this.prisma;
 
     const record = await client.userAuth.upsert({
       where: { cpf: user.getCpf() },
@@ -65,6 +67,8 @@ export class UsersRepository implements IUsersRepository {
       update: {
         passwordHash: user.getPasswordHash(),
         isActive: user.isEnabled(),
+        // include profile photo if changed
+        profilePhotoUrl: user.getProfilePhoto(),
         birthDate: user.getBirthDate(),
         updatedAt: new Date(),
       },
@@ -74,6 +78,7 @@ export class UsersRepository implements IUsersRepository {
         email: user.getEmail(),
         passwordHash: user.getPasswordHash(),
         isActive: user.isEnabled(),
+        profilePhotoUrl: user.getProfilePhoto(),
         birthDate: user.getBirthDate(),
         cpf: user.getCpf(),
         createdAt: new Date(),

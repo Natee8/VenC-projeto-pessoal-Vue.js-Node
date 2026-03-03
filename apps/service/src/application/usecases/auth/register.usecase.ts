@@ -21,6 +21,7 @@ export class RegisterUseCase {
           password: input.password,
           cpf: input.cpf,
           birthDate: input.birthDate,
+          profilePhotoUrl: input.profilePhotoUrl,
         },
         tx,
       );
@@ -46,6 +47,7 @@ export class RegisterUseCase {
             address: input.address,
             offersHosting: input.offersHosting ?? false,
             serviceRadiusKm: input.serviceRadiusKm ?? 0,
+            isPublicProfile: input.isPublicProfile,
           },
           tx,
         );
