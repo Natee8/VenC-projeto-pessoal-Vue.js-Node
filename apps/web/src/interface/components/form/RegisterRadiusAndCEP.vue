@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import RadiusComponent from "../utils/radiusComponent.vue";
+import RadiusComponent from "../utils/RadiusComponent.vue";
 
 const props = defineProps({
   street: String,
@@ -40,7 +40,6 @@ const updateField = (event: Event, emitName: string) => {
 
 <template>
   <form class="flex flex-col gap-5" @submit="handleSubmit">
-    <!-- CEP -->
     <div class="flex flex-col gap-2">
       <label for="zipCode" class="text-white font-semibold">CEP</label>
       <input
@@ -53,7 +52,6 @@ const updateField = (event: Event, emitName: string) => {
       />
     </div>
 
-    <!-- País e Estado -->
     <div class="flex gap-6">
       <div class="flex-1 flex flex-col gap-2">
         <label for="country" class="text-white font-semibold">País</label>
@@ -80,7 +78,6 @@ const updateField = (event: Event, emitName: string) => {
       </div>
     </div>
 
-    <!-- Cidade e Bairro -->
     <div class="flex gap-6">
       <div class="flex-1 flex flex-col gap-2">
         <label for="city" class="text-white font-semibold">Cidade</label>
@@ -135,12 +132,14 @@ const updateField = (event: Event, emitName: string) => {
       </div>
     </div>
 
-    <RadiusComponent
-      v-model="serviceRadius"
-      title="Escolha o raio do seu atendimento"
-      :min="5"
-      :max="64"
-    />
+    <div class="my-5">
+      <radius-component
+        v-model="serviceRadius"
+        title="Escolha o raio do seu atendimento"
+        :min="5"
+        :max="64"
+      />
+    </div>
 
     <button
       type="submit"

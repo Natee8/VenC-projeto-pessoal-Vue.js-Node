@@ -23,12 +23,14 @@ const updateValue = (event: Event) => {
 
 <template>
   <div class="flex flex-col gap-8 w-full">
-    <h1 class="text-2xl font-bold text-white text-center">
-      {{ title }}
-    </h1>
+    <div class="flex flex-col items-start">
+      <h1 class="text-2xl font-bold text-white text-center">
+        {{ title }}
+      </h1>
 
-    <div class="text-center text-white text-lg font-semibold">
-      {{ modelValue }} km
+      <div class="text-center text-white text-lg font-semibold">
+        {{ modelValue }} km
+      </div>
     </div>
 
     <div class="relative w-full">
@@ -41,16 +43,26 @@ const updateValue = (event: Event) => {
         class="w-full appearance-none bg-transparent cursor-pointer"
       />
 
-      <!-- Linha base -->
       <div
         class="absolute top-1/2 left-0 w-full h-4 bg-white/30 rounded-full -translate-y-1/2 pointer-events-none"
       ></div>
 
-      <!-- Linha preenchida -->
       <div
         class="absolute top-1/2 left-0 h-4 bg-details rounded-full -translate-y-1/2 pointer-events-none"
         :style="{ width: percentage + '%' }"
       ></div>
+    </div>
+
+    <div
+      class="flex justify-between font-semibold text-white text-1xl mt-2 relative"
+    >
+      <span>{{ min }} km</span>
+
+      <span class="absolute left-1/2 -translate-x-1/2">
+        {{ Math.round((min + max) / 2) }} km
+      </span>
+
+      <span>{{ max }} km</span>
     </div>
   </div>
 </template>
@@ -61,7 +73,7 @@ input[type="range"]::-webkit-slider-thumb {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: white; /* bolinha branca */
+  background: white;
   border: 3px solid #69ce96;
   cursor: pointer;
   position: relative;
@@ -77,7 +89,6 @@ input[type="range"]::-moz-range-thumb {
   cursor: pointer;
 }
 
-/* Opcional: deixar a linha do slider no Firefox mais grossa */
 input[type="range"]::-moz-range-track {
   height: 20px;
   background: transparent;
