@@ -20,6 +20,7 @@ const updateValue = (event: Event) => {
   emit("update:modelValue", value);
 };
 </script>
+
 <template>
   <div class="flex flex-col gap-8 w-full">
     <h1 class="text-2xl font-bold text-white text-center">
@@ -40,12 +41,14 @@ const updateValue = (event: Event) => {
         class="w-full appearance-none bg-transparent cursor-pointer"
       />
 
+      <!-- Linha base -->
       <div
-        class="absolute top-1/2 left-0 w-full h-2 bg-white/30 rounded-full -translate-y-1/2 pointer-events-none"
+        class="absolute top-1/2 left-0 w-full h-4 bg-white/30 rounded-full -translate-y-1/2 pointer-events-none"
       ></div>
 
+      <!-- Linha preenchida -->
       <div
-        class="absolute top-1/2 left-0 h-2 bg-details rounded-full -translate-y-1/2 pointer-events-none"
+        class="absolute top-1/2 left-0 h-4 bg-details rounded-full -translate-y-1/2 pointer-events-none"
         :style="{ width: percentage + '%' }"
       ></div>
     </div>
@@ -55,22 +58,33 @@ const updateValue = (event: Event) => {
 <style scoped>
 input[type="range"]::-webkit-slider-thumb {
   appearance: none;
-  width: 22px;
-  height: 22px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-  background: #ffffff;
-  border: 3px solid #4f46e5;
+  background: white; /* bolinha branca */
+  border: 3px solid #69ce96;
   cursor: pointer;
   position: relative;
   z-index: 2;
 }
 
 input[type="range"]::-moz-range-thumb {
-  width: 22px;
-  height: 22px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-  background: #ffffff;
-  border: 3px solid #4f46e5;
+  background: white;
+  border: 3px solid #69ce96;
   cursor: pointer;
+}
+
+/* Opcional: deixar a linha do slider no Firefox mais grossa */
+input[type="range"]::-moz-range-track {
+  height: 20px;
+  background: transparent;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 20px;
+  background: transparent;
 }
 </style>
