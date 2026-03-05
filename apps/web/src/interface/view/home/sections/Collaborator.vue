@@ -6,7 +6,7 @@
       >
         <div class="text-white flex flex-col gap-10">
           <h1 class="text-4xl font-bold">Seja você tambem um colaborador!</h1>
-          <p class="text-white/70">
+          <p class="text-white/70 text-2xl">
             Sed ut perspiciatis unde omnis iste natus error sit voluptatem
             accusantium doloremque laudantium, totam rem aperiam, eaque ipsa
             quae ab illo inventore veritatis et quasi architecto beatae vitae
@@ -15,7 +15,7 @@
           </p>
         </div>
         <button
-          class="w-[24rem] h-12 rounded-xl font-semibold bg-primary text-white hover:bg-primaryHover transition"
+          class="w-[28rem] h-14 rounded-xl font-semibold bg-primary text-white hover:bg-primaryHover transition"
         >
           Ser Colaborador
         </button>
