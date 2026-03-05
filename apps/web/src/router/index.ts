@@ -7,8 +7,8 @@ const RegisterBase = () =>
   import("../interface/view/auth/register/RegisterBase.vue");
 const RegisterOwner = () =>
   import("../interface/view/auth/register/RegisterOwner.vue");
-const RegisterCarrehiver = () =>
-  import("../interface/view/auth/register/RegisterCarrehiver.vue");
+const RegisterCepAndRadius = () =>
+  import("../interface/view/auth/register/RegisterCepAndRadius.vue");
 const SendEmail = () =>
   import("../interface/view/auth/resetPassword/SendEmail.vue");
 const SendCode = () =>
@@ -37,7 +37,7 @@ export const router = createRouter({
     {
       path: Routes.registerCarrehiver,
       name: "register-carrehiver",
-      component: RegisterCarrehiver,
+      component: RegisterCepAndRadius,
     },
     {
       path: Routes.registerOwner,

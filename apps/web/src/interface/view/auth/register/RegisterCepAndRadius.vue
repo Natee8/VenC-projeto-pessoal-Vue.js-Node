@@ -30,7 +30,15 @@ const handleSubmit = () => {
 <template>
   <AuthLayout>
     <div class="flex justify-center items-center h-full w-full">
-      <div class="bg-secondary rounded-2xl p-28 shadow min-h-screen w-[60%]">
+      <div
+        class="bg-secondary rounded-2xl p-28 shadow min-h-[800px] flex-col items-center justify-center w-[60%]"
+      >
+        <div class="flex flex-col items-center text-center gap-3 mb-8">
+          <img src="/assets/logos/logoWhite.svg" alt="Logo vencá" width="160" />
+          <p class="text-white/80 text-[1.2rem]">
+            Preencha suas informações para personalizar sua experiência no Vencá
+          </p>
+        </div>
         <RegisterRadiusAndCEP
           v-model:street="street"
           v-model:number="number"

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
+import { useRoute } from "vue-router";
 import RadiusComponent from "../utils/RadiusComponent.vue";
 
 const props = defineProps({
@@ -31,6 +32,8 @@ const handleSubmit = (e: Event) => {
   e.preventDefault();
   emit("submit");
 };
+const route = useRoute();
+const userType = computed(() => route.query.user as string);
 
 const updateField = (event: Event, emitName: string) => {
   const target = event.target as HTMLInputElement;
@@ -132,7 +135,7 @@ const updateField = (event: Event, emitName: string) => {
       </div>
     </div>
 
-    <div class="my-5">
+    <div class="my-5" v-if="userType === 'carrehiver'">
       <radius-component
         v-model="serviceRadius"
         title="Escolha o raio do seu atendimento"
