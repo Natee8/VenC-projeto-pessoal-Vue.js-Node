@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
-const isLoading = ref(false);
+defineProps<{
+  isLoading: boolean;
+}>();
 
 const publicProfile = ref(false);
 const acceptPetHosting = ref(false);
 const acceptTerms = ref(false);
-
 const profileImage = ref<string | null>(null);
 
 const emit = defineEmits<{

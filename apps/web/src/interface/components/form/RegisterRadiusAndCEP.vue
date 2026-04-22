@@ -1,12 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import RadiusComponent from "../utils/RadiusComponent.vue";
 import { cepService } from "@/infrastructure/utils/cepService";
 import { BRAZIL_STATES } from "@/types/IStates";
-
-const route = useRoute();
-const router = useRouter();
 
 const props = defineProps({
   street: String,
@@ -15,6 +10,7 @@ const props = defineProps({
   city: String,
   state: String,
   zipCode: String,
+  serviceRadius: Number,
   isLoading: Boolean,
 });
 
@@ -31,48 +27,37 @@ const emit = defineEmits<{
 
 let timeout: any;
 
-const zipCodeModel = computed(() => props.zipCode);
-
-watch(zipCodeModel, (newCep) => {
-  const cep = (newCep || "").replace(/\D/g, "");
-
-  clearTimeout(timeout);
-
-  timeout = setTimeout(async () => {
-    if (cep.length !== 8) return;
-
-    const data = await cepService.getAddressByCep(cep);
-
-    if (!data) return;
-
-    emit("update:street", data.logradouro || "");
-    emit("update:neighborhood", data.bairro || "");
-    emit("update:city", data.localidade || "");
-    emit("update:state", data.uf || "");
-  }, 500);
+const serviceRadiusModel = computed({
+  get: () => props.serviceRadius,
+  set: (val: number) => emit("update:serviceRadius", val),
 });
 
-const serviceRadius = ref(5);
+watch(
+  () => props.zipCode,
+  (newCep) => {
+    const cep = (newCep || "").replace(/\D/g, "");
+
+    clearTimeout(timeout);
+
+    timeout = setTimeout(async () => {
+      if (cep.length !== 8) return;
+
+      const data = await cepService.getAddressByCep(cep);
+      if (!data) return;
+
+      emit("update:street", data.logradouro || "");
+      emit("update:neighborhood", data.bairro || "");
+      emit("update:city", data.localidade || "");
+      emit("update:state", data.uf || "");
+    }, 500);
+  },
+);
 
 const handleSubmit = (e: Event) => {
   e.preventDefault();
 
-  const role = route.query.user;
-
-  if (role === "owner") {
-    router.push({ name: "register-owner" });
-    return;
-  }
-
-  if (role === "caregiver") {
-    router.push({ name: "register-carrehiver" });
-    return;
-  }
-
-  router.push({ name: "register" });
+  emit("submit");
 };
-
-const userType = computed(() => route.query.user as string);
 
 const updateField = (event: Event, emitName: string) => {
   const target = event.target as HTMLInputElement | HTMLSelectElement;
@@ -167,9 +152,9 @@ const updateField = (event: Event, emitName: string) => {
       </div>
     </div>
 
-    <div class="my-5" v-if="userType === 'caregiver'">
+    <div class="my-5">
       <radius-component
-        v-model="serviceRadius"
+        v-model="serviceRadiusModel"
         title="Escolha o raio do seu atendimento"
         :min="5"
         :max="64"

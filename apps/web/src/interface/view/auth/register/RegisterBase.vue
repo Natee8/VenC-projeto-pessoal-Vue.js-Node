@@ -1,59 +1,93 @@
 <script setup lang="ts">
+import { registerRepository } from "@/infrastructure/repositories/userBaseRepository";
+import FormProfileBase from "@/interface/components/form/formProfileBase.vue";
+import RegisterFormBase from "@/interface/components/form/RegisterFormBase.vue";
+import RegisterRadiusAndCEP from "@/interface/components/form/RegisterRadiusAndCEP.vue";
 import { ref } from "vue";
-import AuthLayout from "../../../layout/auth/authLayout.vue";
-import {
-  RegisterInput,
-  RegisterOutput,
-} from "../../../../../../../packages/src/domain/dtos/IUser.dto";
-import { registerRepository } from "../../../../infrastructure/repositories/userBaseRepository";
-import RegisterFormBase from "../../../components/form/RegisterFormBase.vue";
-import { useNotyf } from "@/infrastructure/utils/notifyFunction";
-import { useRoute, useRouter } from "vue-router";
 
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+
+const step = ref(1);
+
+/* BASE */
 const userName = ref("");
 const email = ref("");
 const birthDate = ref("");
 const cpf = ref("");
 const password = ref("");
 const confirmPassword = ref("");
+
+/* ADDRESS */
+const street = ref("");
+const number = ref("");
+const neighborhood = ref("");
+const city = ref("");
+const state = ref("");
+const zipCode = ref("");
+const serviceRadius = ref(10);
+
+/* PROFILE */
 const isLoading = ref(false);
 
-const router = useRouter();
-const route = useRoute();
+/* STEP 1 */
+const handleBaseSubmit = () => {
+  if (password.value !== confirmPassword.value) return;
 
-const notyf = useNotyf();
+  sessionStorage.setItem(
+    "register-base",
+    JSON.stringify({
+      name: userName.value,
+      email: email.value,
+      birthDate: birthDate.value,
+      cpf: cpf.value,
+      password: password.value,
+    }),
+  );
 
-const handleSubmit = async () => {
-  if (password.value !== confirmPassword.value) {
-    notyf.error("As senhas não coincidem.");
-    return;
-  }
+  step.value = 2;
+};
 
-  const profileType = route.query.user;
+/* STEP 2 */
+const handleAddressSubmit = () => {
+  sessionStorage.setItem(
+    "register-address",
+    JSON.stringify({
+      street: street.value,
+      number: number.value,
+      neighborhood: neighborhood.value,
+      city: city.value,
+      state: state.value,
+      zipCode: zipCode.value,
+      serviceRadius: serviceRadius.value,
+    }),
+  );
 
-  if (profileType !== "owner" && profileType !== "caregiver") {
-    notyf.error("Tipo de perfil inválido");
-    console.log(profileType);
-    return;
-  }
+  step.value = 3;
+};
 
-  const registerData = {
-    name: userName.value,
-    email: email.value,
-    birthDate: birthDate.value,
-    cpf: cpf.value,
-    password: password.value,
-    profileType,
+/* FINAL */
+const handleProfileSubmit = async (data: any) => {
+  const base = JSON.parse(sessionStorage.getItem("register-base") || "{}");
+  const address = JSON.parse(
+    sessionStorage.getItem("register-address") || "{}",
+  );
+
+  const payload = {
+    ...base,
+    ...address,
+    profilePhotoUrl: data.profileImage,
+    isPublicProfile: data.publicProfile,
+    offersHosting: data.acceptPetHosting,
+    type: "caregiver",
   };
 
-  sessionStorage.setItem("register-base", JSON.stringify(registerData));
+  await registerRepository.register(payload);
 
-  router.push({
-    name: "register-cep-and-radius",
-    query: {
-      user: profileType,
-    },
-  });
+  sessionStorage.clear();
+
+  router.push({ name: "login" });
 };
 </script>
 <template>
@@ -62,26 +96,42 @@ const handleSubmit = async () => {
       <div class="bg-secondary rounded-2xl p-28 shadow min-h-screen w-[60%]">
         <div class="flex flex-col items-center text-center gap-3 mb-8">
           <img src="/assets/logos/logoWhite.svg" alt="Logo vencá" width="160" />
+
           <p class="text-white/80 text-[1.2rem]">
-            Preencha suas informações para personalizar sua experiência no Vencá
+            Complete seu perfil para começar a utilizar o Vencá
           </p>
         </div>
 
+        <!-- STEPS -->
         <RegisterFormBase
-          :name="userName"
-          @update:name="(val: string) => (userName = val)"
-          :email="email"
-          @update:email="(val: string) => (email = val)"
-          :birthDate="birthDate"
-          @update:birthDate="(val: string) => (birthDate = val)"
-          :cpf="cpf"
-          @update:cpf="(val: string) => (cpf = val)"
-          :password="password"
-          @update:password="(val: string) => (password = val)"
-          :confirmPassword="confirmPassword"
-          @update:confirmPassword="(val: string) => (confirmPassword = val)"
+          v-if="step === 1"
+          v-model:name="userName"
+          v-model:email="email"
+          v-model:birthDate="birthDate"
+          v-model:cpf="cpf"
+          v-model:password="password"
+          v-model:confirmPassword="confirmPassword"
           :isLoading="isLoading"
-          @submit="handleSubmit"
+          @submit="handleBaseSubmit"
+        />
+
+        <RegisterRadiusAndCEP
+          v-if="step === 2"
+          v-model:street="street"
+          v-model:number="number"
+          v-model:neighborhood="neighborhood"
+          v-model:city="city"
+          v-model:state="state"
+          v-model:zipCode="zipCode"
+          v-model:serviceRadius="serviceRadius"
+          :isLoading="isLoading"
+          @submit="handleAddressSubmit"
+        />
+
+        <FormProfileBase
+          v-if="step === 3"
+          :isLoading="isLoading"
+          @submit="handleProfileSubmit"
         />
       </div>
     </div>

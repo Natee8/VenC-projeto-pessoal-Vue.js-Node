@@ -31,26 +31,13 @@ export const router = createRouter({
       name: "login",
       component: Login,
     },
-    {
-      path: Routes.registerCepAndRadius,
-      name: "register-cep-and-radius",
-      component: RegisterCepAndRadius,
-    },
+
     {
       path: Routes.register,
       name: "register",
       component: RegisterBase,
     },
-    {
-      path: Routes.registerCarrehiver,
-      name: "register-carrehiver",
-      component: RegisterCarrehiver,
-    },
-    {
-      path: Routes.registerOwner,
-      name: "register-owner",
-      component: RegisterOwner,
-    },
+
     {
       path: Routes.sendEmail,
       name: "send-email",
