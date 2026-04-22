@@ -7,7 +7,6 @@ export class Address {
     public readonly neighborhood: string,
     public readonly city: State,
     public readonly zipCode: string,
-    public readonly country: string,
   ) {
     this.validate();
   }
@@ -29,7 +28,6 @@ export class Address {
       neighborhood: this.neighborhood,
       city: this.city,
       zipCode: this.zipCode,
-      country: this.country,
     };
   }
 
@@ -40,13 +38,6 @@ export class Address {
 
     const v = raw as AddressPrimitives;
 
-    return new Address(
-      v.street,
-      v.number,
-      v.neighborhood,
-      v.city,
-      v.zipCode,
-      v.country,
-    );
+    return new Address(v.street, v.number, v.neighborhood, v.city, v.zipCode);
   }
 }

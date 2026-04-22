@@ -6,8 +6,9 @@ import {
   RegisterOutput,
 } from "../../../../../../../packages/src/domain/dtos/IUser.dto";
 import { registerRepository } from "../../../../infrastructure/repositories/userBaseRepository";
-import { useNotyf } from "../../../../infrastructure/utils/notifyFunction";
 import RegisterFormBase from "../../../components/form/RegisterFormBase.vue";
+import { useNotyf } from "@/infrastructure/utils/notifyFunction";
+import { useRoute, useRouter } from "vue-router";
 
 const userName = ref("");
 const email = ref("");
@@ -17,6 +18,9 @@ const password = ref("");
 const confirmPassword = ref("");
 const isLoading = ref(false);
 
+const router = useRouter();
+const route = useRoute();
+
 const notyf = useNotyf();
 
 const handleSubmit = async () => {
@@ -25,32 +29,31 @@ const handleSubmit = async () => {
     return;
   }
 
-  const registerData: RegisterInput = {
+  const profileType = route.query.user;
+
+  if (profileType !== "owner" && profileType !== "caregiver") {
+    notyf.error("Tipo de perfil inválido");
+    console.log(profileType);
+    return;
+  }
+
+  const registerData = {
     name: userName.value,
     email: email.value,
     birthDate: birthDate.value,
     cpf: cpf.value,
     password: password.value,
+    profileType,
   };
 
-  try {
-    isLoading.value = true;
-    const user: RegisterOutput =
-      await registerRepository.register(registerData);
+  sessionStorage.setItem("register-base", JSON.stringify(registerData));
 
-    notyf.success(`Usuário ${user.email} registrado com sucesso!`);
-
-    userName.value = "";
-    email.value = "";
-    birthDate.value = "";
-    cpf.value = "";
-    password.value = "";
-    confirmPassword.value = "";
-  } catch (err: any) {
-    notyf.error(err.response?.data?.error || "Erro ao registrar usuário");
-  } finally {
-    isLoading.value = false;
-  }
+  router.push({
+    name: "register-cep-and-radius",
+    query: {
+      user: profileType,
+    },
+  });
 };
 </script>
 <template>

@@ -54,7 +54,7 @@ export class RegisterUseCase {
 
         return { user, profile };
       }
-
+      console.log("REGISTER INPUT TYPE:", input.type);
       throw new Error("Tipo de perfil inválido");
     });
   }

@@ -9,7 +9,6 @@ const neighborhood = ref("");
 const city = ref("");
 const state = ref("");
 const zipCode = ref("");
-const country = ref("");
 const serviceRadius = ref(10);
 
 const isLoading = ref(false);
@@ -17,7 +16,6 @@ const isLoading = ref(false);
 const handleSubmit = () => {
   console.log({
     zipCode: zipCode.value,
-    country: country.value,
     state: state.value,
     city: city.value,
     neighborhood: neighborhood.value,
@@ -46,7 +44,6 @@ const handleSubmit = () => {
           v-model:city="city"
           v-model:state="state"
           v-model:zipCode="zipCode"
-          v-model:country="country"
           v-model:serviceRadius="serviceRadius"
           :isLoading="isLoading"
           @submit="handleSubmit"

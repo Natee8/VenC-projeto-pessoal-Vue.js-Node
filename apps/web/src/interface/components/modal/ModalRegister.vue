@@ -46,7 +46,7 @@ const props = defineProps({
           </button>
         </RouterLink>
 
-        <RouterLink :to="{ name: 'register', query: { user: 'carrehiver' } }">
+        <RouterLink :to="{ name: 'register', query: { user: 'caregiver' } }">
           <button
             class="flex items-center justify-center gap-3 w-48 h-16 font-semibold bg-secondary text-white rounded-xl transition-transform transform hover:scale-105 hover:bg-secondary/90"
           >

@@ -1,8 +1,12 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
+import tsconfigPaths from "vite-tsconfig-paths";
 
-// https://vite.dev/config/
 export default defineConfig({
-  base: "./",
-  plugins: [vue()],
+  plugins: [
+    vue(),
+    tsconfigPaths({
+      loose: true,
+    }),
+  ],
 });

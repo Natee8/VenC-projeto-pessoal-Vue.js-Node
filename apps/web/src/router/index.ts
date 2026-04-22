@@ -15,6 +15,8 @@ const SendCode = () =>
   import("../interface/view/auth/resetPassword/SendCode.vue");
 const ResetPassword = () =>
   import("../interface/view/auth/resetPassword/ResetPassword.vue");
+const RegisterCarrehiver = () =>
+  import("../interface/view/auth/register/RegisterCarrehiver.vue");
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -30,6 +32,11 @@ export const router = createRouter({
       component: Login,
     },
     {
+      path: Routes.registerCepAndRadius,
+      name: "register-cep-and-radius",
+      component: RegisterCepAndRadius,
+    },
+    {
       path: Routes.register,
       name: "register",
       component: RegisterBase,
@@ -37,7 +44,7 @@ export const router = createRouter({
     {
       path: Routes.registerCarrehiver,
       name: "register-carrehiver",
-      component: RegisterCepAndRadius,
+      component: RegisterCarrehiver,
     },
     {
       path: Routes.registerOwner,

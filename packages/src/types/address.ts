@@ -34,5 +34,4 @@ export interface AddressPrimitives extends Record<string, unknown> {
   neighborhood: string;
   city: State;
   zipCode: string;
-  country: string;
 }

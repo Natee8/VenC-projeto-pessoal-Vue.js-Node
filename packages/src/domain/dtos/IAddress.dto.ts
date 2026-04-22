@@ -1,4 +1,3 @@
-
 export interface IAddress {
   street: string;
   number: string;
@@ -6,5 +5,4 @@ export interface IAddress {
   city: string;
   state: string;
   zipCode: string;
-  country: string;
 }

@@ -1,7 +1,12 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import { useRoute } from "vue-router";
+import { computed, ref, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import RadiusComponent from "../utils/RadiusComponent.vue";
+import { cepService } from "@/infrastructure/utils/cepService";
+import { BRAZIL_STATES } from "@/types/IStates";
+
+const route = useRoute();
+const router = useRouter();
 
 const props = defineProps({
   street: String,
@@ -10,7 +15,6 @@ const props = defineProps({
   city: String,
   state: String,
   zipCode: String,
-  country: String,
   isLoading: Boolean,
 });
 
@@ -21,22 +25,57 @@ const emit = defineEmits<{
   (e: "update:city", val: string): void;
   (e: "update:state", val: string): void;
   (e: "update:zipCode", val: string): void;
-  (e: "update:country", val: string): void;
   (e: "update:serviceRadius", val: number): void;
   (e: "submit"): void;
 }>();
+
+let timeout: any;
+
+const zipCodeModel = computed(() => props.zipCode);
+
+watch(zipCodeModel, (newCep) => {
+  const cep = (newCep || "").replace(/\D/g, "");
+
+  clearTimeout(timeout);
+
+  timeout = setTimeout(async () => {
+    if (cep.length !== 8) return;
+
+    const data = await cepService.getAddressByCep(cep);
+
+    if (!data) return;
+
+    emit("update:street", data.logradouro || "");
+    emit("update:neighborhood", data.bairro || "");
+    emit("update:city", data.localidade || "");
+    emit("update:state", data.uf || "");
+  }, 500);
+});
 
 const serviceRadius = ref(5);
 
 const handleSubmit = (e: Event) => {
   e.preventDefault();
-  emit("submit");
+
+  const role = route.query.user;
+
+  if (role === "owner") {
+    router.push({ name: "register-owner" });
+    return;
+  }
+
+  if (role === "caregiver") {
+    router.push({ name: "register-carrehiver" });
+    return;
+  }
+
+  router.push({ name: "register" });
 };
-const route = useRoute();
+
 const userType = computed(() => route.query.user as string);
 
 const updateField = (event: Event, emitName: string) => {
-  const target = event.target as HTMLInputElement;
+  const target = event.target as HTMLInputElement | HTMLSelectElement;
   emit(emitName as any, target.value);
 };
 </script>
@@ -57,27 +96,20 @@ const updateField = (event: Event, emitName: string) => {
 
     <div class="flex gap-6">
       <div class="flex-1 flex flex-col gap-2">
-        <label for="country" class="text-white font-semibold">País</label>
-        <input
-          :value="country"
-          @input="(e) => updateField(e, 'update:country')"
-          type="text"
-          id="country"
-          placeholder="Digite o país"
-          class="w-full h-14 px-4 rounded-lg bg-white border border-gray-200 outline-none focus:border-details"
-        />
-      </div>
-
-      <div class="flex-1 flex flex-col gap-2">
         <label for="state" class="text-white font-semibold">Estado</label>
-        <input
+
+        <select
           :value="state"
-          @input="(e) => updateField(e, 'update:state')"
-          type="text"
+          @change="(e) => updateField(e, 'update:state')"
           id="state"
-          placeholder="Digite o estado"
           class="w-full h-14 px-4 rounded-lg bg-white border border-gray-200 outline-none focus:border-details"
-        />
+        >
+          <option value="" disabled>Selecione o estado</option>
+
+          <option v-for="s in BRAZIL_STATES" :key="s.value" :value="s.value">
+            {{ s.label }}
+          </option>
+        </select>
       </div>
     </div>
 
@@ -135,7 +167,7 @@ const updateField = (event: Event, emitName: string) => {
       </div>
     </div>
 
-    <div class="my-5" v-if="userType === 'carrehiver'">
+    <div class="my-5" v-if="userType === 'caregiver'">
       <radius-component
         v-model="serviceRadius"
         title="Escolha o raio do seu atendimento"
