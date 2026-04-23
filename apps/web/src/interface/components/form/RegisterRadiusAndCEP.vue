@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
-import { cepService } from "@/infrastructure/utils/cepService";
-import { BRAZIL_STATES } from "@/types/IStates";
 import RadiusComponent from "../utils/RadiusComponent.vue";
+import { cepService } from "src/infrastructure/utils/cepService";
+import { BRAZIL_STATES } from "src/types/IStates";
 
 const props = defineProps({
   street: String,

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { registerRepository } from "@/infrastructure/repositories/userBaseRepository";
-import FormProfileBase from "@/interface/components/form/formProfileBase.vue";
-import RegisterFormBase from "@/interface/components/form/RegisterFormBase.vue";
-import RegisterRadiusAndCEP from "@/interface/components/form/RegisterRadiusAndCEP.vue";
+import { registerRepository } from "src/infrastructure/repositories/userBaseRepository";
+import FormProfileBase from "src/interface/components/form/formProfileBase.vue";
+import RegisterFormBase from "src/interface/components/form/RegisterFormBase.vue";
+import RegisterRadiusAndCEP from "src/interface/components/form/RegisterRadiusAndCEP.vue";
 import { ref } from "vue";
 
 import { useRouter } from "vue-router";

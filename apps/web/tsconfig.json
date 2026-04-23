@@ -11,7 +11,6 @@
     "baseUrl": ".",
 
     "types": ["vite/client"],
-    "ignoreDeprecations": "6.0",
 
     "paths": {
       "@packages": ["../../packages/src/index.ts"],

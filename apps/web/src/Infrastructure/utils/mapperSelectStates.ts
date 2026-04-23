@@ -1,4 +1,4 @@
-import { BrazilStateCode } from "@/types/IStates";
+import { BrazilStateCode } from "src/types/IStates";
 
 export const normalizeState = (value: string): BrazilStateCode | "" => {
   const v = value
