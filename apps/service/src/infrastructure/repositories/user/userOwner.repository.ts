@@ -1,16 +1,10 @@
 import { PrismaClient } from "../../../generated/prisma/index.js";
 import type { Prisma } from "../../../generated/prisma/index.js";
-import { State as DomainState } from "@packages";
 import { State as PrismaState } from "../../../generated/prisma/index.js";
-import { OwnerProfile } from "@packages";
-import { UserId } from "@packages";
+import { OwnerProfile, UserId } from "@packages";
 import { Address } from "@packages";
 import { Phone } from "@packages";
 import { OwnerProfileWithAddress } from "./types/ownerProfileWhitAdrress.js";
-
-function mapStateToDomain(state: PrismaState): DomainState {
-  return state as unknown as DomainState;
-}
 
 export class OwnerProfileRepository {
   private prisma = new PrismaClient();
@@ -59,7 +53,9 @@ export class OwnerProfileRepository {
             number: ownerProfile.getAddress().number,
             neighborhood: ownerProfile.getAddress().neighborhood,
             city: ownerProfile.getAddress().city,
-            state: ownerProfile.getAddress().state,
+            state: {
+              set: ownerProfile.getAddress().state,
+            },
             zipCode: ownerProfile.getAddress().zipCode,
           },
         },
@@ -78,7 +74,7 @@ export class OwnerProfileRepository {
             number: ownerProfile.getAddress().number,
             neighborhood: ownerProfile.getAddress().neighborhood,
             city: ownerProfile.getAddress().city,
-            state: ownerProfile.getAddress().state,
+            state: ownerProfile.getAddress().state as PrismaState,
             zipCode: ownerProfile.getAddress().zipCode,
           },
         },

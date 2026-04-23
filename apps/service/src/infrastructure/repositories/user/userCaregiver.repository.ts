@@ -2,6 +2,7 @@ import { PrismaClient } from "../../../generated/prisma/index.js";
 import type {
   Prisma,
   Caregiver as PrismaCaregiver,
+  State,
 } from "../../../generated/prisma/index.js";
 
 import { Caregiver } from "@packages";
@@ -23,7 +24,6 @@ export class CaregiverRepository {
       Address.restore(record.address),
       record.serviceRadiusKm,
       record.isVerified,
-      // new field from schema
       record.isPublicProfile ?? false,
       record.createdAt,
       record.updatedAt,
@@ -37,27 +37,52 @@ export class CaregiverRepository {
     const client = tx ?? this.prisma;
 
     const record = await client.caregiver.upsert({
-      where: { userId: caregiver.getUserId().getValue() },
+      where: {
+        userId: caregiver.getUserId().getValue(),
+      },
 
-      update: {
-        offersHosting: caregiver.canHostPets(),
-        address: caregiver.getAddress().toPrimitives(),
-        serviceRadiusKm: caregiver.getServiceRadius(),
-        isVerified: caregiver.hasVerification(),
-        // map public profile flag
-        isPublicProfile: caregiver.isPublic(),
-        updatedAt: new Date(),
+      include: {
+        address: true,
       },
 
       create: {
         userId: caregiver.getUserId().getValue(),
         offersHosting: caregiver.canHostPets(),
-        address: caregiver.getAddress().toPrimitives(),
         serviceRadiusKm: caregiver.getServiceRadius(),
         isVerified: caregiver.hasVerification(),
         isPublicProfile: caregiver.isPublic(),
         createdAt: new Date(),
         updatedAt: new Date(),
+
+        address: {
+          create: {
+            street: caregiver.getAddress().street,
+            number: caregiver.getAddress().number,
+            neighborhood: caregiver.getAddress().neighborhood,
+            city: caregiver.getAddress().city,
+            state: caregiver.getAddress().state as State,
+            zipCode: caregiver.getAddress().zipCode,
+          },
+        },
+      },
+
+      update: {
+        offersHosting: caregiver.canHostPets(),
+        serviceRadiusKm: caregiver.getServiceRadius(),
+        isVerified: caregiver.hasVerification(),
+        isPublicProfile: caregiver.isPublic(),
+        updatedAt: new Date(),
+
+        address: {
+          update: {
+            street: caregiver.getAddress().street,
+            number: caregiver.getAddress().number,
+            neighborhood: caregiver.getAddress().neighborhood,
+            city: caregiver.getAddress().city,
+            state: caregiver.getAddress().state as State,
+            zipCode: caregiver.getAddress().zipCode,
+          },
+        },
       },
     });
 
@@ -69,6 +94,9 @@ export class CaregiverRepository {
 
     const record = await client.caregiver.findUnique({
       where: { userId },
+      include: {
+        address: true,
+      },
     });
 
     return record ? this.mapToEntity(record) : null;
