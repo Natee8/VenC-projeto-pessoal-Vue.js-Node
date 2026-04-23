@@ -2,7 +2,7 @@ import { CreateUserBaseUseCase } from "../profiles/createUserBase.usecase.js";
 import { OwnerProfileFacadeUseCase } from "../profiles/ownerProfile.usecase.js";
 import { CaregiverFacadeUseCase } from "../profiles/caregiverProfile.usecase.js";
 import { PrismaClient } from "@prisma/client/extension";
-import { RegisterInputProfiles } from "../../../../../../packages/src/domain/dtos/IUser.dto.js";
+import { RegisterInputProfiles } from "@packages";
 import { Prisma } from "../../../generated/prisma/wasm.js";
 
 export class RegisterUseCase {

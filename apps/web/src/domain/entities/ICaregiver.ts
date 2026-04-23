@@ -1,16 +1,16 @@
-import { IAddress } from "../../../../../packages/src/domain/dtos/IAddress.dto.js";
-import { UserRole } from "../../../../../packages/src/types/userType.js";
+import { IAddress } from "@packages";
+import { UserRole } from "@packages";
 
 export interface ICaregiver {
   id: string;
   userId: string;
   name: string;
   email: string;
-  role: UserRole; 
+  role: UserRole;
   rating: number;
   isActive: boolean;
   isVerified: boolean;
-  address: IAddress
+  address: IAddress;
   serviceRadiusKm: number;
   services: {
     walk: boolean;

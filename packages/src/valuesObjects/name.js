@@ -1,4 +1,7 @@
-export class Name {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Name = void 0;
+class Name {
     value;
     constructor(value) {
         this.value = value;
@@ -26,3 +29,4 @@ export class Name {
         return /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/.test(name);
     }
 }
+exports.Name = Name;

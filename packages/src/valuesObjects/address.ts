@@ -1,5 +1,5 @@
 import { AddressPrimitives } from "../types/address.js";
-import { State } from "apps/service/src/generated/prisma/index.js";
+import { State } from "../types/stateEnum.js";
 
 export class Address {
   constructor(

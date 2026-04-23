@@ -1,9 +1,6 @@
-import { RefreshTokenEntity } from "../../../../../../packages/src/domain/entities/refreshTokenEntity.js";
-import { UserAuth } from "../../../../../../packages/src/domain/entities/userAuthEntity.js";
-import {
-  IRefreshTokenRepository,
-  TokenGenerator,
-} from "../../../../../../packages/src/domain/repositories/Auth.repositories.js";
+import { RefreshTokenEntity } from "@packages";
+import { UserAuth } from "@packages";
+import { IRefreshTokenRepository, TokenGenerator } from "@packages";
 import { Either, left, right } from "../../../core/interface/IEighter.js";
 
 export class GenerateTokenUseCase {

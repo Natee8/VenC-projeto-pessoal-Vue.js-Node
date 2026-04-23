@@ -1,4 +1,7 @@
-export class UserAuth {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.UserAuth = void 0;
+class UserAuth {
     id;
     name;
     email;
@@ -71,3 +74,4 @@ export class UserAuth {
         this.updatedAt = new Date();
     }
 }
+exports.UserAuth = UserAuth;

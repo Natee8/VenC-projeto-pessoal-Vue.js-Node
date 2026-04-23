@@ -1,4 +1,7 @@
-export class Address {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Address = void 0;
+class Address {
     street;
     number;
     neighborhood;
@@ -40,3 +43,4 @@ export class Address {
         return new Address(v.street, v.number, v.neighborhood, v.city, v.state, v.zipCode);
     }
 }
+exports.Address = Address;

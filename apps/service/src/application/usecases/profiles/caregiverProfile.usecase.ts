@@ -1,9 +1,9 @@
-import { Caregiver } from "@packages/domain/entities/caregiverEntity.js";
-import { UserId } from "../../../../../../packages/src/valuesObjects/userId.js";
-import { Address } from "../../../../../../packages/src/valuesObjects/address.js";
+import { Caregiver } from "@packages";
+import { UserId } from "@packages";
+import { Address } from "@packages";
 import { CaregiverRepository } from "../../../infrastructure/repositories/user/userCaregiver.repository.js";
 import { Prisma } from "../../../generated/prisma/wasm.js";
-import { IAddress } from "../../../../../../packages/src/domain/dtos/IAddress.dto.js";
+import { IAddress } from "@packages";
 
 export class CaregiverFacadeUseCase {
   constructor(private caregiverRepo: CaregiverRepository) {}

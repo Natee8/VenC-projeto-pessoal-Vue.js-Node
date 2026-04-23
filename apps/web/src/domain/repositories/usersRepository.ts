@@ -1,18 +1,17 @@
-import { UserAuth } from "../../../../../packages/src/domain/entities/userAuthEntity.js";
+import { UserAuth } from "@packages";
 import { CreateUserParams, UpdateUserParams } from "../dtos/user.dto.js";
 import { IPet } from "../entities/IPetEntity.js";
 
 export interface UserRepository {
-    create(params: CreateUserParams): Promise<UserAuth>;
+  create(params: CreateUserParams): Promise<UserAuth>;
 
-    getProfile(): Promise<UserAuth>
+  getProfile(): Promise<UserAuth>;
 
-    getPublicProfileById(userId: string): Promise<UserAuth | null>
+  getPublicProfileById(userId: string): Promise<UserAuth | null>;
 
-    listPets(userId: string): Promise<IPet[]>
+  listPets(userId: string): Promise<IPet[]>;
 
-    update(params: UpdateUserParams): Promise<UserAuth>
+  update(params: UpdateUserParams): Promise<UserAuth>;
 
-    deactivate(): Promise<void>
-    
+  deactivate(): Promise<void>;
 }

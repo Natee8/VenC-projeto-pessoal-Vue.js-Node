@@ -1,4 +1,7 @@
-export class CPF {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.CPF = void 0;
+class CPF {
     value;
     constructor(value) {
         this.value = value;
@@ -46,3 +49,4 @@ export class CPF {
         return true;
     }
 }
+exports.CPF = CPF;

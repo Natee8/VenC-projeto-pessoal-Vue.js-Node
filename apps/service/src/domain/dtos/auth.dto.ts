@@ -1,5 +1,4 @@
-import { UserRole } from "../../../../../packages/src/types/userType.js";
-
+import { UserRole } from "@packages";
 export interface LoginRequestDTO {
   email: string;
   password: string;
@@ -13,6 +12,6 @@ export interface LoginResponseDTO {
 }
 
 export interface IRefreshResponse {
-  accessToken: string
-  refreshToken: string
+  accessToken: string;
+  refreshToken: string;
 }

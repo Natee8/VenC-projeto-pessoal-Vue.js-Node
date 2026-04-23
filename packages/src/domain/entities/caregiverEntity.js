@@ -1,4 +1,7 @@
-export class Caregiver {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Caregiver = void 0;
+class Caregiver {
     id;
     userId;
     offersHosting;
@@ -59,3 +62,4 @@ export class Caregiver {
         this.updatedAt = new Date();
     }
 }
+exports.Caregiver = Caregiver;

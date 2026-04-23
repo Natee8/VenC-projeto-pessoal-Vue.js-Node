@@ -1,4 +1,7 @@
-export class Email {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Email = void 0;
+class Email {
     value;
     constructor(value) {
         this.value = value;
@@ -15,3 +18,4 @@ export class Email {
         return new Email(normalized);
     }
 }
+exports.Email = Email;

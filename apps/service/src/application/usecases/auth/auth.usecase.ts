@@ -1,34 +1,34 @@
-import { PasswordService } from "../../service/passwordComparer.js"
-import { UserAuth } from "../../../../../../packages/src/domain/entities/userAuthEntity.js"
-import { Email } from "../../../../../../packages/src/valuesObjects/email.js"
-import { Either, left, right } from "../../../core/interface/IEighter.js"
-import { UsersRepository } from "../../../infrastructure/repositories/auth/authLogin.repository.js"
+import { PasswordService } from "../../service/passwordComparer.js";
+import { UserAuth } from "@packages";
+import { Email } from "@packages";
+import { Either, left, right } from "../../../core/interface/IEighter.js";
+import { UsersRepository } from "../../../infrastructure/repositories/auth/authLogin.repository.js";
 
 export class AuthenticateUserUseCase {
   constructor(
     private readonly usersRepo: UsersRepository,
-    private readonly passwordService: PasswordService
+    private readonly passwordService: PasswordService,
   ) {}
 
   async execute(
     email: Email,
-    password: string
+    password: string,
   ): Promise<Either<{ message: string }, UserAuth>> {
-    const user = await this.usersRepo.findByEmail(email)
+    const user = await this.usersRepo.findByEmail(email);
 
     if (!user) {
-      return left({ message: 'Usuário não encontrado' })
+      return left({ message: "Usuário não encontrado" });
     }
 
     const passwordValid = await this.passwordService.compare(
       password,
-      user.getPasswordHash()
-    )
+      user.getPasswordHash(),
+    );
 
     if (!passwordValid) {
-      return left({ message: 'Senha inválida' })
+      return left({ message: "Senha inválida" });
     }
 
-    return right(user)
+    return right(user);
   }
 }

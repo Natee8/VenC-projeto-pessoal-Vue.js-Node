@@ -1,4 +1,4 @@
-import { PetSpecies, sizePets } from "../../../../../packages/src/types/petTypes.js";
+import { PetSpecies, sizePets } from "@packages";
 
 export type CreatePetParams = {
   ownerId: string;
@@ -6,12 +6,12 @@ export type CreatePetParams = {
   species: PetSpecies;
   breed?: string;
   age?: number;
-  size?: sizePets
+  size?: sizePets;
 };
 
 export type UpdatePetParams = {
   name?: string;
   breed?: string;
   age?: number;
-  size?: sizePets
+  size?: sizePets;
 };

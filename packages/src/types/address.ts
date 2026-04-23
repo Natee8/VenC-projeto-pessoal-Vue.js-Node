@@ -1,4 +1,4 @@
-import { State } from "apps/service/src/generated/prisma/index.js";
+import { State } from "./stateEnum";
 
 export interface AddressPrimitives extends Record<string, unknown> {
   street: string;

@@ -1,11 +1,16 @@
 import { PrismaClient } from "../../../generated/prisma/index.js";
 import type { Prisma } from "../../../generated/prisma/index.js";
-
-import { OwnerProfile } from "../../../../../../packages/src/domain/entities/ownerProfile.js";
-import { UserId } from "../../../../../../packages/src/valuesObjects/userId.js";
-import { Address } from "../../../../../../packages/src/valuesObjects/address.js";
-import { Phone } from "../../../../../../packages/src/valuesObjects/phone.js";
+import { State as DomainState } from "@packages";
+import { State as PrismaState } from "../../../generated/prisma/index.js";
+import { OwnerProfile } from "@packages";
+import { UserId } from "@packages";
+import { Address } from "@packages";
+import { Phone } from "@packages";
 import { OwnerProfileWithAddress } from "./types/ownerProfileWhitAdrress.js";
+
+function mapStateToDomain(state: PrismaState): DomainState {
+  return state as unknown as DomainState;
+}
 
 export class OwnerProfileRepository {
   private prisma = new PrismaClient();

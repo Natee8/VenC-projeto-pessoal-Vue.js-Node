@@ -1,10 +1,7 @@
 //falsa entidade serve só para o formato que a tela consome
 
-import { IUserDTO } from "../../../../../packages/src/domain/dtos/IUser.dto.js";
-import {
-  PetSpecies,
-  sizePets,
-} from "../../../../../packages/src/types/petTypes.js";
+import { IUserDTO } from "@packages";
+import { PetSpecies, sizePets } from "@packages";
 
 export interface IPet {
   id: number;

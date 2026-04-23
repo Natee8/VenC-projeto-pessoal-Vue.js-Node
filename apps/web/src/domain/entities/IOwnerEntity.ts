@@ -1,5 +1,5 @@
-import { IAddress } from "../../../../../packages/src/domain/dtos/IAddress.dto.js";
-import { UserRole } from "../../../../../packages/src/types/userType.js";
+import { IAddress } from "@packages";
+import { UserRole } from "@packages";
 import { IPet } from "./IPetEntity.js";
 
 export interface IOwner {
@@ -7,13 +7,13 @@ export interface IOwner {
   userId: string;
   name: string;
   email: string;
-  role: UserRole; 
+  role: UserRole;
   rating: number;
   totalReviews: number;
   isActive: boolean;
-  address: IAddress
+  address: IAddress;
   searchRadiusKm?: number;
-  pets: IPet
+  pets: IPet;
   createdAt: string;
   updatedAt: string;
 }

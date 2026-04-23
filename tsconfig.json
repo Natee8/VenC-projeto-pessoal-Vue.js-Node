@@ -8,7 +8,8 @@
 
     "baseUrl": ".",
     "paths": {
-      "@packages/*": ["apps/packages/src/*"]
+      "@packages": ["packages/dist/index.d.ts"],
+      "@packages/*": ["packages/dist/*"]
     }
   }
 }

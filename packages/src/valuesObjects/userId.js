@@ -1,4 +1,7 @@
-export class UserId {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.UserId = void 0;
+class UserId {
     _value;
     constructor(value) {
         this._value = value;
@@ -19,3 +22,4 @@ export class UserId {
         return this._value;
     }
 }
+exports.UserId = UserId;

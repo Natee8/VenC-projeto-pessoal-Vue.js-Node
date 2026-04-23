@@ -10,7 +10,7 @@ import { JwtTokenGenerator } from "../infrastructure/repositories/auth/tokenGene
 import { RefreshTokenRepository } from "../infrastructure/repositories/auth/refreshToken.repository.js";
 import { getErrorMessage } from "../utils/getErrorMessage.js";
 import { PasswordService } from "../application/service/passwordComparer.js";
-import { Email } from "../../../../packages/src/valuesObjects/email.js";
+import { Email } from "@packages";
 
 export const router: Router = Router();
 

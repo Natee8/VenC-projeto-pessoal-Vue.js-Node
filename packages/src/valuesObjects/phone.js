@@ -1,4 +1,7 @@
-export class Phone {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Phone = void 0;
+class Phone {
     value;
     constructor(value) {
         this.value = value;
@@ -39,3 +42,4 @@ export class Phone {
         return new Phone(raw);
     }
 }
+exports.Phone = Phone;

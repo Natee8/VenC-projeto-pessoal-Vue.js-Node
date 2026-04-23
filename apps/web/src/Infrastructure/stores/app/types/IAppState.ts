@@ -1,4 +1,4 @@
-import { IUserDTO } from "../../../../../../../packages/src/domain/dtos/IUser.dto.js";
+import { IUserDTO } from "@packages";
 import { AuthAccount } from "../../../../domain/dtos/auth.dto.js";
 
 export type IAccessTypes = "USER_CREDENTIALS" | "API_KEY";

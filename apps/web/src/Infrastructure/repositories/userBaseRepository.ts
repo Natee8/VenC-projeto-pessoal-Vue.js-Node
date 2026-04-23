@@ -1,8 +1,5 @@
 // infra/repositories/registerRepository.ts
-import {
-  RegisterOutput,
-  RegisterInput,
-} from "../../../../../packages/src/domain/dtos/IUser.dto";
+import { RegisterOutput, RegisterInput } from "@packages";
 import { apiInstance } from "../config/ApiConfig";
 
 export const registerRepository = {

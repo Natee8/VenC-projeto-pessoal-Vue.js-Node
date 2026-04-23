@@ -1,9 +1,9 @@
-import { UserAuth } from "../../../../../../packages/src/domain/entities/userAuthEntity.js";
-import { Email } from "../../../../../../packages/src/valuesObjects/email.js";
-import { UserId } from "../../../../../../packages/src/valuesObjects/userId.js";
-import { BirthDate } from "../../../../../../packages/src/valuesObjects/birthDate.js";
-import { CPF } from "../../../../../../packages/src/valuesObjects/cpf.js";
-import { Name } from "../../../../../../packages/src/valuesObjects/name.js";
+import { UserAuth } from "@packages";
+import { Email } from "@packages";
+import { UserId } from "@packages";
+import { BirthDate } from "@packages";
+import { CPF } from "@packages";
+import { Name } from "@packages";
 import { PasswordService } from "../../../application/service/passwordComparer.js";
 import { UsersRepository } from "../../repositories/auth/authLogin.repository.js";
 

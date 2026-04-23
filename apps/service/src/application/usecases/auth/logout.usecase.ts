@@ -1,8 +1,10 @@
-import { IRefreshTokenRepository } from "../../../../../../packages/src/domain/repositories/Auth.repositories.js";
-import { UserId } from "../../../../../../packages/src/valuesObjects/userId.js";
+import { IRefreshTokenRepository } from "@packages";
+import { UserId } from "@packages";
 
 export class LogoutUseCase {
-  constructor(private readonly refreshTokenRepository: IRefreshTokenRepository) {}
+  constructor(
+    private readonly refreshTokenRepository: IRefreshTokenRepository,
+  ) {}
 
   /**
    * @param userId - ID do usuário que vai deslogar
@@ -13,7 +15,9 @@ export class LogoutUseCase {
 
     // Revoga todos os tokens
     await Promise.all(
-      tokens.map(token => this.refreshTokenRepository.revoke(token.getToken()))
+      tokens.map((token) =>
+        this.refreshTokenRepository.revoke(token.getToken()),
+      ),
     );
   }
 }

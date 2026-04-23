@@ -1,5 +1,5 @@
-import { IAddress } from "../../../../../packages/src/domain/dtos/IAddress.dto.js";
-import { ServiceRequestStatus, ServiceTypes, UrgencyType } from "../../../../../packages/src/types/serviceType.js";
+import { IAddress } from "@packages";
+import { ServiceRequestStatus, ServiceTypes, UrgencyType } from "@packages";
 
 export interface IServiceRequest {
   id: string;

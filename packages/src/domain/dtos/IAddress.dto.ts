@@ -1,4 +1,4 @@
-import { State } from "apps/service/src/generated/prisma/index.js";
+import { State } from "../../types/stateEnum";
 
 export interface IAddress {
   street: string;

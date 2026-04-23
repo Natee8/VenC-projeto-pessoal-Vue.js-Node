@@ -1,5 +1,5 @@
-import { IUserDTO } from "../../../../../packages/src/domain/dtos/IUser.dto.js";
-import { SchedulingStatus } from "../../../../../packages/src/types/schedulingTypes.js";
+import { IUserDTO } from "@packages";
+import { SchedulingStatus } from "@packages";
 import { IServiceRequest } from "./IServiceRequest.js";
 
 export interface IScheduling {

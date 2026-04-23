@@ -1,4 +1,4 @@
-import { UserRole } from "../../../../../packages/src/types/userType.js";
+import { UserRole } from "@packages";
 
 export type LoginParams = {
   email: string;

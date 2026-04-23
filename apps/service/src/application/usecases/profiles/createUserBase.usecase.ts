@@ -1,12 +1,12 @@
-import { UserAuth } from "../../../../../../packages/src/domain/entities/userAuthEntity.js";
-import { BirthDate } from "../../../../../../packages/src/valuesObjects/birthDate.js";
-import { CPF } from "../../../../../../packages/src/valuesObjects/cpf.js";
-import { Email } from "../../../../../../packages/src/valuesObjects/email.js";
+import { UserAuth } from "@packages";
+import { BirthDate } from "@packages";
+import { CPF } from "@packages";
+import { Email } from "@packages";
 import { UsersRepository } from "../../../infrastructure/repositories/auth/authLogin.repository.js";
 import { PasswordService } from "../../service/passwordComparer.js";
-import { IUserDTO } from "../../../../../../packages/src/domain/dtos/IUser.dto.js";
-import { Name } from "../../../../../../packages/src/valuesObjects/name.js";
-import { UserId } from "../../../../../../packages/src/valuesObjects/userId.js";
+import { IUserDTO } from "@packages";
+import { Name } from "@packages";
+import { UserId } from "@packages";
 import { Prisma } from "../../../generated/prisma/index.js";
 
 export class CreateUserBaseUseCase {

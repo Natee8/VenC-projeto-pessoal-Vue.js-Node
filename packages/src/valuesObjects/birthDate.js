@@ -1,4 +1,7 @@
-export class BirthDate {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.BirthDate = void 0;
+class BirthDate {
     value;
     constructor(date) {
         if (!date) {
@@ -19,3 +22,4 @@ export class BirthDate {
         return this.value;
     }
 }
+exports.BirthDate = BirthDate;

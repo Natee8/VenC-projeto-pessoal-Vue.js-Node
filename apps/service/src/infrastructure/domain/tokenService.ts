@@ -1,5 +1,5 @@
 import * as crypto from "crypto";
-import { IToken } from "./IToken";
+import { IToken } from "./IToken.js";
 
 export class TokenService {
   private secret = process.env.JWT_SECRET || "your-secret-key";

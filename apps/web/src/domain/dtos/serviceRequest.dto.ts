@@ -1,5 +1,5 @@
-import { IAddress } from "../../../../../packages/src/domain/dtos/IAddress.dto.js";
-import { ServiceTypes, UrgencyType } from "../../../../../packages/src/types/serviceType.js";
+import { IAddress } from "@packages";
+import { ServiceTypes, UrgencyType } from "@packages";
 
 export type CreateServiceRequestParams = {
   ownerId: string;
@@ -7,6 +7,6 @@ export type CreateServiceRequestParams = {
   type: ServiceTypes;
   description: string;
   urgency: UrgencyType;
-  location: IAddress
-  scheduledAt?: string; 
+  location: IAddress;
+  scheduledAt?: string;
 };

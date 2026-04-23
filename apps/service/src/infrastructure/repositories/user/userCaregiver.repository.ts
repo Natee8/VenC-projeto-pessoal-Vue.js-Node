@@ -4,9 +4,9 @@ import type {
   Caregiver as PrismaCaregiver,
 } from "../../../generated/prisma/index.js";
 
-import { Caregiver } from "../../../../../../packages/src/domain/entities/caregiverEntity.js";
-import { UserId } from "../../../../../../packages/src/valuesObjects/userId.js";
-import { Address } from "../../../../../../packages/src/valuesObjects/address.js";
+import { Caregiver } from "@packages";
+import { UserId } from "@packages";
+import { Address } from "@packages";
 
 export class CaregiverRepository {
   private prisma = new PrismaClient();

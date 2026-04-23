@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { RegisterInputProfiles } from "../../../../../../packages/src/domain/dtos/IUser.dto";
+import { RegisterInputProfiles } from "@packages";
 
 interface RegisterState {
   registerData: RegisterInputProfiles | null;

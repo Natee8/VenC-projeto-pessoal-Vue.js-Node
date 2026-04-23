@@ -4,13 +4,13 @@ import {
 } from "../../../generated/prisma/index.js";
 import type { Prisma } from "../../../generated/prisma/index.js";
 
-import { UserAuth } from "../../../../../../packages/src/domain/entities/userAuthEntity.js";
-import { Email } from "../../../../../../packages/src/valuesObjects/email.js";
-import { UserId } from "../../../../../../packages/src/valuesObjects/userId.js";
-import { BirthDate } from "../../../../../../packages/src/valuesObjects/birthDate.js";
-import { CPF } from "../../../../../../packages/src/valuesObjects/cpf.js";
-import { Name } from "../../../../../../packages/src/valuesObjects/name.js";
-import { IUsersRepository } from "../../../../../../packages/src/domain/repositories/userBaseRepository.js";
+import { UserAuth } from "@packages";
+import { Email } from "@packages";
+import { UserId } from "@packages";
+import { BirthDate } from "@packages";
+import { CPF } from "@packages";
+import { Name } from "@packages";
+import { IUsersRepository } from "@packages";
 
 export class UsersRepository implements IUsersRepository<Prisma.TransactionClient> {
   private prisma = new PrismaClient();

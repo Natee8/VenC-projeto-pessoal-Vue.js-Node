@@ -1,4 +1,7 @@
-export class OwnerProfile {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.OwnerProfile = void 0;
+class OwnerProfile {
     userId;
     address;
     phone;
@@ -41,3 +44,4 @@ export class OwnerProfile {
         this.updatedAt = new Date();
     }
 }
+exports.OwnerProfile = OwnerProfile;

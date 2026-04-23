@@ -1,9 +1,9 @@
-import { UserAuth } from "../../../../packages/src/domain/entities/userAuthEntity.js";
-import { BirthDate } from "../../../../packages/src/valuesObjects/birthDate.js";
-import { CPF } from "../../../../packages/src/valuesObjects/cpf.js";
-import { Email } from "../../../../packages/src/valuesObjects/email.js";
-import { Name } from "../../../../packages/src/valuesObjects/name.js";
-import { UserId } from "../../../../packages/src/valuesObjects/userId.js";
+import { UserAuth } from "@packages";
+import { BirthDate } from "@packages";
+import { CPF } from "@packages";
+import { Email } from "@packages";
+import { Name } from "@packages";
+import { UserId } from "@packages";
 import { UserAuth as PrismaUserAuth } from "../generated/prisma/index.js";
 
 export const mapPrismaUserAuthToEntity = (user: PrismaUserAuth): UserAuth => {
