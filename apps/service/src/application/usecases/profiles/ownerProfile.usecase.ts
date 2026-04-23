@@ -1,8 +1,7 @@
 import { IAddress } from "../../../../../../packages/src/domain/dtos/IAddress.dto.js";
-import { OwnerProfile } from "../../../../../../packages/src/domain/entities/ownerProfile.js";
-import { AddressPrimitives } from "../../../../../../packages/src/types/address.js";
 import { Address } from "../../../../../../packages/src/valuesObjects/address.js";
 import { Phone } from "../../../../../../packages/src/valuesObjects/phone.js";
+import { OwnerProfile } from "@packages/src/domain/entities/ownerProfile.js";
 import { UserId } from "../../../../../../packages/src/valuesObjects/userId.js";
 import { Prisma } from "../../../generated/prisma/client.js";
 import { OwnerProfileRepository } from "../../../infrastructure/repositories/user/userOwner.repository.js";

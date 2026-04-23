@@ -3,36 +3,18 @@
 
   "compilerOptions": {
     "target": "esnext",
-
     "module": "ESNext",
-
     "moduleResolution": "Bundler",
-
     "strict": true,
-
     "esModuleInterop": true,
 
     "baseUrl": ".",
 
-    "paths": {
-      "@/*": ["src/*"],
-
-      "@repositories/*": ["src/infrastructure/repositories/*"],
-
-      "@packages/*": ["../../packages/src/*"]
-    },
-
     "types": ["vite/client"],
-
     "ignoreDeprecations": "6.0"
   },
 
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.vue",
-    "src/**/*.d.ts",
-    "../../packages/src/**/*.ts"
-  ],
+  "include": ["src/**/*.ts", "src/**/*.vue", "src/**/*.d.ts"],
 
   "exclude": ["node_modules", "dist"]
 }

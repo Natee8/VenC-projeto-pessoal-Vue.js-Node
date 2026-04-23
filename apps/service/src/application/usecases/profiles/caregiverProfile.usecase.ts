@@ -1,7 +1,6 @@
-import { Caregiver } from "../../../../../../packages/src/domain/entities/caregiverEntity.js";
+import { Caregiver } from "@packages/domain/entities/caregiverEntity.js";
 import { UserId } from "../../../../../../packages/src/valuesObjects/userId.js";
 import { Address } from "../../../../../../packages/src/valuesObjects/address.js";
-import type { AddressPrimitives } from "../../../../../../packages/src/types/address.js";
 import { CaregiverRepository } from "../../../infrastructure/repositories/user/userCaregiver.repository.js";
 import { Prisma } from "../../../generated/prisma/wasm.js";
 import { IAddress } from "../../../../../../packages/src/domain/dtos/IAddress.dto.js";

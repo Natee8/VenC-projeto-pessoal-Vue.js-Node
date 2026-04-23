@@ -2,6 +2,7 @@
 import { computed, ref, watch } from "vue";
 import { cepService } from "@/infrastructure/utils/cepService";
 import { BRAZIL_STATES } from "@/types/IStates";
+import RadiusComponent from "../utils/RadiusComponent.vue";
 
 const props = defineProps({
   street: String,
@@ -27,9 +28,9 @@ const emit = defineEmits<{
 
 let timeout: any;
 
-const serviceRadiusModel = computed({
-  get: () => props.serviceRadius,
-  set: (val: number) => emit("update:serviceRadius", val),
+const serviceRadiusModel = computed<number>({
+  get: () => props.serviceRadius ?? 5,
+  set: (val) => emit("update:serviceRadius", val),
 });
 
 watch(

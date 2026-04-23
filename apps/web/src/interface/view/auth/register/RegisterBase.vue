@@ -60,7 +60,7 @@ const handleAddressSubmit = () => {
       city: city.value,
       state: state.value,
       zipCode: zipCode.value,
-      serviceRadius: serviceRadius.value,
+      serviceRadiusKm: serviceRadius.value,
     }),
   );
 
@@ -102,7 +102,6 @@ const handleProfileSubmit = async (data: any) => {
           </p>
         </div>
 
-        <!-- STEPS -->
         <RegisterFormBase
           v-if="step === 1"
           v-model:name="userName"

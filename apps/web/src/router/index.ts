@@ -5,18 +5,12 @@ const Home = () => import("../interface/view/home/Home.vue");
 const Login = () => import("../interface/view/auth/Login.vue");
 const RegisterBase = () =>
   import("../interface/view/auth/register/RegisterBase.vue");
-const RegisterOwner = () =>
-  import("../interface/view/auth/register/RegisterOwner.vue");
-const RegisterCepAndRadius = () =>
-  import("../interface/view/auth/register/RegisterCepAndRadius.vue");
 const SendEmail = () =>
   import("../interface/view/auth/resetPassword/SendEmail.vue");
 const SendCode = () =>
   import("../interface/view/auth/resetPassword/SendCode.vue");
 const ResetPassword = () =>
   import("../interface/view/auth/resetPassword/ResetPassword.vue");
-const RegisterCarrehiver = () =>
-  import("../interface/view/auth/register/RegisterCarrehiver.vue");
 
 export const router = createRouter({
   history: createWebHistory(),

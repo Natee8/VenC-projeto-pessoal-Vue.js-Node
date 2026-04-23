@@ -1,18 +1,20 @@
-import { AddressPrimitives, State } from "../types/address.js";
+import { AddressPrimitives } from "../types/address.js";
+import { State } from "apps/service/src/generated/prisma/index.js";
 
 export class Address {
   constructor(
     public readonly street: string,
     public readonly number: string,
     public readonly neighborhood: string,
-    public readonly city: State,
+    public readonly city: string,
+    public readonly state: State,
     public readonly zipCode: string,
   ) {
     this.validate();
   }
 
   private validate() {
-    if (!this.street || !this.number || !this.city) {
+    if (!this.street || !this.number || !this.city || !this.state) {
       throw new Error("Endereço inválido");
     }
 
@@ -27,6 +29,7 @@ export class Address {
       number: this.number,
       neighborhood: this.neighborhood,
       city: this.city,
+      state: this.state,
       zipCode: this.zipCode,
     };
   }
@@ -38,6 +41,13 @@ export class Address {
 
     const v = raw as AddressPrimitives;
 
-    return new Address(v.street, v.number, v.neighborhood, v.city, v.zipCode);
+    return new Address(
+      v.street,
+      v.number,
+      v.neighborhood,
+      v.city,
+      v.state as State,
+      v.zipCode,
+    );
   }
 }

@@ -85,12 +85,11 @@ const handleSubmit = (e: Event) => {
           </div>
         </label>
 
-        <!-- BOTÃO X FORA DO LABEL -->
         <button
           v-if="profileImage"
           type="button"
           @click="removeImage"
-          class="absolute top-2 right-2 w-8 h-8 rounded-full bg-red-500 text-white flex items-center justify-center shadow hover:scale-105 transition"
+          class="absolute top-0 right-0 w-8 h-8 rounded-full bg-red-500 text-white flex items-center justify-center shadow hover:scale-105 transition"
         >
           ✕
         </button>

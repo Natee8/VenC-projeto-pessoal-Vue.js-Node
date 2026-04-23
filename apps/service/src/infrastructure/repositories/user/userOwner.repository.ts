@@ -1,20 +1,18 @@
 import { PrismaClient } from "../../../generated/prisma/index.js";
-import type {
-  Prisma,
-  OwnerProfile as PrismaOwnerProfile,
-} from "../../../generated/prisma/index.js";
+import type { Prisma } from "../../../generated/prisma/index.js";
 
 import { OwnerProfile } from "../../../../../../packages/src/domain/entities/ownerProfile.js";
 import { UserId } from "../../../../../../packages/src/valuesObjects/userId.js";
 import { Address } from "../../../../../../packages/src/valuesObjects/address.js";
 import { Phone } from "../../../../../../packages/src/valuesObjects/phone.js";
+import { OwnerProfileWithAddress } from "./types/ownerProfileWhitAdrress.js";
 
 export class OwnerProfileRepository {
   private prisma = new PrismaClient();
 
-  private mapToEntity(record: PrismaOwnerProfile): OwnerProfile {
+  private mapToEntity(record: OwnerProfileWithAddress): OwnerProfile {
     if (!record.address) {
-      throw new Error("OwnerProfile sem endereço (estado inválido)");
+      throw new Error("Tutor sem endereço (estado inválido)");
     }
 
     return new OwnerProfile(
@@ -38,20 +36,47 @@ export class OwnerProfileRepository {
     const client = tx ?? this.prisma;
 
     const record = await client.ownerProfile.upsert({
-      where: { userId: ownerProfile.getUserId().getValue() },
+      where: {
+        userId: ownerProfile.getUserId().getValue(),
+      },
+
+      include: {
+        address: true,
+      },
 
       update: {
-        address: ownerProfile.getAddress().toPrimitives(),
         phone: ownerProfile.getPhone()?.toPrimitives() ?? null,
         searchRadiusKm: ownerProfile.getSearchRadius(),
-        updatedAt: new Date(),
+
+        address: {
+          update: {
+            street: ownerProfile.getAddress().street,
+            number: ownerProfile.getAddress().number,
+            neighborhood: ownerProfile.getAddress().neighborhood,
+            city: ownerProfile.getAddress().city,
+            state: ownerProfile.getAddress().state,
+            zipCode: ownerProfile.getAddress().zipCode,
+          },
+        },
       },
 
       create: {
         userId: ownerProfile.getUserId().getValue(),
-        address: ownerProfile.getAddress().toPrimitives(),
+
         phone: ownerProfile.getPhone()?.toPrimitives() ?? null,
+
         searchRadiusKm: ownerProfile.getSearchRadius(),
+
+        address: {
+          create: {
+            street: ownerProfile.getAddress().street,
+            number: ownerProfile.getAddress().number,
+            neighborhood: ownerProfile.getAddress().neighborhood,
+            city: ownerProfile.getAddress().city,
+            state: ownerProfile.getAddress().state,
+            zipCode: ownerProfile.getAddress().zipCode,
+          },
+        },
       },
     });
 
@@ -66,6 +91,9 @@ export class OwnerProfileRepository {
 
     const record = await client.ownerProfile.findUnique({
       where: { userId },
+      include: {
+        address: true,
+      },
     });
 
     if (!record) return null;
@@ -76,7 +104,12 @@ export class OwnerProfileRepository {
   async findAll(tx?: Prisma.TransactionClient): Promise<OwnerProfile[]> {
     const client = tx ?? this.prisma;
 
-    const records = await client.ownerProfile.findMany();
-    return records.map(this.mapToEntity);
+    const records: OwnerProfileWithAddress[] =
+      await client.ownerProfile.findMany({
+        include: {
+          address: true,
+        },
+      });
+    return records.map((record) => this.mapToEntity(record));
   }
 }

@@ -26,14 +26,65 @@ model UserAuth {
   refreshTokens RefreshToken[]
 }
 
+enum State {
+  AC
+  AL
+  AP
+  AM
+  BA
+  CE
+  DF
+  ES
+  GO
+  MA
+  MT
+  MS
+  MG
+  PA
+  PB
+  PR
+  PE
+  PI
+  RJ
+  RN
+  RS
+  RO
+  RR
+  SC
+  SP
+  SE
+  TO
+}
+
+model Address {
+  id           Int    @id @default(autoincrement())
+  street       String
+  number       String
+  neighborhood String
+  city         String
+  state        State
+  zipCode      String
+
+  latitude  Float?
+  longitude Float?
+
+  ownerProfileId Int? @unique
+  caregiverId    Int? @unique
+
+  ownerProfile OwnerProfile? @relation(fields: [ownerProfileId], references: [id])
+  caregiver    Caregiver?    @relation(fields: [caregiverId], references: [id])
+}
+
 model OwnerProfile {
   id             Int      @id @default(autoincrement())
   userId         Int      @unique
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   searchRadiusKm Float?
-  address        Json
-  phone          String?
+
+  address Address?
+
+  phone String?
 
   user UserAuth @relation(fields: [userId], references: [id])
 }
@@ -48,10 +99,12 @@ model Caregiver {
   isActive        Boolean  @default(true)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  address         Json
+
+  address Address?
 
   user UserAuth @relation(fields: [userId], references: [id])
 }
+
 
 model RefreshToken {
   token     String   @id
