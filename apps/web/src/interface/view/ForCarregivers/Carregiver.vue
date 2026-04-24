@@ -1,2 +1,4 @@
 <script></script>
-<template></template>
+<template>
+  <h1>para cuidadores</h1>
+</template>

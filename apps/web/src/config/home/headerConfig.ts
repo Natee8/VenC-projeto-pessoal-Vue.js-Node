@@ -8,17 +8,17 @@ export const HeaderByRole = {
     {
       id: "about",
       label: "Sobre",
-      to: "/",
+      to: "/About",
     },
     {
       id: "for-owners",
       label: "Para Tutores",
-      to: "/register-owner",
+      to: "/for-owners",
     },
     {
       id: "for-caregivers",
       label: "Para Cuidadores",
-      to: "/register-caregiver",
+      to: "/for-caregivers",
     },
   ],
 

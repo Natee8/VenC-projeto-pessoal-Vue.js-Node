@@ -1,5 +1,10 @@
+import About from "src/interface/view/About/About.vue";
+
 export const Routes = {
   home: "/",
+  about: "/about",
+  forCaregivers: "/for-caregivers",
+  forOwners: "/for-owners",
   login: "/login",
   register: "/register",
   registerCepAndRadius: "/cep-and-radius",

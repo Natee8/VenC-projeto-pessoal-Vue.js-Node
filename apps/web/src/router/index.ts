@@ -11,6 +11,10 @@ const SendCode = () =>
   import("../interface/view/auth/resetPassword/SendCode.vue");
 const ResetPassword = () =>
   import("../interface/view/auth/resetPassword/ResetPassword.vue");
+const about = () => import("../interface/view/About/About.vue");
+const forCaregivers = () =>
+  import("../interface/view/ForCarregivers/Carregiver.vue");
+const forOwners = () => import("../interface/view/ForOwners/Owners.vue");
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -19,6 +23,21 @@ export const router = createRouter({
       path: Routes.home,
       name: "home",
       component: Home,
+    },
+    {
+      path: Routes.about,
+      name: "about",
+      component: about,
+    },
+    {
+      path: Routes.forCaregivers,
+      name: "for-caregivers",
+      component: forCaregivers,
+    },
+    {
+      path: Routes.forOwners,
+      name: "for-owners",
+      component: forOwners,
     },
     {
       path: Routes.login,
