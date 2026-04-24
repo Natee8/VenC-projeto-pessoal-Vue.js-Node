@@ -1,18 +1,15 @@
 import { PrismaClient } from "../../../generated/prisma/index.js";
-import type {
-  Prisma,
-  Caregiver as PrismaCaregiver,
-  State,
-} from "../../../generated/prisma/index.js";
+import type { Prisma, State } from "../../../generated/prisma/index.js";
 
 import { Caregiver } from "@packages";
 import { UserId } from "@packages";
 import { Address } from "@packages";
+import { CaregiverWithAddress } from "apps/service/src/utils/usersWithAddress.js";
 
 export class CaregiverRepository {
   private prisma = new PrismaClient();
 
-  private mapToEntity(record: PrismaCaregiver): Caregiver {
+  private mapToEntity(record: CaregiverWithAddress): Caregiver {
     if (!record.address) {
       throw new Error("Caregiver sem endereço");
     }

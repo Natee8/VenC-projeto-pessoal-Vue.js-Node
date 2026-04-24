@@ -1,12 +1,11 @@
-import type { OwnerProfile as PrismaOwnerProfile } from "../../generated/prisma/index.js";
-
 import { OwnerProfile } from "@packages";
 import { UserId } from "@packages";
 import { Address } from "@packages";
 import { Phone } from "@packages";
+import { OwnerWithAddress } from "../../utils/usersWithAddress.js";
 
 export class OwnerProfileMapper {
-  static toEntity(record: PrismaOwnerProfile): OwnerProfile {
+  static toEntity(record: OwnerWithAddress): OwnerProfile {
     if (!record.address) {
       throw new Error("OwnerProfile sem endereço (estado inválido)");
     }
