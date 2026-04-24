@@ -3,33 +3,28 @@ import { computed, ref, watch } from "vue";
 import RadiusComponent from "../utils/RadiusComponent.vue";
 import { cepService } from "src/infrastructure/utils/cepService";
 import { BRAZIL_STATES } from "src/types/IStates";
+import {
+  RegisterRadiusAndCEPEmits,
+  RegisterRadiusAndCEPProps,
+} from "./types/propsRegister";
+import { RegisterRadiusAndCepErrors } from "./types/typeErrors";
+import { registerRadiusAndCepSchema } from "./schemas/radiusAndCep";
 
-const props = defineProps({
-  street: String,
-  number: String,
-  neighborhood: String,
-  city: String,
-  state: String,
-  zipCode: String,
-  serviceRadius: Number,
-  isLoading: Boolean,
-});
+const props = defineProps<RegisterRadiusAndCEPProps>();
+const emit = defineEmits<RegisterRadiusAndCEPEmits>();
+const errors = ref<RegisterRadiusAndCepErrors>({});
 
-const emit = defineEmits<{
-  (e: "update:street", val: string): void;
-  (e: "update:number", val: string): void;
-  (e: "update:neighborhood", val: string): void;
-  (e: "update:city", val: string): void;
-  (e: "update:state", val: string): void;
-  (e: "update:zipCode", val: string): void;
-  (e: "update:serviceRadius", val: number): void;
-  (e: "submit"): void;
-}>();
+let timeout: ReturnType<typeof setTimeout>;
 
-let timeout: any;
+const updateField = (event: Event, emitName: string) => {
+  const target = event.target as HTMLInputElement | HTMLSelectElement;
+
+  emit(emitName as any, target.value);
+};
 
 const serviceRadiusModel = computed<number>({
   get: () => props.serviceRadius ?? 5,
+
   set: (val) => emit("update:serviceRadius", val),
 });
 
@@ -44,6 +39,7 @@ watch(
       if (cep.length !== 8) return;
 
       const data = await cepService.getAddressByCep(cep);
+
       if (!data) return;
 
       emit("update:street", data.logradouro || "");
@@ -54,22 +50,45 @@ watch(
   },
 );
 
-const handleSubmit = (e: Event) => {
+const handleSubmit = async (e: Event) => {
   e.preventDefault();
 
-  emit("submit");
-};
+  errors.value = {};
 
-const updateField = (event: Event, emitName: string) => {
-  const target = event.target as HTMLInputElement | HTMLSelectElement;
-  emit(emitName as any, target.value);
+  try {
+    await registerRadiusAndCepSchema.validate(
+      {
+        zipCode: props.zipCode,
+        state: props.state,
+        city: props.city,
+        neighborhood: props.neighborhood,
+        street: props.street,
+        number: props.number,
+        serviceRadius: props.serviceRadius,
+      },
+      {
+        abortEarly: false,
+      },
+    );
+
+    emit("submit");
+  } catch (error: any) {
+    const validationErrors = error.inner?.length ? error.inner : [error];
+
+    validationErrors.forEach((err: any) => {
+      const field = err.path as keyof RegisterRadiusAndCepErrors;
+
+      errors.value[field] = err.message;
+    });
+  }
 };
 </script>
 
 <template>
   <form class="flex flex-col gap-5" @submit="handleSubmit">
     <div class="flex flex-col gap-2">
-      <label for="zipCode" class="text-white font-semibold">CEP</label>
+      <label for="zipCode" class="text-white font-semibold"> CEP </label>
+
       <input
         :value="zipCode"
         @input="(e) => updateField(e, 'update:zipCode')"
@@ -78,11 +97,15 @@ const updateField = (event: Event, emitName: string) => {
         placeholder="Digite o CEP"
         class="w-full h-14 px-4 rounded-lg bg-white border border-gray-200 outline-none focus:border-details"
       />
+
+      <span v-if="errors.zipCode" class="text-red-400 text-sm">
+        {{ errors.zipCode }}
+      </span>
     </div>
 
     <div class="flex gap-6">
       <div class="flex-1 flex flex-col gap-2">
-        <label for="state" class="text-white font-semibold">Estado</label>
+        <label for="state" class="text-white font-semibold"> Estado </label>
 
         <select
           :value="state"
@@ -96,12 +119,17 @@ const updateField = (event: Event, emitName: string) => {
             {{ s.label }}
           </option>
         </select>
+
+        <span v-if="errors.state" class="text-red-400 text-sm">
+          {{ errors.state }}
+        </span>
       </div>
     </div>
 
     <div class="flex gap-6">
       <div class="flex-1 flex flex-col gap-2">
-        <label for="city" class="text-white font-semibold">Cidade</label>
+        <label for="city" class="text-white font-semibold"> Cidade </label>
+
         <input
           :value="city"
           @input="(e) => updateField(e, 'update:city')"
@@ -110,12 +138,17 @@ const updateField = (event: Event, emitName: string) => {
           placeholder="Digite a cidade"
           class="w-full h-14 px-4 rounded-lg bg-white border border-gray-200 outline-none focus:border-details"
         />
+
+        <span v-if="errors.city" class="text-red-400 text-sm">
+          {{ errors.city }}
+        </span>
       </div>
 
       <div class="flex-1 flex flex-col gap-2">
-        <label for="neighborhood" class="text-white font-semibold"
-          >Bairro</label
-        >
+        <label for="neighborhood" class="text-white font-semibold">
+          Bairro
+        </label>
+
         <input
           :value="neighborhood"
           @input="(e) => updateField(e, 'update:neighborhood')"
@@ -124,12 +157,17 @@ const updateField = (event: Event, emitName: string) => {
           placeholder="Digite o bairro"
           class="w-full h-14 px-4 rounded-lg bg-white border border-gray-200 outline-none focus:border-details"
         />
+
+        <span v-if="errors.neighborhood" class="text-red-400 text-sm">
+          {{ errors.neighborhood }}
+        </span>
       </div>
     </div>
 
     <div class="flex gap-6">
       <div class="flex-1 flex flex-col gap-2">
-        <label for="street" class="text-white font-semibold">Rua</label>
+        <label for="street" class="text-white font-semibold"> Rua </label>
+
         <input
           :value="street"
           @input="(e) => updateField(e, 'update:street')"
@@ -138,10 +176,15 @@ const updateField = (event: Event, emitName: string) => {
           placeholder="Digite a rua"
           class="w-full h-14 px-4 rounded-lg bg-white border border-gray-200 outline-none focus:border-details"
         />
+
+        <span v-if="errors.street" class="text-red-400 text-sm">
+          {{ errors.street }}
+        </span>
       </div>
 
       <div class="flex-1 flex flex-col gap-2">
-        <label for="number" class="text-white font-semibold">Número</label>
+        <label for="number" class="text-white font-semibold"> Número </label>
+
         <input
           :value="number"
           @input="(e) => updateField(e, 'update:number')"
@@ -150,16 +193,24 @@ const updateField = (event: Event, emitName: string) => {
           placeholder="Digite o número"
           class="w-full h-14 px-4 rounded-lg bg-white border border-gray-200 outline-none focus:border-details"
         />
+
+        <span v-if="errors.number" class="text-red-400 text-sm">
+          {{ errors.number }}
+        </span>
       </div>
     </div>
 
     <div class="my-5">
-      <radius-component
+      <RadiusComponent
         v-model="serviceRadiusModel"
         title="Escolha o raio do seu atendimento"
         :min="5"
         :max="64"
       />
+
+      <span v-if="errors.serviceRadius" class="text-red-400 text-sm">
+        {{ errors.serviceRadius }}
+      </span>
     </div>
 
     <button
@@ -167,7 +218,9 @@ const updateField = (event: Event, emitName: string) => {
       :disabled="isLoading"
       class="w-full h-16 bg-details text-white font-semibold rounded-lg mt-6 hover:opacity-90 transition disabled:opacity-50"
     >
-      <slot>{{ isLoading ? "Continuar" : "Continuar" }}</slot>
+      <slot>
+        {{ isLoading ? "Continuar..." : "Continuar" }}
+      </slot>
     </button>
   </form>
 </template>

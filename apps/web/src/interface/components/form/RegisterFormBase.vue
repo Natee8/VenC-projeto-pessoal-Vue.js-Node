@@ -1,31 +1,54 @@
 <script setup lang="ts">
-const props = defineProps({
-  name: String,
-  email: String,
-  birthDate: String,
-  cpf: String,
-  password: String,
-  confirmPassword: String,
-  isLoading: Boolean,
-});
+import { ref } from "vue";
 
-const emit = defineEmits<{
-  (e: "update:name", val: string): void;
-  (e: "update:email", val: string): void;
-  (e: "update:birthDate", val: string): void;
-  (e: "update:cpf", val: string): void;
-  (e: "update:password", val: string): void;
-  (e: "update:confirmPassword", val: string): void;
-  (e: "submit"): void;
-}>();
+import {
+  RegisterFormBaseEmits,
+  RegisterFormBaseProps,
+} from "./types/propsRegister";
 
-const handleSubmit = (e: Event) => {
+import { RegisterFormErrors } from "./types/typeErrors";
+import { registerFormBaseSchema } from "./schemas/formBaseSchema";
+
+const props = defineProps<RegisterFormBaseProps>();
+const emit = defineEmits<RegisterFormBaseEmits>();
+
+const errors = ref<RegisterFormErrors>({});
+
+const handleSubmit = async (e: Event) => {
   e.preventDefault();
-  emit("submit");
+
+  errors.value = {};
+
+  try {
+    await registerFormBaseSchema.validate(
+      {
+        name: props.name,
+        email: props.email,
+        birthDate: props.birthDate,
+        cpf: props.cpf,
+        password: props.password,
+        confirmPassword: props.confirmPassword,
+      },
+      {
+        abortEarly: false,
+      },
+    );
+
+    emit("submit");
+  } catch (error: any) {
+    const validationErrors = error.inner?.length ? error.inner : [error];
+
+    validationErrors.forEach((err: any) => {
+      const field = err.path as keyof RegisterFormErrors;
+
+      errors.value[field] = err.message;
+    });
+  }
 };
 
 const updateField = (event: Event, emitName: string) => {
   const target = event.target as HTMLInputElement;
+
   emit(emitName as any, target.value);
 };
 </script>
@@ -34,6 +57,7 @@ const updateField = (event: Event, emitName: string) => {
   <form class="flex flex-col gap-5" @submit="handleSubmit">
     <div class="flex flex-col gap-2">
       <label for="name" class="text-white font-semibold">Nome</label>
+
       <input
         :value="name"
         @input="(e) => updateField(e, 'update:name')"
@@ -42,10 +66,15 @@ const updateField = (event: Event, emitName: string) => {
         placeholder="Digite seu nome completo"
         class="w-full h-14 px-4 rounded-lg bg-white border border-gray-200 outline-none focus:border-details"
       />
+
+      <span v-if="errors.name" class="text-red-400 text-sm">
+        {{ errors.name }}
+      </span>
     </div>
 
     <div class="flex flex-col gap-2">
       <label for="email" class="text-white font-semibold">Email</label>
+
       <input
         :value="email"
         @input="(e) => updateField(e, 'update:email')"
@@ -54,13 +83,18 @@ const updateField = (event: Event, emitName: string) => {
         placeholder="Digite seu email"
         class="w-full h-14 px-4 rounded-lg bg-white border border-gray-200 outline-none focus:border-details"
       />
+
+      <span v-if="errors.email" class="text-red-400 text-sm">
+        {{ errors.email }}
+      </span>
     </div>
 
     <div class="flex gap-6">
       <div class="flex-1 flex flex-col gap-2">
-        <label for="birthDate" class="text-white font-semibold"
-          >Data de Nascimento</label
-        >
+        <label for="birthDate" class="text-white font-semibold">
+          Data de Nascimento
+        </label>
+
         <input
           :value="birthDate"
           @input="(e) => updateField(e, 'update:birthDate')"
@@ -68,10 +102,15 @@ const updateField = (event: Event, emitName: string) => {
           id="birthDate"
           class="w-full h-14 px-4 rounded-lg bg-white border border-gray-200 outline-none focus:border-details"
         />
+
+        <span v-if="errors.birthDate" class="text-red-400 text-sm">
+          {{ errors.birthDate }}
+        </span>
       </div>
 
       <div class="flex-1 flex flex-col gap-2">
         <label for="cpf" class="text-white font-semibold">CPF</label>
+
         <input
           :value="cpf"
           @input="(e) => updateField(e, 'update:cpf')"
@@ -80,11 +119,16 @@ const updateField = (event: Event, emitName: string) => {
           placeholder="Digite seu CPF"
           class="w-full h-14 px-4 rounded-lg bg-white border border-gray-200 outline-none focus:border-details"
         />
+
+        <span v-if="errors.cpf" class="text-red-400 text-sm">
+          {{ errors.cpf }}
+        </span>
       </div>
     </div>
 
     <div class="flex flex-col gap-2">
       <label for="password" class="text-white font-semibold">Senha</label>
+
       <input
         :value="password"
         @input="(e) => updateField(e, 'update:password')"
@@ -93,12 +137,17 @@ const updateField = (event: Event, emitName: string) => {
         placeholder="Digite sua senha"
         class="w-full h-14 px-4 rounded-lg bg-white border border-gray-200 outline-none focus:border-details"
       />
+
+      <span v-if="errors.password" class="text-red-400 text-sm">
+        {{ errors.password }}
+      </span>
     </div>
 
     <div class="flex flex-col gap-2">
-      <label for="confirmPassword" class="text-white font-semibold"
-        >Confirmar Senha</label
-      >
+      <label for="confirmPassword" class="text-white font-semibold">
+        Confirmar Senha
+      </label>
+
       <input
         :value="confirmPassword"
         @input="(e) => updateField(e, 'update:confirmPassword')"
@@ -107,6 +156,10 @@ const updateField = (event: Event, emitName: string) => {
         placeholder="Confirme sua senha"
         class="w-full h-14 px-4 rounded-lg bg-white border border-gray-200 outline-none focus:border-details"
       />
+
+      <span v-if="errors.confirmPassword" class="text-red-400 text-sm">
+        {{ errors.confirmPassword }}
+      </span>
     </div>
 
     <button
@@ -114,7 +167,9 @@ const updateField = (event: Event, emitName: string) => {
       :disabled="isLoading"
       class="w-full h-16 bg-details text-white font-semibold rounded-lg mt-6 hover:opacity-90 transition disabled:opacity-50"
     >
-      <slot>{{ isLoading ? "Registrando..." : "Continuar" }}</slot>
+      <slot>
+        {{ isLoading ? "Registrando..." : "Continuar" }}
+      </slot>
     </button>
   </form>
 </template>

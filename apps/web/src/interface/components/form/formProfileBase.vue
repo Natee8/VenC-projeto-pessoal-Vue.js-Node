@@ -1,47 +1,70 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import {
+  FormProfileBaseEmits,
+  FormProfileBaseProps,
+} from "./types/propsRegister";
+import { fileToBase64 } from "src/infrastructure/utils/functionToBase64";
+import { profileFormSchema } from "./schemas/profileBaseSchema";
+import { ProfileErrors } from "./types/typeErrors";
 
-defineProps<{
-  isLoading: boolean;
-}>();
+defineProps<FormProfileBaseProps>();
+
+const emit = defineEmits<FormProfileBaseEmits>();
 
 const publicProfile = ref(false);
 const acceptPetHosting = ref(false);
 const acceptTerms = ref(false);
+
 const profileImage = ref<string | null>(null);
 
-const emit = defineEmits<{
-  (
-    e: "submit",
-    payload: {
-      profileImage: string | null;
-      publicProfile: boolean;
-      acceptPetHosting: boolean;
-      acceptTerms: boolean;
-    },
-  ): void;
-}>();
+const errors = ref<ProfileErrors>({});
 
-const handleImageUpload = (e: Event) => {
+const handleImageUpload = async (e: Event) => {
   const file = (e.target as HTMLInputElement).files?.[0];
+
   if (!file) return;
 
-  profileImage.value = URL.createObjectURL(file);
+  profileImage.value = await fileToBase64(file);
+
+  errors.value.profileImage = "";
 };
 
 const removeImage = () => {
   profileImage.value = null;
 };
 
-const handleSubmit = (e: Event) => {
+const handleSubmit = async (e: Event) => {
   e.preventDefault();
 
-  emit("submit", {
-    profileImage: profileImage.value,
-    publicProfile: publicProfile.value,
-    acceptPetHosting: acceptPetHosting.value,
-    acceptTerms: acceptTerms.value,
-  });
+  errors.value = {};
+
+  try {
+    await profileFormSchema.validate(
+      {
+        profileImage: profileImage.value,
+        publicProfile: publicProfile.value,
+        acceptPetHosting: acceptPetHosting.value,
+        acceptTerms: acceptTerms.value,
+      },
+      {
+        abortEarly: false,
+      },
+    );
+
+    emit("submit", {
+      profileImage: profileImage.value,
+      publicProfile: publicProfile.value,
+      acceptPetHosting: acceptPetHosting.value,
+      acceptTerms: acceptTerms.value,
+    });
+  } catch (error: any) {
+    error.inner.forEach((err: any) => {
+      const field = err.path as keyof ProfileErrors;
+
+      errors.value[field] = err.message;
+    });
+  }
 };
 </script>
 
@@ -56,7 +79,6 @@ const handleSubmit = (e: Event) => {
       </p>
 
       <div class="relative mt-3">
-        <!-- INPUT -->
         <label class="cursor-pointer">
           <input
             type="file"
@@ -65,7 +87,6 @@ const handleSubmit = (e: Event) => {
             @change="handleImageUpload"
           />
 
-          <!-- AVATAR -->
           <div
             class="w-[230px] h-[230px] rounded-full bg-white border-4 border-details flex items-center justify-center overflow-hidden hover:scale-105 transition relative"
           >
@@ -94,6 +115,10 @@ const handleSubmit = (e: Event) => {
           ✕
         </button>
       </div>
+
+      <span v-if="errors.profileImage" class="text-red-400 text-sm mt-2">
+        {{ errors.profileImage }}
+      </span>
     </div>
 
     <!-- CHECKBOXES -->
@@ -105,8 +130,7 @@ const handleSubmit = (e: Event) => {
       />
 
       <label class="text-white text-sm leading-relaxed">
-        Tornar perfil público (quando ativado, seu perfil ficará visível para
-        cuidadores na plataforma)
+        Tornar perfil público
       </label>
     </div>
 
@@ -118,8 +142,7 @@ const handleSubmit = (e: Event) => {
       />
 
       <label class="text-white text-sm leading-relaxed">
-        Aceitar serviços de hospedagem pet (se ativado, seu endereço ficará
-        visível para clientes)
+        Aceitar serviços de hospedagem pet
       </label>
     </div>
 
@@ -135,9 +158,13 @@ const handleSubmit = (e: Event) => {
       </label>
     </div>
 
+    <span v-if="errors.acceptTerms" class="text-red-400 text-sm">
+      {{ errors.acceptTerms }}
+    </span>
+
     <button
       type="submit"
-      :disabled="isLoading || !acceptTerms"
+      :disabled="isLoading"
       class="w-full h-16 bg-details text-white font-semibold rounded-lg mt-6 hover:opacity-90 transition disabled:opacity-50"
     >
       {{ isLoading ? "Registrando..." : "Cadastrar" }}
