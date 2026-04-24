@@ -26,6 +26,7 @@ export class RegisterUseCase {
         tx,
       );
 
+      console.log("ADDRESS INPUT:", input.address);
       if (input.type === "owner") {
         const profile = await this.ownerProfile.save(
           {

@@ -5,6 +5,8 @@ export class CreateUserBaseController {
   constructor(private createUserBaseUseCase: CreateUserBaseUseCase) {}
 
   async handle(req: Request, res: Response) {
+    console.log(req.body);
+    console.log("ADDRESS:", req.body.address);
     try {
       const { name, email, password, cpf, birthDate } = req.body;
 

@@ -3,6 +3,7 @@ import { registerRepository } from "src/infrastructure/repositories/userBaseRepo
 import FormProfileBase from "src/interface/components/form/formProfileBase.vue";
 import RegisterFormBase from "src/interface/components/form/RegisterFormBase.vue";
 import RegisterRadiusAndCEP from "src/interface/components/form/RegisterRadiusAndCEP.vue";
+import { createRegisterForm } from "src/interface/utils/registerPayload";
 import { ref } from "vue";
 
 import { useRouter } from "vue-router";
@@ -10,64 +11,43 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 
 const step = ref(1);
-
-/* BASE */
-const userName = ref("");
-const email = ref("");
-const birthDate = ref("");
-const cpf = ref("");
-const password = ref("");
-const confirmPassword = ref("");
-
-/* ADDRESS */
-const street = ref("");
-const number = ref("");
-const neighborhood = ref("");
-const city = ref("");
-const state = ref("");
-const zipCode = ref("");
-const serviceRadius = ref(10);
-
-/* PROFILE */
+const form = createRegisterForm();
 const isLoading = ref(false);
 
-/* STEP 1 */
 const handleBaseSubmit = () => {
-  if (password.value !== confirmPassword.value) return;
+  if (form.base.password !== form.base.confirmPassword) return;
 
   sessionStorage.setItem(
     "register-base",
     JSON.stringify({
-      name: userName.value,
-      email: email.value,
-      birthDate: birthDate.value,
-      cpf: cpf.value,
-      password: password.value,
+      name: form.base.name,
+      email: form.base.email,
+      birthDate: form.base.birthDate,
+      cpf: form.base.cpf,
+      password: form.base.password,
     }),
   );
 
   step.value = 2;
 };
 
-/* STEP 2 */
 const handleAddressSubmit = () => {
   sessionStorage.setItem(
     "register-address",
     JSON.stringify({
-      street: street.value,
-      number: number.value,
-      neighborhood: neighborhood.value,
-      city: city.value,
-      state: state.value,
-      zipCode: zipCode.value,
-      serviceRadiusKm: serviceRadius.value,
+      street: form.address.street,
+      number: form.address.number,
+      neighborhood: form.address.neighborhood,
+      city: form.address.city,
+      state: form.address.state,
+      zipCode: form.address.zipCode,
+      serviceRadiusKm: form.address.serviceRadiusKm,
     }),
   );
 
   step.value = 3;
 };
 
-/* FINAL */
 const handleProfileSubmit = async (data: any) => {
   const base = JSON.parse(sessionStorage.getItem("register-base") || "{}");
   const address = JSON.parse(
@@ -76,7 +56,18 @@ const handleProfileSubmit = async (data: any) => {
 
   const payload = {
     ...base,
-    ...address,
+
+    address: {
+      street: address.street,
+      number: address.number,
+      neighborhood: address.neighborhood,
+      city: address.city,
+      state: address.state,
+      zipCode: address.zipCode,
+    },
+
+    serviceRadiusKm: address.serviceRadiusKm,
+
     profilePhotoUrl: data.profileImage,
     isPublicProfile: data.publicProfile,
     offersHosting: data.acceptPetHosting,
@@ -92,7 +83,7 @@ const handleProfileSubmit = async (data: any) => {
 </script>
 <template>
   <AuthLayout>
-    <div class="flex justify-center items-center h-full w-full">
+    <div class="flex justify-center items-center h-full w-full my-24">
       <div class="bg-secondary rounded-2xl p-28 shadow min-h-screen w-[60%]">
         <div class="flex flex-col items-center text-center gap-3 mb-8">
           <img src="/assets/logos/logoWhite.svg" alt="Logo vencá" width="160" />
@@ -104,25 +95,25 @@ const handleProfileSubmit = async (data: any) => {
 
         <RegisterFormBase
           v-if="step === 1"
-          v-model:name="userName"
-          v-model:email="email"
-          v-model:birthDate="birthDate"
-          v-model:cpf="cpf"
-          v-model:password="password"
-          v-model:confirmPassword="confirmPassword"
+          v-model:name="form.base.name"
+          v-model:email="form.base.email"
+          v-model:birthDate="form.base.birthDate"
+          v-model:cpf="form.base.cpf"
+          v-model:password="form.base.password"
+          v-model:confirmPassword="form.base.confirmPassword"
           :isLoading="isLoading"
           @submit="handleBaseSubmit"
         />
 
         <RegisterRadiusAndCEP
           v-if="step === 2"
-          v-model:street="street"
-          v-model:number="number"
-          v-model:neighborhood="neighborhood"
-          v-model:city="city"
-          v-model:state="state"
-          v-model:zipCode="zipCode"
-          v-model:serviceRadius="serviceRadius"
+          v-model:street="form.address.street"
+          v-model:number="form.address.number"
+          v-model:neighborhood="form.address.neighborhood"
+          v-model:city="form.address.city"
+          v-model:state="form.address.state"
+          v-model:zipCode="form.address.zipCode"
+          v-model:serviceRadius="form.address.serviceRadiusKm"
           :isLoading="isLoading"
           @submit="handleAddressSubmit"
         />

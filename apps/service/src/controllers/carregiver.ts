@@ -5,6 +5,8 @@ export class CaregiverController {
   constructor(private caregiverUseCase: CaregiverFacadeUseCase) {}
 
   async save(req: Request, res: Response) {
+    console.log(req.body);
+    console.log("ADDRESS:", req.body.address);
     try {
       const {
         userId,

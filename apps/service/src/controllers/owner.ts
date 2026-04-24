@@ -5,6 +5,8 @@ export class OwnerProfileController {
   constructor(private ownerProfileUseCase: OwnerProfileFacadeUseCase) {}
 
   async save(req: Request, res: Response) {
+    console.log(req.body);
+    console.log("ADDRESS:", req.body.address);
     try {
       const { userId, address, phone, searchRadiusKm } = req.body;
 

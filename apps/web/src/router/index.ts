@@ -4,7 +4,7 @@ import { Routes } from "./routes";
 const Home = () => import("../interface/view/home/Home.vue");
 const Login = () => import("../interface/view/auth/Login.vue");
 const RegisterBase = () =>
-  import("../interface/view/auth/register/RegisterBase.vue");
+  import("../interface/view/auth/register/register.vue");
 const SendEmail = () =>
   import("../interface/view/auth/resetPassword/SendEmail.vue");
 const SendCode = () =>

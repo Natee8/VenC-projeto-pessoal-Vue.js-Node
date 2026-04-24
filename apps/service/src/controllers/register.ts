@@ -7,6 +7,8 @@ export class RegisterController {
   constructor(private registerUseCase: RegisterUseCase) {}
 
   async handle(req: Request, res: Response) {
+    console.log(req.body);
+    console.log("ADDRESS:", req.body.address);
     try {
       const result = await this.registerUseCase.execute(req.body);
 
