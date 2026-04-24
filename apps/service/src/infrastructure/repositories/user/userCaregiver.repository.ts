@@ -104,4 +104,17 @@ export class CaregiverRepository {
 
     return record ? this.mapToEntity(record) : null;
   }
+
+  async findPublicCaregivers() {
+    const records = await this.prisma.caregiver.findMany({
+      where: {
+        isPublicProfile: true,
+      },
+      include: {
+        address: true,
+      },
+    });
+
+    return records.map((r) => this.mapToEntity(r as CaregiverWithAddress));
+  }
 }

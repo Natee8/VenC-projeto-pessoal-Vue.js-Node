@@ -74,4 +74,8 @@ export class CaregiverFacadeUseCase {
       isPublic: caregiver.isPublic(),
     };
   }
+
+  async getPublicCaregivers() {
+    return this.caregiverRepo.findPublicCaregivers();
+  }
 }

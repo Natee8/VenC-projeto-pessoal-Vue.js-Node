@@ -1,9 +1,9 @@
 import express from "express";
 import bodyParser from "body-parser";
-import { router as auth } from "./presentation-controllers/auth.controller.js";
-import { router as userBase } from "./presentation-controllers/user.controller.js";
 import cors from "cors";
 import "dotenv/config";
+
+import { router as auth } from "./presentation-controllers/auth.controller.js";
 
 const app = express();
 const PORT = process.env.APP_PORT || 3000;
@@ -16,8 +16,13 @@ app.use(
 );
 
 app.use(bodyParser.json());
+
+// Auth
 app.use("/auth", auth);
-app.use("/", userBase);
+
+// Profiles
+//app.use("/caregivers", caregiver);
+//app.use("/owners", owner);
 
 app.listen(PORT, () => {
   console.log(`Server rodando na porta ${PORT}`);

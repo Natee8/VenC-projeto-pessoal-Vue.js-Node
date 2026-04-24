@@ -47,7 +47,7 @@ export class RegisterUseCase {
             userId: user.id,
             address: input.address,
             offersHosting: input.offersHosting ?? false,
-            serviceRadiusKm: input.serviceRadiusKm ?? 0,
+            serviceRadiusKm: input.serviceRadiusKm ?? 5,
             isPublicProfile: input.isPublicProfile,
           },
           tx,

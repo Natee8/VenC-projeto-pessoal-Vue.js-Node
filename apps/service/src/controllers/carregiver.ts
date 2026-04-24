@@ -50,4 +50,18 @@ export class CaregiverController {
       return res.status(400).json({ error: "Erro desconhecido" });
     }
   }
+
+  // metodo para retornar cuidadores com perfil publico para exibir na home
+  async getPublicCaregivers(req: Request, res: Response) {
+    try {
+      const caregivers = await this.caregiverUseCase.getPublicCaregivers();
+
+      return res.status(200).json(caregivers);
+    } catch (error) {
+      if (error instanceof Error) {
+        return res.status(400).json({ error: error.message });
+      }
+      return res.status(400).json({ error: "Erro desconhecido" });
+    }
+  }
 }
