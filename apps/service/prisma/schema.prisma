@@ -68,6 +68,8 @@ model Address {
   latitude  Float?
   longitude Float?
 
+  complement   String?
+
   ownerProfileId Int? @unique
   caregiverId    Int? @unique
 

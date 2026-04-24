@@ -13,6 +13,7 @@ import { CaregiverRepository } from "../infrastructure/repositories/user/userCar
 import { RegisterUseCase } from "../application/usecases/auth/register.usecase.js";
 import { RegisterController } from "../controllers/register.js";
 import { PrismaClient } from "../generated/prisma/index.js";
+import { GeolocationService } from "../infrastructure/repositories/geolocation/geolocation.repository.js";
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -20,6 +21,7 @@ const prisma = new PrismaClient();
 const usersRepo = new UsersRepository();
 const ownerRepo = new OwnerProfileRepository();
 const caregiverRepo = new CaregiverRepository();
+const geolocationService = new GeolocationService();
 
 const passwordService = new PasswordService();
 
@@ -29,7 +31,10 @@ const createUserBaseUseCase = new CreateUserBaseUseCase(
 );
 
 const ownerProfileUseCase = new OwnerProfileFacadeUseCase(ownerRepo);
-const caregiverProfileUseCase = new CaregiverFacadeUseCase(caregiverRepo);
+const caregiverProfileUseCase = new CaregiverFacadeUseCase(
+  caregiverRepo,
+  geolocationService,
+);
 
 const registerUseCase = new RegisterUseCase(
   prisma,

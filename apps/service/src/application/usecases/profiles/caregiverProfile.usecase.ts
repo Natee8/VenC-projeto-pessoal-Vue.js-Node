@@ -1,12 +1,14 @@
-import { Caregiver } from "@packages";
+import { Address, Caregiver, IAddress } from "@packages";
 import { UserId } from "@packages";
-import { Address } from "@packages";
 import { CaregiverRepository } from "../../../infrastructure/repositories/user/userCaregiver.repository.js";
 import { Prisma } from "../../../generated/prisma/wasm.js";
-import { IAddress } from "@packages";
+import { GeolocationService } from "apps/service/src/infrastructure/repositories/geolocation/geolocation.repository.js";
 
 export class CaregiverFacadeUseCase {
-  constructor(private caregiverRepo: CaregiverRepository) {}
+  constructor(
+    private caregiverRepo: CaregiverRepository,
+    private geolocationService: GeolocationService,
+  ) {}
 
   async save(
     input: {
@@ -18,16 +20,31 @@ export class CaregiverFacadeUseCase {
     },
     tx?: Prisma.TransactionClient,
   ) {
-    // validation
     if (input.serviceRadiusKm <= 0) {
       throw new Error("Raio de atendimento inválido");
     }
+
+    const coordinates = await this.geolocationService.getCoordinatesByCep(
+      input.address.zipCode,
+    );
+
+    const address = new Address(
+      input.address.street,
+      input.address.number,
+      input.address.neighborhood,
+      input.address.city,
+      input.address.state,
+      input.address.zipCode,
+      input.address.complement,
+      coordinates?.latitude,
+      coordinates?.longitude,
+    );
 
     const caregiver = new Caregiver(
       0,
       UserId.create(input.userId),
       input.offersHosting,
-      Address.restore(input.address),
+      address,
       input.serviceRadiusKm,
       false,
       input.isPublicProfile ?? true,
@@ -42,6 +59,7 @@ export class CaregiverFacadeUseCase {
 
   async getByUserId(userId: number) {
     const caregiver = await this.caregiverRepo.findByUserId(userId);
+
     return caregiver ? this.toDTO(caregiver) : null;
   }
 

@@ -7,4 +7,7 @@ export interface AddressPrimitives extends Record<string, unknown> {
   city: string;
   state: State;
   zipCode: string;
+  complement?: string;
+  latitude?: number;
+  longitude?: number;
 }

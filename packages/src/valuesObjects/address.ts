@@ -9,6 +9,9 @@ export class Address {
     public readonly city: string,
     public readonly state: State,
     public readonly zipCode: string,
+    public readonly complement?: string,
+    public readonly latitude?: number,
+    public readonly longitude?: number,
   ) {
     this.validate();
   }
@@ -21,6 +24,14 @@ export class Address {
     if (!this.zipCode || this.zipCode.length < 8) {
       throw new Error("CEP inválido");
     }
+
+    if (this.latitude && (this.latitude < -90 || this.latitude > 90)) {
+      throw new Error("Latitude inválida");
+    }
+
+    if (this.longitude && (this.longitude < -180 || this.longitude > 180)) {
+      throw new Error("Longitude inválida");
+    }
   }
 
   toPrimitives() {
@@ -31,6 +42,11 @@ export class Address {
       city: this.city,
       state: this.state,
       zipCode: this.zipCode,
+
+      complement: this.complement,
+
+      latitude: this.latitude,
+      longitude: this.longitude,
     };
   }
 
@@ -48,6 +64,11 @@ export class Address {
       v.city,
       v.state as State,
       v.zipCode,
+
+      v.complement,
+
+      v.latitude,
+      v.longitude,
     );
   }
 }
