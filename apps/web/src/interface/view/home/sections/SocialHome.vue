@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { reviews } from '../../../../config/home/reviews';
-import { ref, onMounted, onUnmounted, nextTick } from 'vue';
-import { socials } from '../../../../config/home/socialRedes';
+import { reviews } from "../../../../config/home/reviews";
+import { ref, onMounted, onUnmounted, nextTick } from "vue";
+import { socials } from "../../../../config/home/socialRedes";
 
 const visibleCards = 3;
 const transitionTime = 500;
@@ -12,7 +12,7 @@ const total = reviews.length;
 const slides = [
   ...reviews.slice(-visibleCards), // últimos N clones no início
   ...reviews,
-  ...reviews.slice(0, visibleCards) // primeiros N clones no fim
+  ...reviews.slice(0, visibleCards), // primeiros N clones no fim
 ];
 
 const currentIndex = ref(visibleCards); // start no primeiro "real"
@@ -55,16 +55,17 @@ onMounted(() => {
 onUnmounted(() => clearInterval(interval));
 </script>
 
-
 <template>
-  <section class="py-28 px-20 flex flex-col items-center gap-10">
-     <div class="flex flex-col items-center gap-20 py-16">
+  <section class="py-28 px-20 flex flex-col items-center gap-10 bg-bgColor">
+    <div class="flex flex-col items-center gap-20 py-16">
       <div class="w-full flex flex-col items-center gap-5">
         <h1 class="text-4xl font-bold text-texts-primary-dark">
           Siga-nos nas redes sociais!
         </h1>
         <p class="w-[60%] font-medium text-texts-primary-dark/70 text-center">
-          Aqui você encontra dog walkers e cuidadores verificados, escolhe quem combina com você e com seu pet, e pode entrar em contato direto, sem intermediários nem enrolação.
+          Aqui você encontra dog walkers e cuidadores verificados, escolhe quem
+          combina com você e com seu pet, e pode entrar em contato direto, sem
+          intermediários nem enrolação.
         </p>
       </div>
 
@@ -76,7 +77,12 @@ onUnmounted(() => clearInterval(interval));
           target="_blank"
           class="bg-primary w-[16rem] h-12 rounded-xl flex items-center justify-center gap-3 hover:bg-primaryHover hover:scale-105 transition"
         >
-          <component :is="social.icon" :size="32" weight="fill" :class="['text-white']" />
+          <component
+            :is="social.icon"
+            :size="32"
+            weight="fill"
+            :class="['text-white']"
+          />
           <p class="text-white font-semibold">{{ social.name }}</p>
         </a>
       </div>
@@ -87,7 +93,9 @@ onUnmounted(() => clearInterval(interval));
         class="flex gap-6"
         :style="{
           transform: `translateX(-${(100 / visibleCards) * currentIndex}%)`,
-          transition: isTransitioning ? `transform ${transitionTime}ms` : 'none'
+          transition: isTransitioning
+            ? `transform ${transitionTime}ms`
+            : 'none',
         }"
         @transitionend="handleTransitionEnd"
       >
@@ -109,13 +117,21 @@ onUnmounted(() => clearInterval(interval));
           v-for="(_, index) in total"
           :key="index"
           class="w-3 h-3 rounded-full cursor-pointer"
-          :class="(currentIndex - visibleCards) % total === index ? 'bg-primary' : 'bg-gray-300'"
+          :class="
+            (currentIndex - visibleCards) % total === index
+              ? 'bg-primary'
+              : 'bg-gray-300'
+          "
           @click="goToSlide(index)"
         ></span>
       </div>
     </div>
-    <div class="h-28 w-full flex items-center justify-center ">
-      <button class="w-[16rem] h-12 rounded-xl bg-details text-white font-semibold hover:scale-105 hover:bg-primary transition-all">Buscar serviços</button>
+    <div class="h-28 w-full flex items-center justify-center">
+      <button
+        class="w-[16rem] h-12 rounded-xl bg-details text-white font-semibold hover:scale-105 hover:bg-primary transition-all"
+      >
+        Buscar serviços
+      </button>
     </div>
   </section>
 </template>

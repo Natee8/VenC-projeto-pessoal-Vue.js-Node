@@ -1,10 +1,12 @@
 <template>
-  <section class="w-full px-8 lg:px-32 py-32 flex flex-col items-center gap-20">
+  <section
+    class="w-full px-8 lg:px-32 py-32 flex flex-col items-center gap-20 bg-bgColor"
+  >
     <div
       class="w-full flex flex-col lg:flex-row items-stretch justify-between gap-8"
     >
       <div
-        class="w-full lg:w-[48%] bg-white shadow-lg rounded-[32px] p-8 hover:-translate-y-2 transition-all duration-500"
+        class="w-full lg:w-[48%] bg-white shadow-xl rounded-[32px] p-8 hover:-translate-y-2 transition-all duration-500"
       >
         <div
           class="w-20 h-20 rounded-full bg-details flex items-center justify-center"

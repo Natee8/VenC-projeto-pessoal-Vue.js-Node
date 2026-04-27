@@ -1,5 +1,7 @@
 <template>
-  <section class="w-full px-8 lg:px-32 py-32 flex flex-col items-center">
+  <section
+    class="w-full px-8 lg:px-32 py-32 flex flex-col items-center bg-bgColor"
+  >
     <div class="max-w-3xl text-center">
       <h1 class="text-4xl md:text-5xl font-bold text-texts-primary-dark">
         Como funciona?
