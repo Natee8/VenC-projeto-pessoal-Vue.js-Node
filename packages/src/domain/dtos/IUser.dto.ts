@@ -29,29 +29,27 @@ export interface RegisterInput {
   birthDate: string;
   password: string;
 
-  profilePhotoBuffer?: Buffer;
+  profileImage?: Buffer;
 }
 
 // dto de entrada para o registro do perfil do usuario, pode ser extendido para owner ou caregiver
-export type RegisterInputProfiles = {
+export interface RegisterInputProfiles {
   type: "owner" | "caregiver";
 
-  // base
   name: string;
   email: string;
   password: string;
   cpf: string;
   birthDate: string;
-  profilePhotoBuffer?: Buffer;
 
-  // owner
+  profileImage?: Buffer;
+
   searchRadiusKm?: number;
   phone?: string;
 
-  // caregiver
   offersHosting?: boolean;
   serviceRadiusKm?: number;
   isPublicProfile?: boolean;
 
   address: IAddress;
-};
+}

@@ -2,12 +2,17 @@ import * as yup from "yup";
 
 export const profileFormSchema = yup.object({
   profileImage: yup
-    .string()
-    .nullable()
+    .mixed<File>()
     .notRequired()
-    .test("is-base64-image", "Imagem inválida", (value) => {
-      if (!value) return true; // <- aqui é o ponto principal
-      return value.startsWith("data:image/");
+    .test("file-type", "Imagem inválida", (file) => {
+      if (!file) return true;
+
+      return file.type.startsWith("image/");
+    })
+    .test("file-size", "Máximo 5MB", (file) => {
+      if (!file) return true;
+
+      return file.size <= 5 * 1024 * 1024;
     }),
   publicProfile: yup.boolean().default(false),
 

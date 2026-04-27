@@ -15,11 +15,12 @@ export class RegisterUseCase {
     private ownerProfile: OwnerProfileFacadeUseCase,
     private caregiverProfile: CaregiverFacadeUseCase,
   ) {}
+  
 
   async execute(input: RegisterInputProfiles) {
     return this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
-      const profilePhotoUrl: string | null = input.profilePhotoBuffer
-        ? await uploadImage(input.profilePhotoBuffer)
+      const profilePhotoUrl: string | null = input.profileImage
+        ? await uploadImage(input.profileImage)
         : null;
 
       const user = await this.createUserBase.execute(

@@ -24,13 +24,15 @@ const errors = ref<ProfileErrors>({});
 const handleImageUpload = (e: Event) => {
   const file = (e.target as HTMLInputElement).files?.[0];
 
+  console.log("FILE RAW:", file);
+
   if (!file) return;
 
   selectedFile.value = file;
 
-  profileImage.value = URL.createObjectURL(file);
+  console.log("STATE FILE:", selectedFile.value);
 
-  errors.value.profileImage = "";
+  profileImage.value = URL.createObjectURL(file);
 };
 
 const removeImage = () => {
@@ -65,6 +67,12 @@ const handleSubmit = async (e: Event) => {
     formData.append("publicProfile", String(publicProfile.value));
     formData.append("acceptPetHosting", String(acceptPetHosting.value));
     formData.append("acceptTerms", String(acceptTerms.value));
+
+    console.log("SELECTED FILE:", selectedFile.value);
+    console.log("FORMDATA SEND:");
+    for (const [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
 
     emit("submit", formData);
   } catch (error: any) {

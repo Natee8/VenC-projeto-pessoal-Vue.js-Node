@@ -15,7 +15,7 @@ model UserAuth {
   email        String   @unique
   passwordHash String
   isActive     Boolean  @default(true)
-  profilePhotoUrl String? @default("")
+  profilePhotoUrl String?
   birthDate    DateTime
   cpf          String @unique
   createdAt    DateTime @default(now())
