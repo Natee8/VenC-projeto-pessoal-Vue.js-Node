@@ -22,7 +22,7 @@ export class CreateUserBaseUseCase {
       password: string;
       cpf: string;
       birthDate: string;
-      profilePhotoUrl?: string;
+      profilePhotoUrl?: string | null;
     },
     tx?: Prisma.TransactionClient,
   ): Promise<IUserDTO> {
@@ -39,6 +39,7 @@ export class CreateUserBaseUseCase {
     const cpfVO = CPF.create(input.cpf);
     const name = Name.create(input.name);
     const id = UserId.create();
+    const photo = input.profilePhotoUrl ?? null;
 
     const existingEmail = await this.usersRepo.findByEmail(emailVO);
     if (existingEmail) {
@@ -58,7 +59,7 @@ export class CreateUserBaseUseCase {
       emailVO,
       passwordHash,
       true,
-      input.profilePhotoUrl ?? "",
+      photo,
       birthDateVO,
       cpfVO,
       new Date(),

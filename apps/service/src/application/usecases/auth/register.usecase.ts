@@ -1,9 +1,12 @@
 import { CreateUserBaseUseCase } from "../profiles/createUserBase.usecase.js";
 import { OwnerProfileFacadeUseCase } from "../profiles/ownerProfile.usecase.js";
 import { CaregiverFacadeUseCase } from "../profiles/caregiverProfile.usecase.js";
+
 import { PrismaClient } from "@prisma/client/extension";
-import { RegisterInputProfiles } from "@packages";
 import { Prisma } from "../../../generated/prisma/wasm.js";
+
+import { RegisterInputProfiles } from "@packages";
+import { uploadImage } from "../../service/uploadCloudnairy.js";
 
 export class RegisterUseCase {
   constructor(
@@ -12,8 +15,13 @@ export class RegisterUseCase {
     private ownerProfile: OwnerProfileFacadeUseCase,
     private caregiverProfile: CaregiverFacadeUseCase,
   ) {}
+
   async execute(input: RegisterInputProfiles) {
     return this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+      const profilePhotoUrl: string | null = input.profilePhotoBuffer
+        ? await uploadImage(input.profilePhotoBuffer)
+        : null;
+
       const user = await this.createUserBase.execute(
         {
           name: input.name,
@@ -21,12 +29,13 @@ export class RegisterUseCase {
           password: input.password,
           cpf: input.cpf,
           birthDate: input.birthDate,
-          profilePhotoUrl: input.profilePhotoUrl,
+
+          profilePhotoUrl,
         },
+
         tx,
       );
 
-      console.log("ADDRESS INPUT:", input.address);
       if (input.type === "owner") {
         const profile = await this.ownerProfile.save(
           {
@@ -35,6 +44,7 @@ export class RegisterUseCase {
             phone: input.phone,
             searchRadiusKm: input.searchRadiusKm,
           },
+
           tx,
         );
 
@@ -47,15 +57,18 @@ export class RegisterUseCase {
             userId: user.id,
             address: input.address,
             offersHosting: input.offersHosting ?? false,
+
             serviceRadiusKm: input.serviceRadiusKm ?? 5,
+
             isPublicProfile: input.isPublicProfile,
           },
+
           tx,
         );
 
         return { user, profile };
       }
-      console.log("REGISTER INPUT TYPE:", input.type);
+
       throw new Error("Tipo de perfil inválido");
     });
   }

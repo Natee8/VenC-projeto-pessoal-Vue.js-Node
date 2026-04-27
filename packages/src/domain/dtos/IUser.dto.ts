@@ -18,7 +18,7 @@ export interface IUserDTO {
   cpf: string;
   birthDate: string;
   /** conteúdo da propriedade profilePhotoUrl do usuário (string vazia se não houver) */
-  profilePhotoUrl: string;
+  profilePhotoUrl: string | null;
 }
 
 //dto de entrada para o registro do usuario
@@ -28,8 +28,8 @@ export interface RegisterInput {
   cpf: string;
   birthDate: string;
   password: string;
-  /** foto de perfil como URL (opcional) */
-  profilePhotoUrl?: string;
+
+  profilePhotoBuffer?: Buffer;
 }
 
 // dto de entrada para o registro do perfil do usuario, pode ser extendido para owner ou caregiver
@@ -42,7 +42,7 @@ export type RegisterInputProfiles = {
   password: string;
   cpf: string;
   birthDate: string;
-  profilePhotoUrl?: string;
+  profilePhotoBuffer?: Buffer;
 
   // owner
   searchRadiusKm?: number;

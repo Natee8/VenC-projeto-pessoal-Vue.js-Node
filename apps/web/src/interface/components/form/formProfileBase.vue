@@ -4,7 +4,7 @@ import {
   FormProfileBaseEmits,
   FormProfileBaseProps,
 } from "./types/propsRegister";
-import { fileToBase64 } from "src/infrastructure/utils/functionToBase64";
+
 import { profileFormSchema } from "./schemas/profileBaseSchema";
 import { ProfileErrors } from "./types/typeErrors";
 
@@ -17,21 +17,25 @@ const acceptPetHosting = ref(false);
 const acceptTerms = ref(false);
 
 const profileImage = ref<string | null>(null);
+const selectedFile = ref<File | null>(null);
 
 const errors = ref<ProfileErrors>({});
 
-const handleImageUpload = async (e: Event) => {
+const handleImageUpload = (e: Event) => {
   const file = (e.target as HTMLInputElement).files?.[0];
 
   if (!file) return;
 
-  profileImage.value = await fileToBase64(file);
+  selectedFile.value = file;
+
+  profileImage.value = URL.createObjectURL(file);
 
   errors.value.profileImage = "";
 };
 
 const removeImage = () => {
   profileImage.value = null;
+  selectedFile.value = null;
 };
 
 const handleSubmit = async (e: Event) => {
@@ -42,7 +46,7 @@ const handleSubmit = async (e: Event) => {
   try {
     await profileFormSchema.validate(
       {
-        profileImage: profileImage.value,
+        profileImage: selectedFile.value,
         publicProfile: publicProfile.value,
         acceptPetHosting: acceptPetHosting.value,
         acceptTerms: acceptTerms.value,
@@ -52,16 +56,20 @@ const handleSubmit = async (e: Event) => {
       },
     );
 
-    emit("submit", {
-      profileImage: profileImage.value,
-      publicProfile: publicProfile.value,
-      acceptPetHosting: acceptPetHosting.value,
-      acceptTerms: acceptTerms.value,
-    });
+    const formData = new FormData();
+
+    if (selectedFile.value) {
+      formData.append("profileImage", selectedFile.value);
+    }
+
+    formData.append("publicProfile", String(publicProfile.value));
+    formData.append("acceptPetHosting", String(acceptPetHosting.value));
+    formData.append("acceptTerms", String(acceptTerms.value));
+
+    emit("submit", formData);
   } catch (error: any) {
     error.inner.forEach((err: any) => {
       const field = err.path as keyof ProfileErrors;
-
       errors.value[field] = err.message;
     });
   }

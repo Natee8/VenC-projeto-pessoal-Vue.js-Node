@@ -11,17 +11,12 @@ export class UserAuth {
     private email: Email,
     private passwordHash: string,
     private isActive: boolean,
-    private profilePhotoUrl: string,
+    private profilePhotoUrl: string | null,
     private birthDate: BirthDate,
     private cpf: CPF,
     public readonly createdAt: Date,
     private updatedAt: Date,
-  ) {
-    // enforce invariant: profile photo string must not be null/undefined (empty is allowed)
-    if (profilePhotoUrl === null || profilePhotoUrl === undefined) {
-      throw new Error("URL da foto de perfil inválida");
-    }
-  }
+  ) {}
 
   changePassword(newHash: string) {
     if (!newHash) throw new Error("Senha inválida");
@@ -43,7 +38,7 @@ export class UserAuth {
     this.touch();
   }
 
-  getProfilePhoto() {
+  getProfilePhoto(): string | null {
     return this.profilePhotoUrl;
   }
 

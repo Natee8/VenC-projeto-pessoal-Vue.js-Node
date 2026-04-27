@@ -10,7 +10,7 @@
 
     "baseUrl": ".",
 
-    "types": ["vite/client"],
+    "types": ["vite/client", "node"],
 
     "paths": {
       "@packages": ["../../packages/src/index.ts"],
