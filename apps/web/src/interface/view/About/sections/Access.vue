@@ -6,7 +6,7 @@
       class="w-full flex flex-col lg:flex-row items-stretch justify-between gap-8"
     >
       <div
-        class="w-full lg:w-[48%] bg-white shadow-xl rounded-[32px] p-8 hover:-translate-y-2 transition-all duration-500"
+        class="w-full lg:w-[48%] bg-white border-2 border-details/50 rounded-[32px] p-8 hover:-translate-y-2 transition-all duration-500"
       >
         <div
           class="w-20 h-20 rounded-full bg-details flex items-center justify-center"

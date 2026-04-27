@@ -28,7 +28,7 @@
     </div>
 
     <div
-      class="w-auto min-w-[38%] h-[600px] bg-gradient-to-r from-details/80 to-secondary/90 rounded-[40px] p-6"
+      class="w-auto min-w-[38%] h-[600px] bg-gradient-to-r from-details/80 to-secondary/90 rounded-[40px] p-4"
     >
       <div
         class="relative w-full h-full rounded-[40px] bg-cover bg-center flex items-end justify-center"
@@ -40,4 +40,5 @@
       </div>
     </div>
   </section>
+  <div class="w-full h-16 bg-default"></div>
 </template>
