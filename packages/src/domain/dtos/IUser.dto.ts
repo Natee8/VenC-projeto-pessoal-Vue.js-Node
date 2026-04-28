@@ -42,7 +42,7 @@ export interface RegisterInputProfiles {
   cpf: string;
   birthDate: string;
 
-  profileImage?: Buffer;
+  profileImage?: File | Buffer;
 
   searchRadiusKm?: number;
   phone?: string;

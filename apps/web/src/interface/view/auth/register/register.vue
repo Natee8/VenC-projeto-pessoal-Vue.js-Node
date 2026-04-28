@@ -3,16 +3,20 @@ import { registerRepository } from "src/infrastructure/repositories/userBaseRepo
 import FormProfileBase from "src/interface/components/form/formProfileBase.vue";
 import RegisterFormBase from "src/interface/components/form/RegisterFormBase.vue";
 import RegisterRadiusAndCEP from "src/interface/components/form/RegisterRadiusAndCEP.vue";
+import AuthLayout from "src/interface/layout/auth/authLayout.vue";
 import { createRegisterForm } from "src/interface/utils/registerPayload";
 import { ref } from "vue";
 
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 const router = useRouter();
+const route = useRoute();
 
 const step = ref(1);
 const form = createRegisterForm();
 const isLoading = ref(false);
+
+const userType = route.query.user as "owner" | "caregiver";
 
 const handleBaseSubmit = () => {
   if (form.base.password !== form.base.confirmPassword) return;
@@ -65,14 +69,13 @@ const handleProfileSubmit = async (data: any) => {
       state: address.state,
       zipCode: address.zipCode,
     },
-
     serviceRadiusKm: address.serviceRadiusKm,
-
-    profilePhotoUrl: data.profileImage,
+    profileImage: data.profileImage,
     isPublicProfile: data.publicProfile,
     offersHosting: data.acceptPetHosting,
-    type: "caregiver",
+    type: userType,
   };
+  console.log(payload);
 
   await registerRepository.register(payload);
 

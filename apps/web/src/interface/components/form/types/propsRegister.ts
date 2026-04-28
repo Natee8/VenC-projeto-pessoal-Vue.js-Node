@@ -26,7 +26,15 @@ export interface FormProfileBaseProps {
 }
 
 export interface FormProfileBaseEmits {
-  (e: "submit", payload: FormData): void;
+  (
+    e: "submit",
+    data: {
+      profileImage: File | null;
+      publicProfile: boolean;
+      acceptPetHosting: boolean;
+      acceptTerms: boolean;
+    },
+  ): void;
 }
 
 //registerradiusandcep

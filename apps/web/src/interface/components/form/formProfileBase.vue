@@ -58,23 +58,12 @@ const handleSubmit = async (e: Event) => {
       },
     );
 
-    const formData = new FormData();
-
-    if (selectedFile.value) {
-      formData.append("profileImage", selectedFile.value);
-    }
-
-    formData.append("publicProfile", String(publicProfile.value));
-    formData.append("acceptPetHosting", String(acceptPetHosting.value));
-    formData.append("acceptTerms", String(acceptTerms.value));
-
-    console.log("SELECTED FILE:", selectedFile.value);
-    console.log("FORMDATA SEND:");
-    for (const [key, value] of formData.entries()) {
-      console.log(key, value);
-    }
-
-    emit("submit", formData);
+    emit("submit", {
+      profileImage: selectedFile.value,
+      publicProfile: publicProfile.value,
+      acceptPetHosting: acceptPetHosting.value,
+      acceptTerms: acceptTerms.value,
+    });
   } catch (error: any) {
     error.inner.forEach((err: any) => {
       const field = err.path as keyof ProfileErrors;
