@@ -86,46 +86,48 @@ const handleProfileSubmit = async (data: any) => {
 </script>
 <template>
   <AuthLayout>
-    <div class="flex justify-center items-center h-full w-full my-24">
-      <div class="bg-secondary rounded-2xl p-28 shadow min-h-screen w-[60%]">
-        <div class="flex flex-col items-center text-center gap-3 mb-8">
-          <img src="/assets/logos/logoWhite.svg" alt="Logo vencá" width="160" />
+    <div class="flex justify-center items-center h-full w-full py-4 md:py-8">
+      <div class="bg-secondary rounded-2xl md:rounded-3xl px-5 pt-8 pb-12 sm:px-8 sm:pt-10 sm:pb-14 md:px-10 md:pt-12 md:pb-16 lg:px-12 lg:pb-20 xl:px-16 shadow-xl w-full max-w-[1200px]">
+        <div class="flex flex-col items-center text-center gap-3 mb-8 md:mb-10">
+          <img src="/assets/logos/logoWhite.svg" alt="Logo vencá" class="w-32 md:w-36 lg:w-40" />
 
-          <p class="text-white/80 text-[1.2rem]">
+          <p class="text-white/80 text-base md:text-lg">
             Complete seu perfil para começar a utilizar o Vencá
           </p>
         </div>
 
-        <RegisterFormBase
-          v-if="step === 1"
-          v-model:name="form.base.name"
-          v-model:email="form.base.email"
-          v-model:birthDate="form.base.birthDate"
-          v-model:cpf="form.base.cpf"
-          v-model:password="form.base.password"
-          v-model:confirmPassword="form.base.confirmPassword"
-          :isLoading="isLoading"
-          @submit="handleBaseSubmit"
-        />
+        <div class="pb-2 md:pb-4">
+          <RegisterFormBase
+            v-if="step === 1"
+            v-model:name="form.base.name"
+            v-model:email="form.base.email"
+            v-model:birthDate="form.base.birthDate"
+            v-model:cpf="form.base.cpf"
+            v-model:password="form.base.password"
+            v-model:confirmPassword="form.base.confirmPassword"
+            :isLoading="isLoading"
+            @submit="handleBaseSubmit"
+          />
 
-        <RegisterRadiusAndCEP
-          v-if="step === 2"
-          v-model:street="form.address.street"
-          v-model:number="form.address.number"
-          v-model:neighborhood="form.address.neighborhood"
-          v-model:city="form.address.city"
-          v-model:state="form.address.state"
-          v-model:zipCode="form.address.zipCode"
-          v-model:serviceRadius="form.address.serviceRadiusKm"
-          :isLoading="isLoading"
-          @submit="handleAddressSubmit"
-        />
+          <RegisterRadiusAndCEP
+            v-if="step === 2"
+            v-model:street="form.address.street"
+            v-model:number="form.address.number"
+            v-model:neighborhood="form.address.neighborhood"
+            v-model:city="form.address.city"
+            v-model:state="form.address.state"
+            v-model:zipCode="form.address.zipCode"
+            v-model:serviceRadius="form.address.serviceRadiusKm"
+            :isLoading="isLoading"
+            @submit="handleAddressSubmit"
+          />
 
-        <FormProfileBase
-          v-if="step === 3"
-          :isLoading="isLoading"
-          @submit="handleProfileSubmit"
-        />
+          <FormProfileBase
+            v-if="step === 3"
+            :isLoading="isLoading"
+            @submit="handleProfileSubmit"
+          />
+        </div>
       </div>
     </div>
   </AuthLayout>

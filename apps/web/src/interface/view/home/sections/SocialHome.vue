@@ -3,22 +3,25 @@ import { reviews } from "../../../../config/home/reviews";
 import { ref, onMounted, onUnmounted, nextTick } from "vue";
 import { socials } from "../../../../config/home/socialRedes";
 
-const visibleCards = 3;
+const visibleCards = ref(3);
 const transitionTime = 500;
-
 const total = reviews.length;
-
-// clones para loop infinito
-const slides = [
-  ...reviews.slice(-visibleCards), // últimos N clones no início
-  ...reviews,
-  ...reviews.slice(0, visibleCards), // primeiros N clones no fim
-];
-
-const currentIndex = ref(visibleCards); // start no primeiro "real"
+const currentIndex = ref(visibleCards.value);
 const isTransitioning = ref(true);
+let interval: number | undefined;
 
-let interval: number;
+const getVisibleCardsByViewport = () => {
+  if (window.innerWidth < 768) return 1;
+  if (window.innerWidth < 1280) return 2;
+  return 3;
+};
+
+const buildSlides = (cardsCount: number) => [
+  ...reviews.slice(-cardsCount),
+  ...reviews,
+  ...reviews.slice(0, cardsCount),
+];
+const slides = ref(buildSlides(visibleCards.value));
 
 // avança 1 card
 const nextSlide = async () => {
@@ -29,53 +32,68 @@ const nextSlide = async () => {
 // clicar na bolinha
 const goToSlide = async (index: number) => {
   isTransitioning.value = true;
-  currentIndex.value = index + visibleCards; // ajusta pro clone
+  currentIndex.value = index + visibleCards.value; // ajusta pro clone
 };
 
 // reset do clone para loop infinito sem engasgar
 const handleTransitionEnd = async () => {
-  if (currentIndex.value >= total + visibleCards) {
+  if (currentIndex.value >= total + visibleCards.value) {
     isTransitioning.value = false;
-    currentIndex.value = visibleCards; // volta pro real
+    currentIndex.value = visibleCards.value; // volta pro real
     await nextTick();
     isTransitioning.value = true; // reativa a transição pro próximo
   }
-  if (currentIndex.value < visibleCards) {
+  if (currentIndex.value < visibleCards.value) {
     isTransitioning.value = false;
-    currentIndex.value = total + visibleCards - 1; // volta pro real
+    currentIndex.value = total + visibleCards.value - 1; // volta pro real
     await nextTick();
     isTransitioning.value = true;
   }
 };
 
+const syncCarouselByViewport = () => {
+  const nextVisibleCards = getVisibleCardsByViewport();
+  if (nextVisibleCards === visibleCards.value) return;
+
+  visibleCards.value = nextVisibleCards;
+  slides.value = buildSlides(nextVisibleCards);
+  isTransitioning.value = false;
+  currentIndex.value = nextVisibleCards;
+};
+
 onMounted(() => {
+  syncCarouselByViewport();
+  window.addEventListener("resize", syncCarouselByViewport);
   interval = window.setInterval(nextSlide, 4000);
 });
 
-onUnmounted(() => clearInterval(interval));
+onUnmounted(() => {
+  window.removeEventListener("resize", syncCarouselByViewport);
+  if (interval) clearInterval(interval);
+});
 </script>
 
 <template>
-  <section class="py-28 px-20 flex flex-col items-center gap-10 bg-bgColor">
-    <div class="flex flex-col items-center gap-20 py-16">
+  <section class="py-14 md:py-20 xl:py-28 px-4 sm:px-6 md:px-10 xl:px-20 flex flex-col items-center gap-10 bg-bgColor">
+    <div class="flex flex-col items-center gap-12 md:gap-16 xl:gap-20 py-8 md:py-12 xl:py-16 w-full">
       <div class="w-full flex flex-col items-center gap-5">
-        <h1 class="text-4xl font-bold text-texts-primary-dark">
+        <h1 class="text-3xl md:text-4xl font-bold text-texts-primary-dark text-center">
           Siga-nos nas redes sociais!
         </h1>
-        <p class="w-[60%] font-medium text-texts-primary-dark/70 text-center">
+        <p class="w-full md:w-[75%] xl:w-[60%] font-medium text-texts-primary-dark/70 text-center">
           Aqui você encontra dog walkers e cuidadores verificados, escolhe quem
           combina com você e com seu pet, e pode entrar em contato direto, sem
           intermediários nem enrolação.
         </p>
       </div>
 
-      <div class="flex flex-wrap w-full justify-between">
+      <div class="flex flex-wrap w-full justify-center xl:justify-between gap-3">
         <a
           v-for="social in socials"
           :key="social.name"
           :href="social.link"
           target="_blank"
-          class="bg-primary w-[16rem] h-12 rounded-xl flex items-center justify-center gap-3 hover:bg-primaryHover hover:scale-105 transition"
+          class="bg-primary w-full sm:w-[16rem] h-12 rounded-xl flex items-center justify-center gap-3 hover:bg-primaryHover hover:scale-105 transition"
         >
           <component
             :is="social.icon"
@@ -88,9 +106,9 @@ onUnmounted(() => clearInterval(interval));
       </div>
     </div>
 
-    <div class="relative w-full max-w-[1500px] overflow-hidden py-16">
+    <div class="relative w-full max-w-[1500px] overflow-hidden py-10 md:py-16">
       <div
-        class="flex gap-6"
+        class="flex gap-4 md:gap-6"
         :style="{
           transform: `translateX(-${(100 / visibleCards) * currentIndex}%)`,
           transition: isTransitioning
@@ -102,7 +120,7 @@ onUnmounted(() => clearInterval(interval));
         <div
           v-for="(review, index) in slides"
           :key="index"
-          class="bg-secondary rounded-xl flex-shrink-0 w-[calc(100%/3-1rem)] h-[250px] p-6 flex flex-col gap-4"
+          class="bg-secondary rounded-xl flex-shrink-0 w-full md:w-[calc(100%/2-0.75rem)] xl:w-[calc(100%/3-1rem)] min-h-[250px] p-6 flex flex-col gap-4"
         >
           <div class="flex items-center gap-4">
             <div class="h-12 w-12 rounded-full bg-white/90"></div>
@@ -128,7 +146,7 @@ onUnmounted(() => clearInterval(interval));
     </div>
     <div class="h-28 w-full flex items-center justify-center">
       <button
-        class="w-[16rem] h-12 rounded-xl bg-details text-white font-semibold hover:scale-105 hover:bg-primary transition-all"
+        class="w-full sm:w-[16rem] h-12 rounded-xl bg-details text-white font-semibold hover:scale-105 hover:bg-primary transition-all"
       >
         Buscar serviços
       </button>

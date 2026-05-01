@@ -6,7 +6,7 @@ import Header from "./interface/components/nav/Header.vue";
 <template>
   <div class="w-full min-h-full">
     <Header />
-    <main class="pt-20 w-[100%] h-auto min-h-screen">
+    <main class="w-[100%] h-auto min-h-screen">
       <router-view />
     </main>
     <Footer />
