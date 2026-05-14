@@ -6,6 +6,8 @@ import { AuthenticateUserUseCase } from "../application/usecases/auth/auth.useca
 import { GenerateTokenUseCase } from "../application/usecases/auth/generateToken.usecase.js";
 import { RefreshTokenUseCase } from "../application/usecases/auth/refreshToken.usecase.js";
 import { Router, Request, Response } from "express";
+import { failure } from "../core/http/failure.js";
+import { success } from "../core/http/response.js";
 
 const usersRepo = new UsersRepository();
 const refreshTokenRepo = new RefreshTokenRepository();
@@ -30,22 +32,25 @@ router.post("/login", async (req: Request, res: Response) => {
   const authResult = await authUseCase.execute(email, password);
 
   if (authResult.type === "left") {
-    return res.status(401).json({
+    return failure(res, {
       message: authResult.error.message,
+      code: 401,
     });
   }
 
   const tokenResult = await generateTokenUseCase.execute(authResult.value);
 
   if (tokenResult.type === "left") {
-    return res.status(500).json({
+    return failure(res, {
       message: tokenResult.error.message,
+      code: 500,
     });
   }
 
-  return res.json({
+  return success(res, {
     message: "Login realizado com sucesso",
     data: tokenResult.value,
+    code: 200,
   });
 });
 
@@ -53,20 +58,22 @@ router.post("/refresh", async (req: Request, res: Response) => {
   const { refreshToken } = req.body;
 
   if (!refreshToken) {
-    return res.status(400).json({
+    return failure(res, {
       message: "Refresh token é obrigatório",
+      code: 400,
     });
   }
 
   const result = await refreshTokenUseCase.execute(refreshToken);
 
   if (result.type === "left") {
-    return res.status(401).json({
+    return failure(res, {
       message: result.error.message,
+      code: 401,
     });
   }
 
-  return res.json({
+  return success(res, {
     message: "Token renovado com sucesso",
     data: result.value,
   });
@@ -76,14 +83,17 @@ router.post("/logout", async (req: Request, res: Response) => {
   const { refreshToken } = req.body;
 
   if (!refreshToken) {
-    return res.status(400).json({
+    return failure(res, {
       message: "Refresh token é obrigatório",
+      code: 400,
     });
   }
 
   await refreshTokenRepo.revoke(refreshToken);
 
-  return res.json({ message: "Logout realizado com sucesso" });
+  return success(res, {
+    message: "Logout realizado com sucesso",
+  });
 });
 
 export default router;

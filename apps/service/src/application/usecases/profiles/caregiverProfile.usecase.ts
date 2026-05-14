@@ -1,8 +1,13 @@
-import { Address, Caregiver, IAddress } from "@packages";
+import { Address, Caregiver, CaregiverDTO, IAddress } from "@packages";
 import { UserId } from "@packages";
 import { CaregiverRepository } from "../../../infrastructure/repositories/user/userCaregiver.repository.js";
 import { Prisma } from "../../../generated/prisma/wasm.js";
 import { GeolocationService } from "apps/service/src/infrastructure/repositories/geolocation/geolocation.repository.js";
+import {
+  Either,
+  left,
+  right,
+} from "apps/service/src/core/interface/IEighter.js";
 
 export class CaregiverFacadeUseCase {
   constructor(
@@ -19,48 +24,60 @@ export class CaregiverFacadeUseCase {
       isPublicProfile?: boolean;
     },
     tx?: Prisma.TransactionClient,
-  ) {
-    if (input.serviceRadiusKm <= 0) {
-      throw new Error("Raio de atendimento inválido");
+  ): Promise<Either<Error, CaregiverDTO>> {
+    {
+      if (input.serviceRadiusKm <= 0) {
+        return left(new Error("Raio de atendimento inválido"));
+      }
+
+      const coordinates = await this.geolocationService.getCoordinatesByCep(
+        input.address.zipCode,
+      );
+
+      const address = new Address(
+        input.address.street,
+        input.address.number,
+        input.address.neighborhood,
+        input.address.city,
+        input.address.state,
+        input.address.zipCode,
+        input.address.complement,
+        coordinates?.latitude ?? undefined,
+        coordinates?.longitude ?? undefined,
+      );
+
+      const caregiver = new Caregiver(
+        0,
+        UserId.create(input.userId),
+        input.offersHosting,
+        address,
+        input.serviceRadiusKm,
+        false,
+        input.isPublicProfile ?? true,
+        new Date(),
+        new Date(),
+      );
+
+      const saved = await this.caregiverRepo.save(caregiver, tx);
+
+      return right(this.toDTO(saved));
     }
-
-    const coordinates = await this.geolocationService.getCoordinatesByCep(
-      input.address.zipCode,
-    );
-
-    const address = new Address(
-      input.address.street,
-      input.address.number,
-      input.address.neighborhood,
-      input.address.city,
-      input.address.state,
-      input.address.zipCode,
-      input.address.complement,
-      coordinates?.latitude ?? undefined,
-      coordinates?.longitude ?? undefined,
-    );
-
-    const caregiver = new Caregiver(
-      0,
-      UserId.create(input.userId),
-      input.offersHosting,
-      address,
-      input.serviceRadiusKm,
-      false,
-      input.isPublicProfile ?? true,
-      new Date(),
-      new Date(),
-    );
-
-    const saved = await this.caregiverRepo.save(caregiver, tx);
-
-    return this.toDTO(saved);
   }
 
-  async getByUserId(userId: number) {
+  async getByUserId(userId: number): Promise<Either<Error, CaregiverDTO>> {
     const caregiver = await this.caregiverRepo.findByUserId(userId);
 
-    return caregiver ? this.toDTO(caregiver) : null;
+    if (!caregiver) {
+      return left(new Error("Cuidador não encontrado"));
+    }
+
+    return right(this.toDTO(caregiver));
+  }
+
+  async getPublicCaregivers(): Promise<Either<Error, CaregiverDTO[]>> {
+    const caregivers = await this.caregiverRepo.findPublicCaregivers();
+
+    return right(caregivers.map(this.toDTO));
   }
 
   private toDTO(caregiver: Caregiver) {
@@ -73,9 +90,5 @@ export class CaregiverFacadeUseCase {
       isVerified: caregiver.hasVerification(),
       isPublic: caregiver.isPublic(),
     };
-  }
-
-  async getPublicCaregivers() {
-    return this.caregiverRepo.findPublicCaregivers();
   }
 }

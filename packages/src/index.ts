@@ -12,6 +12,8 @@ export * from "./core/errors/normalizeErrors.js";
 export * from "./domain/dtos/IAddress.dto.js";
 export * from "./domain/dtos/IAuth.dto.js";
 export * from "./domain/dtos/IUser.dto.js";
+export * from "./domain/dtos/ICarregiver.dto.js";
+export * from "./domain/dtos/IOwner.dto.js";
 
 export * from "./domain/repositories/Auth.repositories.js";
 export * from "./domain/repositories/userBaseRepository.js";

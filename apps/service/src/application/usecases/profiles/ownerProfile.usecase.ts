@@ -1,10 +1,10 @@
-import { IAddress } from "@packages";
+import { IAddress, OwnerProfileDTO } from "@packages";
 import { Address } from "@packages";
 import { Phone } from "@packages";
-import { OwnerProfile } from "@packages";
 import { UserId } from "@packages";
 import { Prisma } from "../../../generated/prisma/client.js";
 import { OwnerProfileRepository } from "../../../infrastructure/repositories/user/userOwner.repository.js";
+import { OwnerProfile } from "@packages";
 
 export class OwnerProfileFacadeUseCase {
   constructor(private ownerProfileRepo: OwnerProfileRepository) {}
@@ -18,6 +18,7 @@ export class OwnerProfileFacadeUseCase {
     },
     tx?: Prisma.TransactionClient,
   ) {
+    // ✅ aqui é ENTIDADE, não DTO
     const profile = new OwnerProfile(
       UserId.create(input.userId),
       Address.restore(input.address),
@@ -39,15 +40,18 @@ export class OwnerProfileFacadeUseCase {
 
   async getAll() {
     const profiles = await this.ownerProfileRepo.findAll();
-    return profiles.map(this.toDTO);
+    return profiles.map((p) => this.toDTO(p));
   }
 
-  private toDTO(profile: OwnerProfile) {
+  // ✅ aqui sim: entidade → DTO
+  private toDTO(profile: OwnerProfile): OwnerProfileDTO {
     return {
       userId: profile.getUserId().getValue(),
       address: profile.getAddress().toPrimitives(),
       phone: profile.getPhone()?.toPrimitives() ?? null,
       searchRadiusKm: profile.getSearchRadius(),
+      createdAt: profile.getCreatedAt().toISOString(),
+      updatedAt: profile.getUpdatedAt().toISOString(),
     };
   }
 }

@@ -24,6 +24,10 @@ export class OwnerProfile {
     return this.phone;
   }
 
+  getUpdatedAt(): Date {
+    return this.updatedAt;
+  }
+
   getSearchRadius() {
     return this.searchRadiusKm;
   }

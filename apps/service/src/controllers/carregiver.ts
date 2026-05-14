@@ -5,8 +5,6 @@ export class CaregiverController {
   constructor(private caregiverUseCase: CaregiverFacadeUseCase) {}
 
   async save(req: Request, res: Response) {
-    console.log(req.body);
-    console.log("ADDRESS:", req.body.address);
     try {
       const {
         userId,
@@ -16,52 +14,72 @@ export class CaregiverController {
         isPublicProfile,
       } = req.body;
 
-      const carregiver = await this.caregiverUseCase.save({
+      const result = await this.caregiverUseCase.save({
         userId,
         offersHosting,
         serviceRadiusKm,
         address,
         isPublicProfile,
       });
-      return res.status(201).json(carregiver);
-    } catch (error) {
-      if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+
+      if (result.type === "left") {
+        return res.status(400).json({
+          message: result.error.message,
+        });
       }
-      return res.status(400).json({ error: "Erro desconhecido" });
+
+      return res.status(201).json({
+        message: "Cuidador criado com sucesso",
+        data: result.value,
+      });
+    } catch {
+      return res.status(500).json({
+        message: "Erro desconhecido",
+      });
     }
   }
-
   async getByUserId(req: Request<{ userId: string }>, res: Response) {
     try {
       const userId = Number(req.params.userId);
 
-      const caregiver = await this.caregiverUseCase.getByUserId(userId);
+      const result = await this.caregiverUseCase.getByUserId(userId);
 
-      if (!caregiver) {
-        return res.status(404).json({ error: "Cuidador não encontrado" });
+      if (result.type === "left") {
+        return res.status(404).json({
+          message: result.error.message,
+        });
       }
 
-      return res.status(200).json(caregiver);
-    } catch (error) {
-      if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
-      }
-      return res.status(400).json({ error: "Erro desconhecido" });
+      return res.status(200).json({
+        message: "Cuidador encontrado com sucesso",
+        data: result.value,
+      });
+    } catch {
+      return res.status(500).json({
+        message: "Erro desconhecido",
+      });
     }
   }
 
   // metodo para retornar cuidadores com perfil publico para exibir na home
   async getPublicCaregivers(req: Request, res: Response) {
     try {
-      const caregivers = await this.caregiverUseCase.getPublicCaregivers();
+      const result = await this.caregiverUseCase.getPublicCaregivers();
 
-      return res.status(200).json(caregivers);
-    } catch (error) {
-      if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+      if (result.type === "left") {
+        return res.status(400).json({
+          message: result.error.message,
+        });
       }
-      return res.status(400).json({ error: "Erro desconhecido" });
+
+      return res.status(200).json({
+        message: "Cuidadores listados com sucesso",
+        data: result.value,
+      });
+    } catch {
+      return res.status(500).json({
+        message: "Erro desconhecido",
+      });
     }
   }
 }

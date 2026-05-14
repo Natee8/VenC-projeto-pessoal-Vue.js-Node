@@ -5,25 +5,25 @@ export class CreateUserBaseController {
   constructor(private createUserBaseUseCase: CreateUserBaseUseCase) {}
 
   async handle(req: Request, res: Response) {
-    console.log(req.body);
-    console.log("ADDRESS:", req.body.address);
-    try {
-      const { name, email, password, cpf, birthDate } = req.body;
+    const { name, email, password, cpf, birthDate } = req.body;
 
-      const user = await this.createUserBaseUseCase.execute({
-        name,
-        email,
-        password,
-        cpf,
-        birthDate,
+    const result = await this.createUserBaseUseCase.execute({
+      name,
+      email,
+      password,
+      cpf,
+      birthDate,
+    });
+
+    if (result.type === "left") {
+      return res.status(400).json({
+        message: result.error.message,
       });
-
-      return res.status(201).json(user);
-    } catch (error) {
-      if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
-      }
-      return res.status(400).json({ error: "Erro desconhecido" });
     }
+
+    return res.status(201).json({
+      message: "Usuário criado com sucesso",
+      data: result.value,
+    });
   }
 }

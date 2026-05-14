@@ -8,6 +8,11 @@ import { IUserDTO } from "@packages";
 import { Name } from "@packages";
 import { UserId } from "@packages";
 import { Prisma } from "../../../generated/prisma/index.js";
+import {
+  Either,
+  left,
+  right,
+} from "apps/service/src/core/interface/IEighter.js";
 
 export class CreateUserBaseUseCase {
   constructor(
@@ -25,7 +30,7 @@ export class CreateUserBaseUseCase {
       profilePhotoUrl?: string | null;
     },
     tx?: Prisma.TransactionClient,
-  ): Promise<IUserDTO> {
+  ): Promise<Either<Error, IUserDTO>> {
     const birthDateVO = new BirthDate(new Date(input.birthDate));
     const emailVO = Email.create(input.email);
     const cpfVO = CPF.create(input.cpf);
@@ -35,12 +40,12 @@ export class CreateUserBaseUseCase {
 
     const existingEmail = await this.usersRepo.findByEmail(emailVO);
     if (existingEmail) {
-      throw new Error("Email já cadastrado.");
+      return left(new Error("Email já cadastrado."));
     }
 
     const existingCpf = await this.usersRepo.findByCpf(cpfVO);
     if (existingCpf) {
-      throw new Error("CPF já cadastrado.");
+      return left(new Error("CPF já cadastrado."));
     }
 
     const passwordHash = await this.passwordService.hash(input.password);
@@ -60,13 +65,13 @@ export class CreateUserBaseUseCase {
 
     const savedUser = await this.usersRepo.save(user, tx);
 
-    return {
+    return right({
       id: savedUser.getId().getValue(),
       name: savedUser.getName(),
       email: savedUser.getEmail(),
       cpf: savedUser.getCpf(),
       birthDate: savedUser.getBirthDate().toISOString(),
       profilePhotoUrl: savedUser.getProfilePhoto(),
-    };
+    });
   }
 }
