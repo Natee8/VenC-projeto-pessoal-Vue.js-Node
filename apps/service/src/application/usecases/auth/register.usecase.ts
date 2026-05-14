@@ -15,13 +15,29 @@ export class RegisterUseCase {
     private ownerProfile: OwnerProfileFacadeUseCase,
     private caregiverProfile: CaregiverFacadeUseCase,
   ) {}
-  
 
   async execute(input: RegisterInputProfiles) {
+    console.log("REGISTER INPUT:", input);
+
+    const parsedAddress =
+      typeof input.address === "string"
+        ? JSON.parse(input.address)
+        : input.address;
+
+    const parsedServiceRadiusKm = input.serviceRadiusKm
+      ? Number(input.serviceRadiusKm)
+      : undefined;
+
+    const parsedOffersHosting = String(input.offersHosting) === "true";
+
+    const parsedIsPublicProfile = String(input.isPublicProfile) === "true";
+
     return this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const profilePhotoUrl: string | null = input.profileImage
-        ? await uploadImage(input.profileImage)
+        ? await uploadImage(input.profileImage.buffer)
         : null;
+
+      console.log(profilePhotoUrl);
 
       const user = await this.createUserBase.execute(
         {
@@ -41,13 +57,15 @@ export class RegisterUseCase {
         const profile = await this.ownerProfile.save(
           {
             userId: user.id,
-            address: input.address,
+            address: parsedAddress,
             phone: input.phone,
-            searchRadiusKm: input.searchRadiusKm,
+            searchRadiusKm: parsedServiceRadiusKm,
           },
 
           tx,
         );
+
+        console.log(input.profileImage);
 
         return { user, profile };
       }
@@ -56,12 +74,12 @@ export class RegisterUseCase {
         const profile = await this.caregiverProfile.save(
           {
             userId: user.id,
-            address: input.address,
-            offersHosting: input.offersHosting ?? false,
+            address: parsedAddress,
+            offersHosting: parsedOffersHosting,
 
-            serviceRadiusKm: input.serviceRadiusKm ?? 5,
+            serviceRadiusKm: parsedServiceRadiusKm ?? 5,
 
-            isPublicProfile: input.isPublicProfile,
+            isPublicProfile: parsedIsPublicProfile,
           },
 
           tx,

@@ -1,8 +1,8 @@
-import { RegisterOutput } from "@packages";
+import { RegisterOutput, RegisterPayload } from "@packages";
 import { apiInstance } from "../config/ApiConfig";
 
 export const registerRepository = {
-  async register(input: any): Promise<RegisterOutput> {
+  async register(input: RegisterPayload): Promise<RegisterOutput> {
     const formData = new FormData();
 
     Object.entries(input).forEach(([key, value]) => {

@@ -8,6 +8,9 @@ export const uploadProfileImage = multer({
   },
 
   fileFilter(req, file, cb) {
+    console.log("MIMETYPE:", file.mimetype);
+    console.log("FILE:", file);
+
     const allowedMimeTypes = [
       "image/png",
       "image/jpeg",

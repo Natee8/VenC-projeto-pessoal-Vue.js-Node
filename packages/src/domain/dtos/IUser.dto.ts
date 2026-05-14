@@ -1,12 +1,12 @@
+import { UploadedFile } from "../../types/formData.js";
 import { Name } from "../../valuesObjects/name.js";
 import { IAddress } from "./IAddress.dto.js";
 
-//deto de saida do registro do usuario
+//dato de saida do registro do usuario
 export interface RegisterOutput {
   id: number;
   email: string;
   cpf: string;
-  /** URL da foto de perfil (pode ser vazio) */
   profilePhotoUrl?: string;
 }
 
@@ -29,7 +29,7 @@ export interface RegisterInput {
   birthDate: string;
   password: string;
 
-  profileImage?: Buffer;
+  profileImage?: UploadedFile;
 }
 
 // dto de entrada para o registro do perfil do usuario, pode ser extendido para owner ou caregiver
@@ -42,7 +42,7 @@ export interface RegisterInputProfiles {
   cpf: string;
   birthDate: string;
 
-  profileImage?: File | Buffer;
+  profileImage?: UploadedFile;
 
   searchRadiusKm?: number;
   phone?: string;

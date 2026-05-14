@@ -36,8 +36,8 @@ export class CaregiverFacadeUseCase {
       input.address.state,
       input.address.zipCode,
       input.address.complement,
-      coordinates?.latitude,
-      coordinates?.longitude,
+      coordinates?.latitude ?? undefined,
+      coordinates?.longitude ?? undefined,
     );
 
     const caregiver = new Caregiver(

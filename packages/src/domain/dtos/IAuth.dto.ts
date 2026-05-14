@@ -28,3 +28,27 @@ export interface IUserAuthDto {
   createdAt: Date;
   updatedAt: Date;
 }
+
+//payload para apis, usar em forms etc
+export interface RegisterPayload {
+  name: string;
+  email: string;
+  birthDate: string;
+  cpf: string;
+  password: string;
+
+  address: {
+    street: string;
+    number: string;
+    neighborhood: string;
+    city: string;
+    state: string;
+    zipCode: string;
+  };
+
+  serviceRadiusKm: number;
+  isPublicProfile: boolean;
+  offersHosting: boolean;
+  type: "owner" | "caregiver";
+  profileImage?: File | null;
+}
