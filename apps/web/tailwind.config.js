@@ -24,6 +24,10 @@ export default {
             "gradient-about":
               "linear-gradient(180deg, #69CE96 63%, #163A5D 63%)",
           },
+          errors: {
+              success: "#69CE96",
+              error: "#F8212C"
+          },
         },
       },
     },

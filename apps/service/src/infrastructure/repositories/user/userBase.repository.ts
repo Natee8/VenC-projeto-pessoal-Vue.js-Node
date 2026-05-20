@@ -22,7 +22,6 @@ export class UsersRepository implements IUsersRepository<Prisma.TransactionClien
       Email.create(record.email),
       record.passwordHash,
       record.isActive,
-      // profile photo field from database, if present
       record.profilePhotoUrl ?? "",
       new BirthDate(record.birthDate),
       CPF.create(record.cpf),
@@ -62,25 +61,25 @@ export class UsersRepository implements IUsersRepository<Prisma.TransactionClien
     const client = tx ?? this.prisma;
 
     const record = await client.userAuth.upsert({
-      where: { cpf: user.getCpf() },
+      where: { cpf: user.getCpf().getValue() },
 
       update: {
         passwordHash: user.getPasswordHash(),
         isActive: user.isEnabled(),
         // include profile photo if changed
         profilePhotoUrl: user.getProfilePhoto(),
-        birthDate: user.getBirthDate(),
+        birthDate: user.getBirthDate().getValue(),
         updatedAt: new Date(),
       },
 
       create: {
         name: user.getName().value,
-        email: user.getEmail(),
+        email: user.getEmail().value,
         passwordHash: user.getPasswordHash(),
         isActive: user.isEnabled(),
         profilePhotoUrl: user.getProfilePhoto(),
-        birthDate: user.getBirthDate(),
-        cpf: user.getCpf(),
+        birthDate: user.getBirthDate().getValue(),
+        cpf: user.getCpf().getValue(),
         createdAt: new Date(),
         updatedAt: new Date(),
       },

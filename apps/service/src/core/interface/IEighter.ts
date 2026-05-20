@@ -1,55 +1,55 @@
-export type Either<L, R> = Left<L> | Right<R>
+export type Either<L, R> = Left<L, R> | Right<L, R>;
 
 export interface IEither<L, R> {
-  isException(): this is Left<L>
-  isSuccess(): this is Right<R>
+  isException(): this is Left<L, R>;
+  isSuccess(): this is Right<L, R>;
 }
 
+export class Left<L, R> {
+  readonly type = "left";
 
-export class Left<L> {
-  readonly type = 'left'
   constructor(private readonly _value: L) {}
 
   get value(): never {
-    throw new Error('Tentou acessar Right em Left')
+    throw new Error("Tentou acessar Right em Left");
   }
 
   get error(): L {
-    return this._value
+    return this._value;
   }
 
-  isException(): this is Left<L> {
-    return true
+  isException(): this is Left<L, R> {
+    return true;
   }
 
-  isSuccess(): this is Right<never> {
-    return false
+  isSuccess(): this is Right<L, R> {
+    return false;
   }
 }
 
-export class Right<R> {
-  readonly type = 'right'
+export class Right<L, R> {
+  readonly type = "right";
+
   constructor(private readonly _value: R) {}
 
   get value(): R {
-    return this._value
+    return this._value;
   }
 
   get error(): never {
-    throw new Error('Tentou acessar Left em Right')
+    throw new Error("Tentou acessar Left em Right");
   }
 
-  isException(): this is Left<never> {
-    return false
+  isException(): this is Left<L, R> {
+    return false;
   }
 
-  isSuccess(): this is Right<R> {
-    return true
+  isSuccess(): this is Right<L, R> {
+    return true;
   }
 }
 
-export const left = <L>(value: L): Either<L, never> =>
-  new Left(value)
+export const left = <L, R = never>(value: L): Either<L, R> => new Left(value);
 
-export const right = <R>(value: R): Either<never, R> =>
-  new Right(value)
+export const right = <L = never, R = never>(value: R): Either<L, R> =>
+  new Right(value);

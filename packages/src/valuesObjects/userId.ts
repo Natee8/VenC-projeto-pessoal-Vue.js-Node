@@ -10,7 +10,7 @@ export class UserId {
       return new UserId(Math.floor(Math.random() * 1_000_000_000));
     }
 
-    if (!value) {
+    if (!value || value <= 0) {
       throw new Error("UserId inválido");
     }
 
@@ -23,5 +23,13 @@ export class UserId {
 
   toNumber(): number {
     return this._value;
+  }
+
+  toString(): string {
+    return this._value.toString();
+  }
+
+  equals(other: UserId): boolean {
+    return this._value === other.getValue();
   }
 }

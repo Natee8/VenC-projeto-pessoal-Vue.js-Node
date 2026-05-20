@@ -2,7 +2,11 @@ export class ServiceRadius {
   private static readonly MIN_RADIUS = 5;
   private static readonly MAX_RADIUS = 64;
 
-  private constructor(private readonly value: number) {}
+  private readonly _value: number;
+
+  private constructor(value: number) {
+    this._value = value;
+  }
 
   static create(radius: number): ServiceRadius {
     if (radius < ServiceRadius.MIN_RADIUS) {
@@ -17,6 +21,14 @@ export class ServiceRadius {
   }
 
   getValue(): number {
-    return this.value;
+    return this._value;
+  }
+
+  equals(other: ServiceRadius): boolean {
+    return this._value === other.getValue();
+  }
+
+  toString(): string {
+    return `${this._value}km`;
   }
 }

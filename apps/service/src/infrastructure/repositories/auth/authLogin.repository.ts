@@ -1,6 +1,4 @@
-import { UserAuth } from "@packages";
-import { BirthDate } from "@packages";
-import { CPF } from "@packages";
+import { BirthDate, CPF } from "@packages";
 import { Email } from "@packages";
 import { UserId } from "@packages";
 import { Name } from "@packages";
@@ -9,7 +7,7 @@ import {
   UserAuth as PrismaUserAuth,
 } from "../../../generated/prisma/index.js";
 import type { Prisma } from "../../../generated/prisma/index.js";
-import type { IUsersRepository } from "@packages";
+import { IUsersRepository, UserAuth } from "@packages";
 
 export class UsersRepository implements IUsersRepository<Prisma.TransactionClient> {
   private prisma = new PrismaClient();
@@ -90,7 +88,7 @@ export class UsersRepository implements IUsersRepository<Prisma.TransactionClien
     const client = tx ?? this.prisma;
 
     const record = await client.userAuth.upsert({
-      where: { cpf: user.getCpf() },
+      where: { cpf: user.getCpf().getValue() },
       update: {
         passwordHash: user.getPasswordHash(),
         isActive: user.isEnabled(),
@@ -100,12 +98,12 @@ export class UsersRepository implements IUsersRepository<Prisma.TransactionClien
       },
       create: {
         name: user.getName().value,
-        email: user.getEmail(),
+        email: user.getEmail().value,
         passwordHash: user.getPasswordHash(),
         isActive: user.isEnabled(),
         profilePhotoUrl: user.getProfilePhoto(),
-        birthDate: user.getBirthDate(),
-        cpf: user.getCpf(),
+        birthDate: user.getBirthDate().getValue(),
+        cpf: user.getCpf().getValue(),
         createdAt: new Date(),
         updatedAt: new Date(),
       },

@@ -1,76 +1,105 @@
-export class Money {
-  private readonly amount: number;
-  private readonly currency: string;
+import { MoneyProps } from "../types/moneyProps";
 
-  private constructor(amount: number, currency: string) {
-    this.amount = amount;
-    this.currency = currency;
+export class Money {
+  private constructor(private readonly props: MoneyProps) {
     this.validate();
   }
 
   static create(amount: number, currency = "BRL"): Money {
-    return new Money(amount, currency);
+    return new Money({
+      amount,
+      currency,
+    });
   }
 
   static zero(currency = "BRL"): Money {
-    return new Money(0, currency);
+    return new Money({
+      amount: 0,
+      currency,
+    });
   }
 
-  private validate() {
-    if (this.amount < 0) {
+  static restore(props: MoneyProps): Money {
+    return new Money(props);
+  }
+
+  private validate(): void {
+    const { amount, currency } = this.props;
+
+    if (amount < 0) {
       throw new Error("O valor monetário não pode ser negativo");
     }
 
-    if (!this.currency || this.currency.length !== 3) {
-      throw new Error("A moeda deve seguir o padrão ISO 4217 (ex: BRL, USD)");
+    if (!currency || currency.length !== 3) {
+      throw new Error("A moeda deve seguir o padrão ISO 4217");
     }
   }
 
-  getAmount() {
-    return this.amount;
+  getValue(): MoneyProps {
+    return { ...this.props };
   }
 
-  getCurrency() {
-    return this.currency;
+  toPrimitives(): MoneyProps {
+    return { ...this.props };
+  }
+
+  getAmount(): number {
+    return this.props.amount;
+  }
+
+  getCurrency(): string {
+    return this.props.currency;
   }
 
   add(other: Money): Money {
     this.assertSameCurrency(other);
-    return new Money(this.amount + other.amount, this.currency);
+
+    return new Money({
+      amount: this.props.amount + other.getAmount(),
+      currency: this.props.currency,
+    });
   }
 
   subtract(other: Money): Money {
     this.assertSameCurrency(other);
 
-    if (this.amount < other.amount) {
+    const result = this.props.amount - other.getAmount();
+
+    if (result < 0) {
       throw new Error("O valor resultante não pode ser negativo");
     }
 
-    return new Money(this.amount - other.amount, this.currency);
+    return new Money({
+      amount: result,
+      currency: this.props.currency,
+    });
   }
 
   multiply(factor: number): Money {
     if (factor <= 0) {
-      throw new Error("O fator de multiplicação deve ser maior que zero");
+      throw new Error("O fator deve ser maior que zero");
     }
 
-    return new Money(this.amount * factor, this.currency);
+    return new Money({
+      amount: this.props.amount * factor,
+      currency: this.props.currency,
+    });
   }
 
   equals(other: Money): boolean {
     return (
-      this.amount === other.amount &&
-      this.currency === other.currency
+      this.props.amount === other.getAmount() &&
+      this.props.currency === other.getCurrency()
     );
   }
 
-  private assertSameCurrency(other: Money) {
-    if (this.currency !== other.currency) {
-      throw new Error("Não é possível operar valores com moedas diferentes");
-    }
+  toString(): string {
+    return `${this.props.currency} ${this.props.amount.toFixed(2)}`;
   }
 
-  toString() {
-    return `${this.currency} ${this.amount.toFixed(2)}`;
+  private assertSameCurrency(other: Money) {
+    if (this.props.currency !== other.getCurrency()) {
+      throw new Error("Não é possível operar moedas diferentes");
+    }
   }
 }

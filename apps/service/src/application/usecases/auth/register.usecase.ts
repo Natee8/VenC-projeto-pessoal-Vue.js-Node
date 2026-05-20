@@ -39,7 +39,7 @@ export class RegisterUseCase {
 
       console.log(profilePhotoUrl);
 
-      const user = await this.createUserBase.execute(
+      const userResult = await this.createUserBase.execute(
         {
           name: input.name,
           email: input.email,
@@ -52,6 +52,11 @@ export class RegisterUseCase {
 
         tx,
       );
+      if (userResult.isException()) {
+        throw userResult.error;
+      }
+
+      const user = userResult.value;
 
       if (input.type === "owner") {
         const profile = await this.ownerProfile.save(
@@ -71,7 +76,7 @@ export class RegisterUseCase {
       }
 
       if (input.type === "caregiver") {
-        const profile = await this.caregiverProfile.save(
+        const result = await this.caregiverProfile.save(
           {
             userId: user.id,
             address: parsedAddress,
@@ -85,6 +90,13 @@ export class RegisterUseCase {
           tx,
         );
 
+        if (result.isException()) {
+          throw result.error;
+        }
+
+        const profile = result.value;
+
+        console.log(profile.id);
         return { user, profile };
       }
 

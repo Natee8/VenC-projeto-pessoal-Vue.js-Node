@@ -26,7 +26,7 @@ export class CreateUserBaseUseCase {
       email: string;
       password: string;
       cpf: string;
-      birthDate: string;
+      birthDate: Date;
       profilePhotoUrl?: string | null;
     },
     tx?: Prisma.TransactionClient,
@@ -67,10 +67,10 @@ export class CreateUserBaseUseCase {
 
     return right({
       id: savedUser.getId().getValue(),
-      name: savedUser.getName(),
-      email: savedUser.getEmail(),
-      cpf: savedUser.getCpf(),
-      birthDate: savedUser.getBirthDate().toISOString(),
+      name: savedUser.getName().getValue(),
+      email: savedUser.getEmail().getValue(),
+      cpf: savedUser.getCpf().getValue(),
+      birthDate: savedUser.getBirthDate().getValue().toISOString(),
       profilePhotoUrl: savedUser.getProfilePhoto(),
     });
   }

@@ -1,30 +1,34 @@
 export class CPF {
-  private readonly value: string;
+  private readonly _value: string;
 
   private constructor(value: string) {
-    this.value = value;
+    this._value = value;
   }
 
   static create(rawCpf: string): CPF {
     const normalized = CPF.normalize(rawCpf);
 
     if (!CPF.isValid(normalized)) {
-      throw new Error('CPF inválido');
+      throw new Error("CPF inválido");
     }
 
     return new CPF(normalized);
   }
 
   getValue(): string {
-    return this.value;
+    return this._value;
+  }
+
+  toString(): string {
+    return this._value;
   }
 
   equals(other: CPF): boolean {
-    return this.value === other.value;
+    return this._value === other.getValue();
   }
 
   private static normalize(cpf: string): string {
-    return cpf.replace(/\D/g, '');
+    return cpf.replace(/\D/g, "");
   }
 
   private static isValid(cpf: string): boolean {
@@ -36,22 +40,25 @@ export class CPF {
     let remainder = 0;
 
     for (let i = 1; i <= 9; i++) {
-      sum += parseInt(cpf.substring(i - 1, i)) * (11 - i);
+      sum += Number(cpf.substring(i - 1, i)) * (11 - i);
     }
 
     remainder = (sum * 10) % 11;
-    if (remainder === 10 || remainder === 11) remainder = 0;
-    if (remainder !== parseInt(cpf.substring(9, 10))) return false;
+    if (remainder >= 10) remainder = 0;
+
+    if (remainder !== Number(cpf.substring(9, 10))) {
+      return false;
+    }
 
     sum = 0;
+
     for (let i = 1; i <= 10; i++) {
-      sum += parseInt(cpf.substring(i - 1, i)) * (12 - i);
+      sum += Number(cpf.substring(i - 1, i)) * (12 - i);
     }
 
     remainder = (sum * 10) % 11;
-    if (remainder === 10 || remainder === 11) remainder = 0;
-    if (remainder !== parseInt(cpf.substring(10, 11))) return false;
+    if (remainder >= 10) remainder = 0;
 
-    return true;
+    return remainder === Number(cpf.substring(10, 11));
   }
 }

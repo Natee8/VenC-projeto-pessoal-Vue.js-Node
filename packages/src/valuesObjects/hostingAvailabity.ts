@@ -1,8 +1,10 @@
+export interface HostingAvailabilityProps {
+  enabled: boolean;
+  suspended: boolean;
+}
+
 export class HostingAvailability {
-  private constructor(
-    private readonly enabled: boolean,
-    private readonly suspended: boolean,
-  ) {}
+  private constructor(private readonly props: HostingAvailabilityProps) {}
 
   static create(params: {
     enabled: boolean;
@@ -33,42 +35,76 @@ export class HostingAvailability {
       }
     }
 
-    return new HostingAvailability(enabled, false);
+    return new HostingAvailability({
+      enabled,
+      suspended: false,
+    });
   }
 
-  enable(): HostingAvailability {
-    if (this.suspended) {
-      throw new Error("Hospedagem suspensa");
-    }
-
-    return new HostingAvailability(true, false);
+  static restore(props: HostingAvailabilityProps): HostingAvailability {
+    return new HostingAvailability(props);
   }
 
-  disable(): HostingAvailability {
-    return new HostingAvailability(false, false);
+  getValue(): HostingAvailabilityProps {
+    return { ...this.props };
   }
 
-  suspend(): HostingAvailability {
-    if (!this.enabled) {
-      throw new Error("Não é possível suspender hospedagem desabilitada");
-    }
-
-    return new HostingAvailability(this.enabled, true);
-  }
-
-  unsuspend(): HostingAvailability {
-    if (!this.suspended) {
-      throw new Error("Hospedagem não está suspensa");
-    }
-
-    return new HostingAvailability(this.enabled, false);
+  toPrimitives(): HostingAvailabilityProps {
+    return { ...this.props };
   }
 
   isEnabled(): boolean {
-    return this.enabled && !this.suspended;
+    return this.props.enabled && !this.props.suspended;
   }
 
   isSuspended(): boolean {
-    return this.suspended;
+    return this.props.suspended;
+  }
+
+  enable(): HostingAvailability {
+    if (this.props.suspended) {
+      throw new Error("Hospedagem suspensa");
+    }
+
+    return new HostingAvailability({
+      ...this.props,
+      enabled: true,
+    });
+  }
+
+  disable(): HostingAvailability {
+    return new HostingAvailability({
+      ...this.props,
+      enabled: false,
+    });
+  }
+
+  suspend(): HostingAvailability {
+    if (!this.props.enabled) {
+      throw new Error("Não é possível suspender hospedagem desabilitada");
+    }
+
+    return new HostingAvailability({
+      ...this.props,
+      suspended: true,
+    });
+  }
+
+  unsuspend(): HostingAvailability {
+    if (!this.props.suspended) {
+      throw new Error("Hospedagem não está suspensa");
+    }
+
+    return new HostingAvailability({
+      ...this.props,
+      suspended: false,
+    });
+  }
+
+  equals(other: HostingAvailability): boolean {
+    return (
+      this.props.enabled === other.getValue().enabled &&
+      this.props.suspended === other.getValue().suspended
+    );
   }
 }

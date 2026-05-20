@@ -1,5 +1,4 @@
 import { UploadedFile } from "../../types/formData.js";
-import { Name } from "../../valuesObjects/name.js";
 import { IAddress } from "./IAddress.dto.js";
 
 //dato de saida do registro do usuario
@@ -8,12 +7,13 @@ export interface RegisterOutput {
   email: string;
   cpf: string;
   profilePhotoUrl?: string;
+  message: string;
 }
 
 //dto de usuario completo para ser utilizado em outras partes do sistema
 export interface IUserDTO {
   id: number;
-  name: Name;
+  name: string;
   email: string;
   cpf: string;
   birthDate: string;

@@ -1,8 +1,8 @@
 export class Phone {
-  private readonly value: string;
+  private readonly _value: string;
 
   private constructor(value: string) {
-    this.value = value;
+    this._value = value;
   }
 
   static create(rawPhone: string): Phone {
@@ -15,12 +15,24 @@ export class Phone {
     return new Phone(normalized);
   }
 
+  static restore(raw: string): Phone {
+    return new Phone(raw);
+  }
+
   getValue(): string {
-    return this.value;
+    return this._value;
+  }
+
+  toPrimitives(): string {
+    return this._value;
+  }
+
+  toString(): string {
+    return this._value;
   }
 
   equals(other: Phone): boolean {
-    return this.value === other.value;
+    return this._value === other.getValue();
   }
 
   private static normalize(phone: string): string {
@@ -34,19 +46,12 @@ export class Phone {
       phone = phone.substring(2);
     }
 
-    if (phone.length !== 10 && phone.length !== 11) return false;
+    if (phone.length !== 10 && phone.length !== 11) {
+      return false;
+    }
 
     const ddd = phone.substring(0, 2);
-    if (Number(ddd) < 11 || Number(ddd) > 99) return false;
 
-    return true;
-  }
-
-  toPrimitives(): string {
-    return this.value;
-  }
-
-  static restore(raw: string): Phone {
-    return new Phone(raw);
+    return Number(ddd) >= 11 && Number(ddd) <= 99;
   }
 }

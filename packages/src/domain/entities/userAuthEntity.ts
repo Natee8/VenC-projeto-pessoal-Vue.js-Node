@@ -52,16 +52,16 @@ export class UserAuth {
     return this.isActive;
   }
 
-  getBirthDate(): Date {
-    return this.birthDate.getValue();
+  getBirthDate(): BirthDate {
+    return this.birthDate;
   }
 
-  getCpf(): string {
-    return this.cpf.getValue();
+  getCpf(): CPF {
+    return this.cpf;
   }
 
-  getEmail() {
-    return this.email.value;
+  getEmail(): Email {
+    return this.email;
   }
 
   getId(): UserId {
