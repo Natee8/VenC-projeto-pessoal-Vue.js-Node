@@ -47,11 +47,11 @@ const handleLogin = async (e: Event) => {
 
 <template>
   <AuthLayout>
-    <div class="flex justify-center items-center h-full">
-      <div class="bg-secondary rounded-2xl p-28 shadow min-h-screen w-[60%]">
-        <div class="flex flex-col items-center text-center gap-3 mb-8">
-          <img src="/assets/logos/logoWhite.svg" alt="Logo vencá" width="160" />
-          <p class="text-white/80 text-[1.2rem]">
+    <div class="flex justify-center items-center h-full py-4 md:py-8">
+      <div class="bg-secondary rounded-2xl md:rounded-3xl px-5 py-8 sm:px-8 md:px-10 lg:px-12 xl:px-16 shadow-xl w-full max-w-[1000px]">
+        <div class="flex flex-col items-center text-center gap-3 mb-8 md:mb-10">
+          <img src="/assets/logos/logoWhite.svg" alt="Logo vencá" class="w-32 md:w-36 lg:w-40" />
+          <p class="text-white/80 text-base md:text-lg">
             Preencha suas informações para realizar login
           </p>
         </div>
@@ -90,7 +90,7 @@ const handleLogin = async (e: Event) => {
             </button>
           </div>
 
-          <div class="border-t border-gray-200 my-10"></div>
+          <div class="border-t border-gray-200 my-8 md:my-10"></div>
 
           <div class="flex">
             <p

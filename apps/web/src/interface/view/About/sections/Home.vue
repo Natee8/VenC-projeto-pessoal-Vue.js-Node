@@ -1,11 +1,11 @@
 <template>
   <section>
     <div
-      class="w-full h-auto flex justify-center items-end bg-cover bg-center bg-no-repeat"
+      class="w-full min-h-[calc(100vh-80px)] max-h-[calc(100vh-80px)] overflow-hidden flex justify-center items-end bg-cover bg-center bg-no-repeat px-4"
       style="background-image: url(&quot;/assets/about/backgroundBg.svg&quot;)"
     >
       <img
-        class="max-w-full max-h-full object-contain"
+        class="w-full max-w-[1200px] h-full max-h-[calc(100vh-80px)] object-contain"
         src="/assets/about/bg.svg"
         alt="background"
       />
@@ -22,7 +22,7 @@
       </h1>
 
       <h5
-        class="text-texts-default font-semibold text-lg md:text-[18px] font-normal mt-6 max-w-3xl"
+        class="text-texts-default font-semibold text-lg md:text-[18px] mt-6 max-w-3xl"
       >
         Aqui você encontra dog walkers e cuidadores verificados, escolhe quem
         combina com você e com seu pet, e pode entrar em contato direto, sem

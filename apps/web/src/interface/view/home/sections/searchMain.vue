@@ -7,15 +7,15 @@ import { ArrowRightIcon } from '@heroicons/vue/16/solid';
 
 <template>
   <section
-    class="w-full h-[90vh] bg-[url('/assets/home/bones.svg')]
-           bg-repeat bg-[length:1000px_1080px] bg-center"
+    class="w-full min-h-[calc(100vh-80px)] bg-[url('/assets/home/bones.svg')]
+           bg-repeat bg-[length:700px_760px] md:bg-[length:1000px_1080px] bg-center"
   >
-    <div class="flex justify-between items-center px-20 py-10 gap-24">
+    <div class="flex flex-col-reverse xl:flex-row justify-between items-center px-4 sm:px-6 lg:px-10 xl:px-20 py-8 md:py-10 gap-10 xl:gap-24">
 
-      <div class="flex flex-col gap-10 w-full">
+      <div class="flex flex-col gap-8 md:gap-10 w-full">
 
         <div
-          class="w-60 h-12 rounded-xl bg-primary/25 font-bold
+          class="w-full max-w-60 h-12 rounded-xl bg-primary/25 font-bold
                  flex items-center justify-center gap-3 text-primary"
         >
           <StarIcon class="w-6 h-6" fill="currentColor" />
@@ -23,25 +23,25 @@ import { ArrowRightIcon } from '@heroicons/vue/16/solid';
         </div>
 
         <div class="flex flex-col gap-1">
-          <h1 class="text-5xl font-bold text-texts-primary-dark">
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-texts-primary-dark">
             O cuidado que seu
           </h1>
 
           <div class="flex flex-col gap-2">
-            <h1 class="text-5xl font-bold text-primary">
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-primary">
               Pet merece,
             </h1>
-            <img width="300" src="/assets/home/line.svg" alt="" />
+            <img class="w-44 sm:w-56 lg:w-[300px]" src="/assets/home/line.svg" alt="" />
           </div>
 
-          <h1 class="text-5xl font-bold text-texts-primary-dark">
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-texts-primary-dark">
             pertinho de você
           </h1>
         </div>
 
-        <div class="flex gap-6 items-center">
+        <div class="flex flex-col sm:flex-row gap-4 sm:gap-6 items-stretch sm:items-center w-full">
 
-          <div class="relative w-[70%]">
+          <div class="relative w-full sm:w-[65%]">
             <Search
               class="absolute left-4 top-1/2 -translate-y-1/2
                      w-5 h-5 text-texts-default"
@@ -57,10 +57,10 @@ import { ArrowRightIcon } from '@heroicons/vue/16/solid';
           </div>
 
           <button
-            class="flex items-center gap-2 h-14 px-6
+            class="flex items-center justify-center gap-2 h-14 px-6
                    rounded-xl bg-primary text-white
                    font-semibold hover:bg-primaryHover
-                   transition-all cursor-pointer"
+                   transition-all cursor-pointer whitespace-nowrap"
           >
             Buscar cuidadores
             <ArrowRightIcon class="w-4 h-4" />
@@ -68,23 +68,25 @@ import { ArrowRightIcon } from '@heroicons/vue/16/solid';
 
         </div>
 
-        <div class="flex items-center gap-12">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-8">
             <p class="font-bold text-text-primary-dark">Populares:</p>
 
-            <div
-            v-for="service in popularServices"
-            :key="service.id"
-            class="w-32 h-10 font-semibold text-white bg-secondary
-                    rounded-full flex items-center justify-center
-                    cursor-pointer hover:bg-secondary/90 transition"
-            >
-            {{ service.label }}
+            <div class="flex flex-wrap gap-3">
+              <div
+              v-for="service in popularServices"
+              :key="service.id"
+              class="w-32 h-10 font-semibold text-white bg-secondary
+                      rounded-full flex items-center justify-center
+                      cursor-pointer hover:bg-secondary/90 transition"
+              >
+              {{ service.label }}
+              </div>
             </div>
         </div>
       </div>
 
-      <div>
-        <img width="1250" src="/assets/home/dogBall.svg" alt="" />
+      <div class="w-full flex justify-center xl:justify-end">
+        <img class="w-full max-w-[520px] xl:max-w-[860px]" src="/assets/home/dogBall.svg" alt="" />
       </div>
 
     </div>

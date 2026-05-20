@@ -54,7 +54,7 @@ const updateField = (event: Event, emitName: string) => {
 </script>
 
 <template>
-  <form class="flex flex-col gap-5" @submit="handleSubmit">
+  <form class="flex flex-col gap-5 md:gap-6" @submit="handleSubmit">
     <div class="flex flex-col gap-2">
       <label for="name" class="text-white font-semibold">Nome</label>
 
@@ -89,7 +89,7 @@ const updateField = (event: Event, emitName: string) => {
       </span>
     </div>
 
-    <div class="flex gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
       <div class="flex-1 flex flex-col gap-2">
         <label for="birthDate" class="text-white font-semibold">
           Data de Nascimento

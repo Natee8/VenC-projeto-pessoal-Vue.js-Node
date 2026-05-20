@@ -74,7 +74,7 @@ const handleSubmit = async (e: Event) => {
 </script>
 
 <template>
-  <form class="flex flex-col gap-5" @submit="handleSubmit">
+  <form class="flex flex-col gap-6 md:gap-7 pb-2 md:pb-4" @submit="handleSubmit">
     <!-- FOTO PERFIL -->
     <div class="flex flex-col items-center gap-2 mb-10">
       <p class="text-white font-semibold">Foto de perfil</p>
@@ -170,7 +170,7 @@ const handleSubmit = async (e: Event) => {
     <button
       type="submit"
       :disabled="isLoading"
-      class="w-full h-16 bg-details text-white font-semibold rounded-lg mt-6 hover:opacity-90 transition disabled:opacity-50"
+      class="w-full h-16 bg-details text-white font-semibold rounded-lg mt-8 md:mt-10 hover:opacity-90 transition disabled:opacity-50"
     >
       {{ isLoading ? "Registrando..." : "Cadastrar" }}
     </button>
