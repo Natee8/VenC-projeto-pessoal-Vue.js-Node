@@ -21,7 +21,7 @@ export class UsersRepository implements IUsersRepository<Prisma.TransactionClien
       record.isActive,
       // assuming the prisma schema now has profilePhotoUrl
       record.profilePhotoUrl ?? "",
-      new BirthDate(record.birthDate),
+      BirthDate.create(record.birthDate),
       CPF.create(record.cpf),
       record.createdAt,
       record.updatedAt,
@@ -78,7 +78,7 @@ export class UsersRepository implements IUsersRepository<Prisma.TransactionClien
   ): Promise<UserAuth | null> {
     const client = tx ?? this.prisma;
     const user = await client.userAuth.findUnique({
-      where: { email: email.value },
+      where: { email: email.getValue() },
     });
     if (!user) return null;
     return this.mapToEntity(user);
@@ -97,8 +97,8 @@ export class UsersRepository implements IUsersRepository<Prisma.TransactionClien
         updatedAt: new Date(),
       },
       create: {
-        name: user.getName().value,
-        email: user.getEmail().value,
+        name: user.getName().getValue(),
+        email: user.getEmail().getValue(),
         passwordHash: user.getPasswordHash(),
         isActive: user.isEnabled(),
         profilePhotoUrl: user.getProfilePhoto(),

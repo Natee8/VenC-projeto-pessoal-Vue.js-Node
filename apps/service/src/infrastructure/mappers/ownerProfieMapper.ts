@@ -1,4 +1,4 @@
-import { OwnerProfile } from "@packages";
+import { OwnerProfile, State } from "@packages";
 import { UserId } from "@packages";
 import { Address } from "@packages";
 import { Phone } from "@packages";
@@ -13,7 +13,15 @@ export class OwnerProfileMapper {
     return new OwnerProfile(
       UserId.create(record.userId),
 
-      Address.restore(record.address),
+      Address.restore({
+        ...record.address,
+
+        state: record.address.state as unknown as State,
+
+        complement: record.address.complement ?? undefined,
+        latitude: record.address.latitude ?? undefined,
+        longitude: record.address.longitude ?? undefined,
+      }),
 
       record.phone ? Phone.restore(record.phone) : null,
 

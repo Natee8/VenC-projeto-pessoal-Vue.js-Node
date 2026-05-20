@@ -31,7 +31,7 @@ export class CreateUserBaseUseCase {
     },
     tx?: Prisma.TransactionClient,
   ): Promise<Either<Error, IUserDTO>> {
-    const birthDateVO = new BirthDate(new Date(input.birthDate));
+    const birthDateVO = BirthDate.create(new Date(input.birthDate));
     const emailVO = Email.create(input.email);
     const cpfVO = CPF.create(input.cpf);
     const name = Name.create(input.name);

@@ -34,17 +34,17 @@ export class CaregiverFacadeUseCase {
         input.address.zipCode,
       );
 
-      const address = new Address(
-        input.address.street,
-        input.address.number,
-        input.address.neighborhood,
-        input.address.city,
-        input.address.state,
-        input.address.zipCode,
-        input.address.complement,
-        coordinates?.latitude ?? undefined,
-        coordinates?.longitude ?? undefined,
-      );
+      const address = Address.create({
+        street: input.address.street,
+        number: input.address.number,
+        neighborhood: input.address.neighborhood,
+        city: input.address.city,
+        state: input.address.state,
+        zipCode: input.address.zipCode,
+        complement: input.address.complement,
+        latitude: coordinates?.latitude ?? undefined,
+        longitude: coordinates?.longitude ?? undefined,
+      });
 
       const caregiver = new Caregiver(
         0,

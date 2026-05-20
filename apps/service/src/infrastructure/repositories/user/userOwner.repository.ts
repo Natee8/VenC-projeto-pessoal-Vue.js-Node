@@ -1,6 +1,7 @@
 import { PrismaClient } from "../../../generated/prisma/index.js";
-import type { Prisma } from "../../../generated/prisma/index.js";
 import { State as PrismaState } from "../../../generated/prisma/index.js";
+import type { Prisma } from "../../../generated/prisma/index.js";
+import { State } from "@packages";
 import { OwnerProfile, UserId } from "@packages";
 import { Address } from "@packages";
 import { Phone } from "@packages";
@@ -17,7 +18,15 @@ export class OwnerProfileRepository {
     return new OwnerProfile(
       UserId.create(record.userId),
 
-      Address.restore(record.address),
+      Address.restore({
+        ...record.address,
+
+        state: record.address.state as unknown as State,
+
+        complement: record.address.complement ?? undefined,
+        latitude: record.address.latitude ?? undefined,
+        longitude: record.address.longitude ?? undefined,
+      }),
 
       record.phone ? Phone.restore(record.phone) : null,
 
@@ -49,14 +58,14 @@ export class OwnerProfileRepository {
 
         address: {
           update: {
-            street: ownerProfile.getAddress().street,
-            number: ownerProfile.getAddress().number,
-            neighborhood: ownerProfile.getAddress().neighborhood,
-            city: ownerProfile.getAddress().city,
+            street: ownerProfile.getAddress().getValue().street,
+            number: ownerProfile.getAddress().getValue().number,
+            neighborhood: ownerProfile.getAddress().getValue().neighborhood,
+            city: ownerProfile.getAddress().getValue().city,
             state: {
-              set: ownerProfile.getAddress().state,
+              set: ownerProfile.getAddress().getValue().state,
             },
-            zipCode: ownerProfile.getAddress().zipCode,
+            zipCode: ownerProfile.getAddress().getValue().zipCode,
           },
         },
       },
@@ -70,12 +79,12 @@ export class OwnerProfileRepository {
 
         address: {
           create: {
-            street: ownerProfile.getAddress().street,
-            number: ownerProfile.getAddress().number,
-            neighborhood: ownerProfile.getAddress().neighborhood,
-            city: ownerProfile.getAddress().city,
-            state: ownerProfile.getAddress().state as PrismaState,
-            zipCode: ownerProfile.getAddress().zipCode,
+            street: ownerProfile.getAddress().getValue().street,
+            number: ownerProfile.getAddress().getValue().number,
+            neighborhood: ownerProfile.getAddress().getValue().neighborhood,
+            city: ownerProfile.getAddress().getValue().city,
+            state: ownerProfile.getAddress().getValue().state as PrismaState,
+            zipCode: ownerProfile.getAddress().getValue().zipCode,
           },
         },
       },

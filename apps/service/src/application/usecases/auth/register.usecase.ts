@@ -5,7 +5,7 @@ import { CaregiverFacadeUseCase } from "../profiles/caregiverProfile.usecase.js"
 import { PrismaClient } from "@prisma/client/extension";
 import { Prisma } from "../../../generated/prisma/wasm.js";
 
-import { RegisterInputProfiles } from "@packages";
+import { BirthDate, RegisterInputProfiles } from "@packages";
 import { uploadImage } from "../../service/uploadCloudnairy.js";
 
 export class RegisterUseCase {
@@ -45,8 +45,7 @@ export class RegisterUseCase {
           email: input.email,
           password: input.password,
           cpf: input.cpf,
-          birthDate: input.birthDate,
-
+          birthDate: new Date(input.birthDate),
           profilePhotoUrl,
         },
 

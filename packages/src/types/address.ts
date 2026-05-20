@@ -1,6 +1,6 @@
 import { State } from "./stateEnum";
 
-export interface AddressPrimitives extends Record<string, unknown> {
+export interface AddressPrimitives {
   street: string;
   number: string;
   neighborhood: string;

@@ -21,7 +21,7 @@ export class OwnerProfileFacadeUseCase {
     // ✅ aqui é ENTIDADE, não DTO
     const profile = new OwnerProfile(
       UserId.create(input.userId),
-      Address.restore(input.address),
+      Address.create(input.address),
       input.phone ? Phone.restore(input.phone) : null,
       new Date(),
       new Date(),

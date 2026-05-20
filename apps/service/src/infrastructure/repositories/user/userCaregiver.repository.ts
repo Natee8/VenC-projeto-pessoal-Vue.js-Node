@@ -1,9 +1,6 @@
 import { PrismaClient } from "../../../generated/prisma/index.js";
-import type { Prisma, State } from "../../../generated/prisma/index.js";
-
-import { Caregiver } from "@packages";
-import { UserId } from "@packages";
-import { Address } from "@packages";
+import type { Prisma } from "../../../generated/prisma/index.js";
+import { Caregiver, UserId, Address, State } from "@packages";
 import { CaregiverWithAddress } from "apps/service/src/utils/usersWithAddress.js";
 
 export class CaregiverRepository {
@@ -18,7 +15,15 @@ export class CaregiverRepository {
       record.id,
       UserId.create(record.userId),
       record.offersHosting,
-      Address.restore(record.address),
+      Address.restore({
+        ...record.address,
+
+        state: record.address.state as unknown as State,
+
+        complement: record.address.complement ?? undefined,
+        latitude: record.address.latitude ?? undefined,
+        longitude: record.address.longitude ?? undefined,
+      }),
       record.serviceRadiusKm,
       record.isVerified,
       record.isPublicProfile ?? false,
@@ -53,15 +58,15 @@ export class CaregiverRepository {
 
         address: {
           create: {
-            street: caregiver.getAddress().street,
-            number: caregiver.getAddress().number,
-            neighborhood: caregiver.getAddress().neighborhood,
-            city: caregiver.getAddress().city,
-            state: caregiver.getAddress().state as State,
-            zipCode: caregiver.getAddress().zipCode,
-            complement: caregiver.getAddress().complement,
-            latitude: caregiver.getAddress().latitude,
-            longitude: caregiver.getAddress().longitude,
+            street: caregiver.getAddress().getValue().street,
+            number: caregiver.getAddress().getValue().number,
+            neighborhood: caregiver.getAddress().getValue().neighborhood,
+            city: caregiver.getAddress().getValue().city,
+            state: caregiver.getAddress().getValue().state as State,
+            zipCode: caregiver.getAddress().getValue().zipCode,
+            complement: caregiver.getAddress().getValue().complement,
+            latitude: caregiver.getAddress().getValue().latitude,
+            longitude: caregiver.getAddress().getValue().longitude,
           },
         },
       },
@@ -75,15 +80,15 @@ export class CaregiverRepository {
 
         address: {
           update: {
-            street: caregiver.getAddress().street,
-            number: caregiver.getAddress().number,
-            neighborhood: caregiver.getAddress().neighborhood,
-            city: caregiver.getAddress().city,
-            state: caregiver.getAddress().state as State,
-            zipCode: caregiver.getAddress().zipCode,
-            complement: caregiver.getAddress().complement,
-            latitude: caregiver.getAddress().latitude,
-            longitude: caregiver.getAddress().longitude,
+            street: caregiver.getAddress().getValue().street,
+            number: caregiver.getAddress().getValue().number,
+            neighborhood: caregiver.getAddress().getValue().neighborhood,
+            city: caregiver.getAddress().getValue().city,
+            state: caregiver.getAddress().getValue().state as State,
+            zipCode: caregiver.getAddress().getValue().zipCode,
+            complement: caregiver.getAddress().getValue().complement,
+            latitude: caregiver.getAddress().getValue().latitude,
+            longitude: caregiver.getAddress().getValue().longitude,
           },
         },
       },

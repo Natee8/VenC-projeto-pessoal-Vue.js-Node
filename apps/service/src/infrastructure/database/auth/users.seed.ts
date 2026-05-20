@@ -20,7 +20,7 @@ export async function seedUsers() {
     passwordHash,
     true,
     "", // no profile photo for seed
-    new BirthDate(new Date("2000-01-01")),
+    BirthDate.create(new Date("2000-01-01")),
     CPF.create("12345678900"),
     new Date(),
     new Date(),
