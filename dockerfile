@@ -1,3 +1,5 @@
+ARG HTTP_PROXY
+ARG HTTPS_PROXY
 # Base Node
 FROM node:24
 
@@ -9,8 +11,8 @@ COPY apps ./apps
 COPY packages ./packages
 
 # Instala pnpm e tsx globalmente
-RUN corepack enable \
- && corepack prepare pnpm@10.26.1 --activate
+RUN npm install -g pnpm
+
 
 # Instala todas as deps do workspace já com os links internos corretos
 RUN pnpm install --frozen-lockfile

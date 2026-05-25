@@ -18,7 +18,6 @@ export class OwnerProfileFacadeUseCase {
     },
     tx?: Prisma.TransactionClient,
   ) {
-    // ✅ aqui é ENTIDADE, não DTO
     const profile = new OwnerProfile(
       UserId.create(input.userId),
       Address.create(input.address),
@@ -43,7 +42,6 @@ export class OwnerProfileFacadeUseCase {
     return profiles.map((p) => this.toDTO(p));
   }
 
-  // ✅ aqui sim: entidade → DTO
   private toDTO(profile: OwnerProfile): OwnerProfileDTO {
     return {
       userId: profile.getUserId().getValue(),

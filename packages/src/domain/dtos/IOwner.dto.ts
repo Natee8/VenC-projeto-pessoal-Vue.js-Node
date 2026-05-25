@@ -1,8 +1,8 @@
-import { Address } from "../../valuesObjects/address";
+import { IAddress } from "../..";
 
 export interface OwnerProfileDTO {
   userId: number;
-  address: Address;
+  address: IAddress;
   phone: string | null;
   searchRadiusKm?: number;
   createdAt: string;
