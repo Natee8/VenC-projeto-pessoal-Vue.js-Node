@@ -13,7 +13,6 @@ export class ListPublicCaregiversUseCase {
   async execute(
     filters?: ListCaregiversFilters,
   ): Promise<Either<{ message: string }, Caregiver[]>> {
-    // regra de negócio
     if (filters?.radiusKm && (!filters.userLat || !filters.userLng)) {
       return left({
         message: "Latitude e longitude são obrigatórias para busca por raio",

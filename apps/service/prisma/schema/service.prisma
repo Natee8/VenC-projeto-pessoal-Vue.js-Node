@@ -10,4 +10,5 @@ model ServiceOffer {
 
   caregiver Caregiver @relation(fields: [caregiverId], references: [id])
   reviews Review[]
+
 }

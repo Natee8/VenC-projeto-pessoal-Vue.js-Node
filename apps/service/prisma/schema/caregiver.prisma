@@ -15,4 +15,6 @@ model Caregiver {
   services ServiceOffer[]
 
   @@index([isPublicProfile, isActive])
+
+   services  Service[]
 }
