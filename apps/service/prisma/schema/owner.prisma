@@ -1,0 +1,13 @@
+model OwnerProfile {
+  id             Int      @id @default(autoincrement())
+  userId         Int      @unique
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  searchRadiusKm Float?
+
+  phone String?
+
+  address Address?
+
+  user UserAuth @relation(fields: [userId], references: [id])
+}

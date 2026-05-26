@@ -1,0 +1,12 @@
+model ServiceOffer {
+  id          Int      @id @default(autoincrement())
+  caregiverId Int
+  type        String
+  description String
+  price       Float
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  caregiver Caregiver @relation(fields: [caregiverId], references: [id])
+}

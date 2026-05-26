@@ -1,0 +1,50 @@
+enum State {
+  AC
+  AL
+  AP
+  AM
+  BA
+  CE
+  DF
+  ES
+  GO
+  MA
+  MT
+  MS
+  MG
+  PA
+  PB
+  PR
+  PE
+  PI
+  RJ
+  RN
+  RS
+  RO
+  RR
+  SC
+  SP
+  SE
+  TO
+}
+
+model Address {
+  id           Int    @id @default(autoincrement())
+  street       String
+  number       String
+  neighborhood String
+  city         String
+  state        State
+  zipCode      String
+
+  latitude  Float?
+  longitude Float?
+
+  complement String?
+
+  ownerProfileId Int? @unique
+  caregiverId    Int? @unique
+
+  ownerProfile OwnerProfile? @relation(fields: [ownerProfileId], references: [id])
+  caregiver    Caregiver?    @relation(fields: [caregiverId], references: [id])
+}

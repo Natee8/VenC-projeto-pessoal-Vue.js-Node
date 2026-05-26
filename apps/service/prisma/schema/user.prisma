@@ -1,0 +1,25 @@
+model UserAuth {
+  id              Int      @id @default(autoincrement())
+  name            String   
+  email           String   @unique
+  passwordHash    String
+  isActive        Boolean  @default(true)
+  profilePhotoUrl String?
+  birthDate       DateTime
+  cpf             String   @unique
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  ownerProfile  OwnerProfile?
+  caregiver     Caregiver?
+  refreshTokens RefreshToken[]
+}
+
+model RefreshToken {
+  token     String   @id
+  userId    Int
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  user UserAuth @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
