@@ -157,6 +157,16 @@ exports.Prisma.OwnerProfileScalarFieldEnum = {
   phone: 'phone'
 };
 
+exports.Prisma.ReviewScalarFieldEnum = {
+  id: 'id',
+  serviceOfferId: 'serviceOfferId',
+  reviewerUserId: 'reviewerUserId',
+  targetUserId: 'targetUserId',
+  rating: 'rating',
+  comment: 'comment',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.ServiceOfferScalarFieldEnum = {
   id: 'id',
   caregiverId: 'caregiverId',
@@ -236,6 +246,7 @@ exports.Prisma.ModelName = {
   Address: 'Address',
   Caregiver: 'Caregiver',
   OwnerProfile: 'OwnerProfile',
+  Review: 'Review',
   ServiceOffer: 'ServiceOffer',
   UserAuth: 'UserAuth',
   RefreshToken: 'RefreshToken'

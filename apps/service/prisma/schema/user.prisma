@@ -13,6 +13,9 @@ model UserAuth {
   ownerProfile  OwnerProfile?
   caregiver     Caregiver?
   refreshTokens RefreshToken[]
+
+  reviewsGiven    Review[] @relation("Reviewer")
+  reviewsReceived Review[] @relation("Target")
 }
 
 model RefreshToken {
