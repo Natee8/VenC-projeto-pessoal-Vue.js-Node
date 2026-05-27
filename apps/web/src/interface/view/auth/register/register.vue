@@ -21,6 +21,8 @@ const snackbarShow = ref(false);
 const snackbarMessage = ref("");
 const snackbarType = ref<"success" | "error">("success");
 
+const DEFAULT_PROFILE_IMAGE = "profileDefault.png";
+
 const baseFormRef = ref();
 const addressFormRef = ref();
 const profileFormRef = ref();
@@ -43,6 +45,7 @@ const handleBack = () => {
 };
 
 const handleNext = async () => {
+  if (isLoading.value) return;
   if (step.value === 1) {
     const result = await baseFormRef.value.validate();
 
@@ -89,7 +92,7 @@ const handleFinalSubmit = async (profileData: any) => {
       isPublicProfile: profileData.publicProfile,
       offersHosting: profileData.acceptPetHosting,
       type: userType,
-      profileImage: profileData.profileImage,
+      profileImage: profileData.profileImage || DEFAULT_PROFILE_IMAGE,
     });
 
     showSnackbar(

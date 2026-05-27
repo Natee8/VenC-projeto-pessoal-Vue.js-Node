@@ -18,12 +18,8 @@ app.use(
 
 app.use(bodyParser.json());
 
-// Auth
 app.use("/auth", auth);
 app.use("/caregivers", caregiver);
-
-// Profiles
-//app.use("/owners", owner);
 
 app.listen(PORT, () => {
   console.log(`Server rodando na porta ${PORT}`);
