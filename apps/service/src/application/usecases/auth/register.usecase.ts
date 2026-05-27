@@ -39,13 +39,12 @@ export class RegisterUseCase {
       const user = userResult.value;
       const isQueueEnabled = process.env.REDIS_ENABLED === "true";
 
-      // 📦 upload de imagem
       if (input.profileImage) {
         if (!isQueueEnabled) {
           warnings.push("Imagem não pôde ser processada no momento");
         } else {
           uploadQueue
-            .add(
+            ?.add(
               "upload-profile-image",
               {
                 userId: user.id,
@@ -65,7 +64,6 @@ export class RegisterUseCase {
         }
       }
 
-      // 👤 OWNER
       if (input.type === "owner") {
         const profile = await this.ownerProfile.save(
           {
@@ -80,7 +78,6 @@ export class RegisterUseCase {
         return { user, profile, warnings };
       }
 
-      // 🐶 CAREGIVER
       if (input.type === "caregiver") {
         const result = await this.caregiverProfile.save(
           {
