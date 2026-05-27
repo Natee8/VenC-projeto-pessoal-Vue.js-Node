@@ -1,91 +1,71 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import RadiusComponent from "../utils/RadiusComponent.vue";
-import { cepService } from "src/infrastructure/utils/cepService";
-import { BRAZIL_STATES } from "src/types/IStates";
 import {
   RegisterRadiusAndCEPEmits,
   RegisterRadiusAndCEPProps,
 } from "./types/propsRegister";
 import { RegisterRadiusAndCepErrors } from "./types/typeErrors";
 import { registerRadiusAndCepSchema } from "./schemas/radiusAndCep";
+import { BRAZIL_STATES } from "src/types/IStates";
 
 const props = defineProps<RegisterRadiusAndCEPProps>();
 const emit = defineEmits<RegisterRadiusAndCEPEmits>();
-const errors = ref<RegisterRadiusAndCepErrors>({});
 
-let timeout: ReturnType<typeof setTimeout>;
+const errors = ref<RegisterRadiusAndCepErrors>({});
 
 const updateField = (event: Event, emitName: string) => {
   const target = event.target as HTMLInputElement | HTMLSelectElement;
-
   emit(emitName as any, target.value);
 };
 
 const serviceRadiusModel = computed<number>({
   get: () => props.serviceRadius ?? 5,
-
   set: (val) => emit("update:serviceRadius", val),
 });
 
-watch(
-  () => props.zipCode,
-  (newCep) => {
-    const cep = (newCep || "").replace(/\D/g, "");
+defineExpose({
+  validate: async () => {
+    errors.value = {};
 
-    clearTimeout(timeout);
+    try {
+      const validatedData = await registerRadiusAndCepSchema.validate(
+        {
+          zipCode: props.zipCode,
+          state: props.state,
+          city: props.city,
+          neighborhood: props.neighborhood,
+          street: props.street,
+          number: props.number,
+          serviceRadius: props.serviceRadius,
+        },
+        { abortEarly: false },
+      );
 
-    timeout = setTimeout(async () => {
-      if (cep.length !== 8) return;
+      return {
+        valid: true,
+        data: {
+          ...validatedData,
+          zipCode: validatedData.zipCode.replace(/\D/g, ""),
+          serviceRadiusKm: validatedData.serviceRadius,
+        },
+      };
+    } catch (error: any) {
+      const validationErrors = error.inner?.length ? error.inner : [error];
 
-      const data = await cepService.getAddressByCep(cep);
+      validationErrors.forEach((err: any) => {
+        const field = err.path as keyof RegisterRadiusAndCepErrors;
+        errors.value[field] = err.message;
+      });
 
-      if (!data) return;
-
-      emit("update:street", data.logradouro || "");
-      emit("update:neighborhood", data.bairro || "");
-      emit("update:city", data.localidade || "");
-      emit("update:state", data.uf || "");
-    }, 500);
+      return { valid: false };
+    }
   },
-);
-
-const handleSubmit = async (e: Event) => {
-  e.preventDefault();
-
-  errors.value = {};
-
-  try {
-    await registerRadiusAndCepSchema.validate(
-      {
-        zipCode: props.zipCode,
-        state: props.state,
-        city: props.city,
-        neighborhood: props.neighborhood,
-        street: props.street,
-        number: props.number,
-        serviceRadius: props.serviceRadius,
-      },
-      {
-        abortEarly: false,
-      },
-    );
-
-    emit("submit");
-  } catch (error: any) {
-    const validationErrors = error.inner?.length ? error.inner : [error];
-
-    validationErrors.forEach((err: any) => {
-      const field = err.path as keyof RegisterRadiusAndCepErrors;
-
-      errors.value[field] = err.message;
-    });
-  }
-};
+});
 </script>
 
 <template>
-  <form class="flex flex-col gap-5 md:gap-6" @submit="handleSubmit">
+  <div class="flex flex-col gap-5 md:gap-6">
     <div class="flex flex-col gap-2">
       <label for="zipCode" class="text-white font-semibold"> CEP </label>
 
@@ -212,15 +192,5 @@ const handleSubmit = async (e: Event) => {
         {{ errors.serviceRadius }}
       </span>
     </div>
-
-    <button
-      type="submit"
-      :disabled="isLoading"
-      class="w-full h-16 bg-details text-white font-semibold rounded-lg mt-6 hover:opacity-90 transition disabled:opacity-50"
-    >
-      <slot>
-        {{ isLoading ? "Continuar..." : "Continuar" }}
-      </slot>
-    </button>
-  </form>
+  </div>
 </template>

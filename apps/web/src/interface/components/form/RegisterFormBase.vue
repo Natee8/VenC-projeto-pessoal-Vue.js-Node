@@ -14,47 +14,55 @@ const emit = defineEmits<RegisterFormBaseEmits>();
 
 const errors = ref<RegisterFormErrors>({});
 
-const handleSubmit = async (e: Event) => {
-  e.preventDefault();
-
-  errors.value = {};
-
-  try {
-    await registerFormBaseSchema.validate(
-      {
-        name: props.name,
-        email: props.email,
-        birthDate: props.birthDate,
-        cpf: props.cpf,
-        password: props.password,
-        confirmPassword: props.confirmPassword,
-      },
-      {
-        abortEarly: false,
-      },
-    );
-
-    emit("submit");
-  } catch (error: any) {
-    const validationErrors = error.inner?.length ? error.inner : [error];
-
-    validationErrors.forEach((err: any) => {
-      const field = err.path as keyof RegisterFormErrors;
-
-      errors.value[field] = err.message;
-    });
-  }
-};
-
 const updateField = (event: Event, emitName: string) => {
   const target = event.target as HTMLInputElement;
 
   emit(emitName as any, target.value);
 };
+
+defineExpose({
+  validate: async () => {
+    errors.value = {};
+
+    try {
+      await registerFormBaseSchema.validate(
+        {
+          name: props.name,
+          email: props.email,
+          birthDate: props.birthDate,
+          cpf: props.cpf,
+          password: props.password,
+          confirmPassword: props.confirmPassword,
+        },
+        { abortEarly: false },
+      );
+
+      return {
+        valid: true,
+        data: {
+          name: props.name,
+          email: props.email,
+          birthDate: props.birthDate,
+          cpf: props.cpf,
+          password: props.password,
+        },
+      };
+    } catch (error: any) {
+      const validationErrors = error.inner?.length ? error.inner : [error];
+
+      validationErrors.forEach((err: any) => {
+        const field = err.path as keyof RegisterFormErrors;
+        errors.value[field] = err.message;
+      });
+
+      return { valid: false };
+    }
+  },
+});
 </script>
 
 <template>
-  <form class="flex flex-col gap-5 md:gap-6" @submit="handleSubmit">
+  <div class="flex flex-col gap-5 md:gap-6">
     <div class="flex flex-col gap-2">
       <label for="name" class="text-white font-semibold">Nome</label>
 
@@ -161,15 +169,5 @@ const updateField = (event: Event, emitName: string) => {
         {{ errors.confirmPassword }}
       </span>
     </div>
-
-    <button
-      type="submit"
-      :disabled="isLoading"
-      class="w-full h-16 bg-details text-white font-semibold rounded-lg mt-6 hover:opacity-90 transition disabled:opacity-50"
-    >
-      <slot>
-        {{ isLoading ? "Registrando..." : "Continuar" }}
-      </slot>
-    </button>
-  </form>
+  </div>
 </template>

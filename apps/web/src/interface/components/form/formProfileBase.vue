@@ -5,11 +5,10 @@ import {
   FormProfileBaseProps,
 } from "./types/propsRegister";
 
-import { profileFormSchema } from "./schemas/profileBaseSchema";
 import { ProfileErrors } from "./types/typeErrors";
+import { profileFormSchema } from "./schemas/profileBaseSchema";
 
 defineProps<FormProfileBaseProps>();
-
 const emit = defineEmits<FormProfileBaseEmits>();
 
 const publicProfile = ref(false);
@@ -24,14 +23,9 @@ const errors = ref<ProfileErrors>({});
 const handleImageUpload = (e: Event) => {
   const file = (e.target as HTMLInputElement).files?.[0];
 
-  console.log("FILE RAW:", file);
-
   if (!file) return;
 
   selectedFile.value = file;
-
-  console.log("STATE FILE:", selectedFile.value);
-
   profileImage.value = URL.createObjectURL(file);
 };
 
@@ -40,42 +34,46 @@ const removeImage = () => {
   selectedFile.value = null;
 };
 
-const handleSubmit = async (e: Event) => {
-  e.preventDefault();
+defineExpose({
+  validate: async () => {
+    errors.value = {};
 
-  errors.value = {};
+    try {
+      await profileFormSchema.validate(
+        {
+          profileImage: selectedFile.value,
+          publicProfile: publicProfile.value,
+          acceptPetHosting: acceptPetHosting.value,
+          acceptTerms: acceptTerms.value,
+        },
+        { abortEarly: false },
+      );
 
-  try {
-    await profileFormSchema.validate(
-      {
-        profileImage: selectedFile.value,
-        publicProfile: publicProfile.value,
-        acceptPetHosting: acceptPetHosting.value,
-        acceptTerms: acceptTerms.value,
-      },
-      {
-        abortEarly: false,
-      },
-    );
+      return {
+        valid: true,
+        data: {
+          profileImage: selectedFile.value,
+          publicProfile: publicProfile.value,
+          acceptPetHosting: acceptPetHosting.value,
+          acceptTerms: acceptTerms.value,
+        },
+      };
+    } catch (error: any) {
+      const validationErrors = error.inner?.length ? error.inner : [error];
 
-    emit("submit", {
-      profileImage: selectedFile.value,
-      publicProfile: publicProfile.value,
-      acceptPetHosting: acceptPetHosting.value,
-      acceptTerms: acceptTerms.value,
-    });
-  } catch (error: any) {
-    error.inner.forEach((err: any) => {
-      const field = err.path as keyof ProfileErrors;
-      errors.value[field] = err.message;
-    });
-  }
-};
+      validationErrors.forEach((err: any) => {
+        const field = err.path as keyof ProfileErrors;
+        errors.value[field] = err.message;
+      });
+
+      return { valid: false };
+    }
+  },
+});
 </script>
 
 <template>
-  <form class="flex flex-col gap-6 md:gap-7 pb-2 md:pb-4" @submit="handleSubmit">
-    <!-- FOTO PERFIL -->
+  <div class="flex flex-col gap-6 md:gap-7 pb-2 md:pb-4">
     <div class="flex flex-col items-center gap-2 mb-10">
       <p class="text-white font-semibold">Foto de perfil</p>
 
@@ -126,7 +124,6 @@ const handleSubmit = async (e: Event) => {
       </span>
     </div>
 
-    <!-- CHECKBOXES -->
     <div class="p-5 bg-white/10 rounded-xl flex items-start gap-4">
       <input
         v-model="publicProfile"
@@ -166,13 +163,5 @@ const handleSubmit = async (e: Event) => {
     <span v-if="errors.acceptTerms" class="text-red-400 text-sm">
       {{ errors.acceptTerms }}
     </span>
-
-    <button
-      type="submit"
-      :disabled="isLoading"
-      class="w-full h-16 bg-details text-white font-semibold rounded-lg mt-8 md:mt-10 hover:opacity-90 transition disabled:opacity-50"
-    >
-      {{ isLoading ? "Registrando..." : "Cadastrar" }}
-    </button>
-  </form>
+  </div>
 </template>
