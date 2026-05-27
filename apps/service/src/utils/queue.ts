@@ -1,8 +1,9 @@
 import { Queue } from "bullmq";
 
-export const uploadQueue = new Queue("upload-image", {
-  connection: {
-    url: process.env.REDIS_URL,
-  },
-});
- 
+const isRedisEnabled = process.env.REDIS_ENABLED === "true";
+
+export const uploadQueue = isRedisEnabled
+  ? new Queue("upload-image", {
+      connection: { url: process.env.REDIS_URL },
+    })
+  : null;

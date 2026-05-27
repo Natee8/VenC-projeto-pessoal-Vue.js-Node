@@ -86,7 +86,7 @@ export class RegisterUseCase {
           {
             userId: user.id,
             address: input.address,
-            offersHosting: input.offersHosting,
+            offersHosting: input.offersHosting ?? false,
             serviceRadiusKm: input.serviceRadiusKm ?? 5,
             isPublicProfile: input.isPublicProfile,
           },
