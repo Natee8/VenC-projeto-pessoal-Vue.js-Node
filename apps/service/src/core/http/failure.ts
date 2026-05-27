@@ -11,7 +11,7 @@ export function failure(
     message: string;
     code?: number;
     error?: string;
-    errors?: Record<string, string>;
+    errors?: Record<string, string[]>;
   },
 ) {
   return res.status(code).json({

@@ -1,99 +1,81 @@
-import { UsersRepository } from "../infrastructure/repositories/auth/authLogin.repository.js";
-import { RefreshTokenRepository } from "../infrastructure/repositories/auth/refreshToken.repository.js";
-import { PasswordService } from "../application/service/passwordComparer.js";
-import { JwtTokenGenerator } from "../infrastructure/repositories/auth/tokenGenerator.js";
-import { AuthenticateUserUseCase } from "../application/usecases/auth/auth.usecase.js";
-import { GenerateTokenUseCase } from "../application/usecases/auth/generateToken.usecase.js";
-import { RefreshTokenUseCase } from "../application/usecases/auth/refreshToken.usecase.js";
-import { Router, Request, Response } from "express";
-import { failure } from "../core/http/failure.js";
+import { Request, Response } from "express";
+import { RegisterUseCase } from "../application/usecases/auth/register.usecase.js";
 import { success } from "../core/http/response.js";
+import { z } from "zod";
+import { failure } from "../core/http/failure.js";
 
-const usersRepo = new UsersRepository();
-const refreshTokenRepo = new RefreshTokenRepository();
-const passwordService = new PasswordService();
-const tokenGenerator = new JwtTokenGenerator();
+const registerSchema = z.object({
+  type: z.enum(["owner", "caregiver"]),
 
-const authUseCase = new AuthenticateUserUseCase(usersRepo, passwordService);
-const generateTokenUseCase = new GenerateTokenUseCase(
-  tokenGenerator,
-  refreshTokenRepo,
-);
-const refreshTokenUseCase = new RefreshTokenUseCase(
-  refreshTokenRepo,
-  tokenGenerator,
-);
+  name: z.string().min(1),
+  email: z.string().email(),
+  password: z.string().min(6),
+  cpf: z.string().min(11),
+  birthDate: z.string(),
 
-export const router: Router = Router();
+  profileImage: z.any().optional(),
 
-router.post("/login", async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  address: z.string().transform((v) => JSON.parse(v)),
 
-  const authResult = await authUseCase.execute(email, password);
+  offersHosting: z
+    .string()
+    .optional()
+    .transform((v) => v === "true"),
 
-  if (authResult.type === "left") {
-    return failure(res, {
-      message: authResult.error.message,
-      code: 401,
-    });
-  }
+  isPublicProfile: z
+    .string()
+    .optional()
+    .transform((v) => v === "true"),
 
-  const tokenResult = await generateTokenUseCase.execute(authResult.value);
+  serviceRadiusKm: z
+    .string()
+    .optional()
+    .transform((v) => (v ? Number(v) : undefined)),
 
-  if (tokenResult.type === "left") {
-    return failure(res, {
-      message: tokenResult.error.message,
-      code: 500,
-    });
-  }
+  searchRadiusKm: z
+    .string()
+    .optional()
+    .transform((v) => (v ? Number(v) : undefined)),
 
-  return success(res, {
-    message: "Login realizado com sucesso",
-    data: tokenResult.value,
-    code: 200,
-  });
+  phone: z.string().optional(),
 });
 
-router.post("/refresh", async (req: Request, res: Response) => {
-  const { refreshToken } = req.body;
+export class RegisterController {
+  constructor(private registerUseCase: RegisterUseCase) {}
 
-  if (!refreshToken) {
-    return failure(res, {
-      message: "Refresh token é obrigatório",
-      code: 400,
-    });
+  async handle(req: Request, res: Response) {
+    try {
+      const parsed = registerSchema.safeParse({
+        ...req.body,
+        profileImage: req.file,
+      });
+
+      if (!parsed.success) {
+        const errors: Record<string, string[]> = Object.fromEntries(
+          Object.entries(parsed.error.flatten().fieldErrors).map(
+            ([key, value]) => [key, value ?? []],
+          ),
+        );
+
+        return failure(res, {
+          message: "Dados inválidos",
+          errors: errors,
+          code: 400,
+        });
+      }
+
+      const result = await this.registerUseCase.execute(parsed.data);
+
+      return success(res, {
+        message: "Usuário criado com sucesso",
+        data: result,
+        code: 201,
+      });
+    } catch {
+      return failure(res, {
+        message: "Erro ao registrar usuário",
+        code: 500,
+      });
+    }
   }
-
-  const result = await refreshTokenUseCase.execute(refreshToken);
-
-  if (result.type === "left") {
-    return failure(res, {
-      message: result.error.message,
-      code: 401,
-    });
-  }
-
-  return success(res, {
-    message: "Token renovado com sucesso",
-    data: result.value,
-  });
-});
-
-router.post("/logout", async (req: Request, res: Response) => {
-  const { refreshToken } = req.body;
-
-  if (!refreshToken) {
-    return failure(res, {
-      message: "Refresh token é obrigatório",
-      code: 400,
-    });
-  }
-
-  await refreshTokenRepo.revoke(refreshToken);
-
-  return success(res, {
-    message: "Logout realizado com sucesso",
-  });
-});
-
-export default router;
+}

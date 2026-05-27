@@ -15,3 +15,9 @@ export interface IRefreshResponse {
   accessToken: string;
   refreshToken: string;
 }
+
+export interface IResponseRegister {
+  userId: number;
+  profileId: number;
+  warnings: string[];
+}

@@ -1,28 +1,53 @@
 import { Request, Response } from "express";
+import { z } from "zod";
+
 import { OwnerProfileFacadeUseCase } from "../application/usecases/profiles/ownerProfile.usecase.js";
+import { success } from "../core/http/response.js";
+import { failure } from "../core/http/failure.js";
+
+const ownerSaveSchema = z.object({
+  userId: z.string().transform(Number),
+
+  phone: z.string().optional(),
+
+  searchRadiusKm: z
+    .string()
+    .optional()
+    .transform((v) => (v ? Number(v) : undefined))
+    .refine((v) => v === undefined || !isNaN(v), {
+      message: "searchRadiusKm inválido",
+    }),
+
+  address: z.string().transform((v) => JSON.parse(v)),
+});
 
 export class OwnerProfileController {
   constructor(private ownerProfileUseCase: OwnerProfileFacadeUseCase) {}
 
   async save(req: Request, res: Response) {
-    console.log(req.body);
-    console.log("ADDRESS:", req.body.address);
     try {
-      const { userId, address, phone, searchRadiusKm } = req.body;
+      const parsed = ownerSaveSchema.safeParse(req.body);
 
-      const profile = await this.ownerProfileUseCase.save({
-        userId,
-        address,
-        phone,
-        searchRadiusKm,
-      });
-
-      return res.status(201).json(profile);
-    } catch (error) {
-      if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+      if (!parsed.success) {
+        return failure(res, {
+          message: "Erro de validação",
+          errors: parsed.error.flatten().fieldErrors,
+          code: 400,
+        });
       }
-      return res.status(400).json({ error: "Erro desconhecido" });
+
+      const profile = await this.ownerProfileUseCase.save(parsed.data);
+
+      return success(res, {
+        message: "Perfil criado com sucesso",
+        data: profile,
+        code: 201,
+      });
+    } catch {
+      return failure(res, {
+        message: "Erro ao criar perfil",
+        code: 500,
+      });
     }
   }
 
@@ -33,27 +58,37 @@ export class OwnerProfileController {
       const profile = await this.ownerProfileUseCase.getByUserId(userId);
 
       if (!profile) {
-        return res.status(404).json({ error: "Perfil não encontrado" });
+        return failure(res, {
+          message: "Perfil não encontrado",
+          code: 404,
+        });
       }
 
-      return res.status(200).json(profile);
-    } catch (error) {
-      if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
-      }
-      return res.status(400).json({ error: "Erro desconhecido" });
+      return success(res, {
+        message: "Perfil encontrado",
+        data: profile,
+      });
+    } catch {
+      return failure(res, {
+        message: "Erro desconhecido",
+        code: 500,
+      });
     }
   }
 
   async getAll(req: Request, res: Response) {
     try {
       const profiles = await this.ownerProfileUseCase.getAll();
-      return res.status(200).json(profiles);
-    } catch (error) {
-      if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
-      }
-      return res.status(400).json({ error: "Erro desconhecido" });
+
+      return success(res, {
+        message: "Perfis listados com sucesso",
+        data: profiles,
+      });
+    } catch {
+      return failure(res, {
+        message: "Erro ao listar perfis",
+        code: 500,
+      });
     }
   }
 }

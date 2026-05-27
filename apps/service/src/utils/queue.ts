@@ -5,3 +5,4 @@ export const uploadQueue = new Queue("upload-image", {
     url: process.env.REDIS_URL,
   },
 });
+ 

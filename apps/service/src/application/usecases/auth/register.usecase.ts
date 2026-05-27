@@ -17,27 +17,8 @@ export class RegisterUseCase {
   ) {}
 
   async execute(input: RegisterInputProfiles) {
-    console.log("REGISTER INPUT:", input);
+    const warnings: string[] = [];
 
-    const parsedAddress =
-      typeof input.address === "string"
-        ? JSON.parse(input.address)
-        : input.address;
-
-    const parsedServiceRadiusKm = input.serviceRadiusKm
-      ? Number(input.serviceRadiusKm)
-      : undefined;
-
-    const parsedOffersHosting = String(input.offersHosting) === "true";
-    const parsedIsPublicProfile = String(input.isPublicProfile) === "true";
-
-    // 🔥 FAZ O UPLOAD ANTES
-    let profilePhotoUrl: string | null = null;
-
-    console.log("UPLOAD OK:", profilePhotoUrl);
-
-    // 🔥 AGORA sim transaction
-    // ✅ correto
     return this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const userResult = await this.createUserBase.execute(
         {
@@ -46,7 +27,7 @@ export class RegisterUseCase {
           password: input.password,
           cpf: input.cpf,
           birthDate: new Date(input.birthDate),
-          profilePhotoUrl,
+          profilePhotoUrl: null,
         },
         tx,
       );
@@ -56,61 +37,67 @@ export class RegisterUseCase {
       }
 
       const user = userResult.value;
+      const isQueueEnabled = process.env.REDIS_ENABLED === "true";
 
+      // 📦 upload de imagem
       if (input.profileImage) {
-        uploadQueue
-          .add(
-            "upload-profile-image",
-            {
-              userId: user.id,
-              buffer: input.profileImage.buffer.toString("base64"),
-            },
-            {
-              attempts: 3,
-              backoff: {
-                type: "exponential",
-                delay: 5000,
+        if (!isQueueEnabled) {
+          warnings.push("Imagem não pôde ser processada no momento");
+        } else {
+          uploadQueue
+            .add(
+              "upload-profile-image",
+              {
+                userId: user.id,
+                buffer: input.profileImage.buffer.toString("base64"),
               },
-            },
-          )
-          .catch((err) => {
-            console.error("Erro ao enfileirar upload:", err);
-          });
+              {
+                attempts: 3,
+                backoff: {
+                  type: "exponential",
+                  delay: 5000,
+                },
+              },
+            )
+            .catch(() => {
+              warnings.push("Erro ao enfileirar imagem");
+            });
+        }
       }
 
+      // 👤 OWNER
       if (input.type === "owner") {
         const profile = await this.ownerProfile.save(
           {
             userId: user.id,
-            address: parsedAddress,
+            address: input.address,
             phone: input.phone,
-            searchRadiusKm: parsedServiceRadiusKm,
+            searchRadiusKm: input.serviceRadiusKm,
           },
           tx,
         );
 
-        return { user, profile };
+        return { user, profile, warnings };
       }
 
+      // 🐶 CAREGIVER
       if (input.type === "caregiver") {
         const result = await this.caregiverProfile.save(
           {
             userId: user.id,
-            address: parsedAddress,
-            offersHosting: parsedOffersHosting,
-            serviceRadiusKm: parsedServiceRadiusKm ?? 5,
-            isPublicProfile: parsedIsPublicProfile,
+            address: input.address,
+            offersHosting: input.offersHosting,
+            serviceRadiusKm: input.serviceRadiusKm ?? 5,
+            isPublicProfile: input.isPublicProfile,
           },
           tx,
         );
-
-        // 🔥 AQUI entra a fila
 
         if (result.isException()) {
           throw result.error;
         }
 
-        return { user, profile: result.value };
+        return { user, profile: result.value, warnings };
       }
 
       throw new Error("Tipo de perfil inválido");
