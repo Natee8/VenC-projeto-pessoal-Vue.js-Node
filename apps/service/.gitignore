@@ -20,6 +20,12 @@ npm-debug.log*
 yarn-debug.log*
 pnpm-debug.log*
 
+# Prisma
+generated/
+src/generated/
+# Prisma Client (gerado automaticamente)
+src/generated/prisma
+
 # Runtime
 *.pid
 *.seed
