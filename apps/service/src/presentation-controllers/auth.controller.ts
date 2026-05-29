@@ -20,6 +20,7 @@ import { OwnerProfileFacadeUseCase } from "../application/usecases/profiles/owne
 import { CaregiverFacadeUseCase } from "../application/usecases/profiles/caregiverProfile.usecase.js";
 import { PrismaClient } from "../generated/prisma/index.js";
 import { uploadProfileImage } from "../application/service/uploadImages.js";
+import { RegisterController } from "../controllers/register.js";
 
 export const router: Router = Router();
 const prisma = new PrismaClient();
@@ -121,37 +122,12 @@ router.post("/refresh", async (req: Request, res: Response) => {
   });
 });
 
+const registerController = new RegisterController(registerUseCase);
+
 router.post(
   "/register",
   uploadProfileImage.single("profileImage"),
-  async (req: Request, res: Response) => {
-    
-    try {
-      console.log("BODY:", req.body);
-      
-      console.log("FILE:", req.file);
-
-      const result = await registerUseCase.execute({
-        ...req.body,
-        profileImage: req.file,
-      });
-
-      if (result.isException?.()) {
-        return res.status(400).json({
-          message: result.error.message,
-        });
-      }
-
-      return res.status(201).json({
-        message: "Usuário criado com sucesso",
-        data: result.value,
-      });
-    } catch (error) {
-      return res.status(400).json({
-        message: getErrorMessage(error),
-      });
-    }
-  },
+  registerController.handle.bind(registerController),
 );
 
 export default router;

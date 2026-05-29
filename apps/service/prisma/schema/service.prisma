@@ -1,14 +1,25 @@
+model Service {
+  id          Int    @id @default(autoincrement())
+  name        String @unique
+  description String
+
+  offers ServiceOffer[]
+}
+
 model ServiceOffer {
   id          Int      @id @default(autoincrement())
   caregiverId Int
-  type        String
-  description String
+  serviceId   Int
+
+  description String?
   price       Float
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  isActive    Boolean @default(true)
 
   caregiver Caregiver @relation(fields: [caregiverId], references: [id])
+  service   Service   @relation(fields: [serviceId], references: [id])
+
   reviews Review[]
 
+  @@unique([caregiverId, serviceId]) 
+  @@index([serviceId])
 }

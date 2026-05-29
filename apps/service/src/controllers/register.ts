@@ -46,6 +46,7 @@ export class RegisterController {
   constructor(private registerUseCase: RegisterUseCase) {}
 
   async handle(req: Request, res: Response) {
+    console.log("REQ BODY:", req.body);
     try {
       const parsed = registerSchema.safeParse({
         ...req.body,

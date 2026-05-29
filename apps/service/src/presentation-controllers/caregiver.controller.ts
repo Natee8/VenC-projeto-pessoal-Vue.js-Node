@@ -14,7 +14,7 @@ const caregiverUseCase = new CaregiverFacadeUseCase(
 );
 
 // Endpoint para obter os perfis públicos dos cuidadores
-router.get("/caregivers/public", async (req: Request, res: Response) => {
+router.get("/public", async (req: Request, res: Response) => {
   try {
     const caregivers = await caregiverUseCase.getPublicCaregivers();
 

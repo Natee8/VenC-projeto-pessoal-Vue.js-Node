@@ -111,15 +111,24 @@ export class CaregiverRepository {
   }
 
   async findPublicCaregivers(filters?: { city?: string; state?: string }) {
-    const records = await this.prisma.caregiver.findMany({
-      where: {
-        isPublicProfile: true,
+    const where: Prisma.CaregiverWhereInput = {
+      isPublicProfile: true,
+    };
 
-        address: {
-          city: filters?.city,
-          state: filters?.state as State | undefined,
-        },
-      },
+    if (filters?.city || filters?.state) {
+      where.address = {};
+
+      if (filters?.city) {
+        where.address.city = filters.city;
+      }
+
+      if (filters?.state) {
+        where.address.state = filters.state as State;
+      }
+    }
+
+    const records = await this.prisma.caregiver.findMany({
+      where,
       include: {
         address: true,
       },

@@ -4,8 +4,15 @@ import { GeocodingBRResponse } from "./types/responseAPI.js";
 export class GeolocationService {
   private readonly apiKey = process.env.GEOCODING_BR_API_KEY;
 
-  async getCoordinatesByCep(cep: string): Promise<ICordinates | null> {
+  async getCoordinatesByCep(
+    cep: string | undefined,
+  ): Promise<ICordinates | null> {
     try {
+      if (!cep) {
+        console.warn("CEP não informado");
+        return null;
+      }
+
       const cleanCep = cep.replace(/\D/g, "");
 
       const response = await fetch(
@@ -19,7 +26,8 @@ export class GeolocationService {
       );
 
       if (!response.ok) {
-        throw new Error("Erro ao buscar coordenadas");
+        console.warn("Geolocation API falhou:", response.status);
+        return null; // 👈 fallback silencioso
       }
 
       const data = (await response.json()) as GeocodingBRResponse;
@@ -34,8 +42,7 @@ export class GeolocationService {
       };
     } catch (error) {
       console.error("Erro no GeolocationService:", error);
-
-      return null;
+      return null; // 👈 fallback final
     }
   }
 }

@@ -1,23 +1,22 @@
-import { ServiceTypes } from "../../types/serviceType.js";
-import { Address } from "../../valuesObjects/address.js";
-import { Money } from "../../valuesObjects/money.js";
+import { Money } from "../../valuesObjects/money";
 
 export class ServiceOffer {
   constructor(
     public readonly id: string,
     public readonly caregiverId: string,
-    private type: ServiceTypes,
-    private description: string,
+    public readonly serviceId: number, // 🔥 novo
+
+    private description: string | null,
     private price: Money,
-    private locality: Address,
     private isActive: boolean,
+
     public readonly createdAt: Date,
-    private updatedAt: Date
+    private updatedAt: Date,
   ) {}
 
   activate() {
     if (this.isActive) {
-      throw new Error('ServiceOffer já está ativo');
+      throw new Error("ServiceOffer já está ativo");
     }
     this.isActive = true;
     this.updatedAt = new Date();
@@ -25,7 +24,7 @@ export class ServiceOffer {
 
   deactivate() {
     if (!this.isActive) {
-      throw new Error('ServiceOffer já está inativo');
+      throw new Error("ServiceOffer já está inativo");
     }
     this.isActive = false;
     this.updatedAt = new Date();
@@ -42,5 +41,13 @@ export class ServiceOffer {
 
   isEnabled() {
     return this.isActive;
+  }
+
+  getServiceId() {
+    return this.serviceId;
+  }
+
+  getDescription() {
+    return this.description;
   }
 }

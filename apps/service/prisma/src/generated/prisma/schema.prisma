@@ -93,6 +93,11 @@ model OwnerProfile {
   user UserAuth @relation(fields: [userId], references: [id])
 }
 
+enum ReviewTargetRole {
+  OWNER
+  CAREGIVER
+}
+
 model Review {
   id             Int           @id @default(autoincrement())
   serviceOfferId Int?
@@ -110,18 +115,30 @@ model Review {
   @@index([reviewerUserId])
 }
 
-model ServiceOffer {
-  id          Int      @id @default(autoincrement())
-  caregiverId Int
-  type        String
+model Service {
+  id          Int    @id @default(autoincrement())
+  name        String @unique
   description String
+
+  offers ServiceOffer[]
+}
+
+model ServiceOffer {
+  id          Int @id @default(autoincrement())
+  caregiverId Int
+  serviceId   Int
+
+  description String?
   price       Float
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  isActive    Boolean @default(true)
 
   caregiver Caregiver @relation(fields: [caregiverId], references: [id])
-  reviews   Review[]
+  service   Service   @relation(fields: [serviceId], references: [id])
+
+  reviews Review[]
+
+  @@unique([caregiverId, serviceId])
+  @@index([serviceId])
 }
 
 model UserAuth {
