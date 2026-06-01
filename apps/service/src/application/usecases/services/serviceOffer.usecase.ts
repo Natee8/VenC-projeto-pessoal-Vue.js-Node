@@ -57,7 +57,7 @@ export class ServiceOfferUseCase {
     const created = await this.serviceOfferRepo.create({
       caregiverId: input.caregiverId,
       serviceId: input.serviceId,
-      price: offer.getPrice().getValue(),
+      price: offer.getPrice().getAmount(),
       description: offer.getDescription() ?? undefined,
     });
 
@@ -93,7 +93,7 @@ export class ServiceOfferUseCase {
 
     const updated = await this.serviceOfferRepo.updatePrice(
       id,
-      offer.getPrice().getValue(),
+      offer.getPrice().getAmount(),
     );
 
     return right(updated);

@@ -6,6 +6,7 @@ import "dotenv/config";
 import { router as auth } from "./presentation-controllers/auth.controller.js";
 import { router as caregiver } from "./presentation-controllers/caregiver.controller.js";
 import { router as service } from "./presentation-controllers/service.controller.js";
+import { router as verification } from "./presentation-controllers/emailCode.controller.js";
 
 const app = express();
 const PORT = process.env.APP_PORT || 3000;
@@ -22,7 +23,7 @@ app.use(bodyParser.json());
 app.use("/auth", auth);
 app.use("/caregivers", caregiver);
 app.use("/services", service);
-
+app.use("/verification", verification);
 app.listen(PORT, () => {
   console.log(`Server rodando na porta ${PORT}`);
 });

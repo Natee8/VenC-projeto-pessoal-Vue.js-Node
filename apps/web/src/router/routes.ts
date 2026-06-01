@@ -1,5 +1,3 @@
-import About from "src/interface/view/About/About.vue";
-
 export const Routes = {
   home: "/",
   about: "/about",

@@ -16,8 +16,11 @@ export * from "./domain/dtos/ICarregiver.dto.js";
 export * from "./domain/dtos/IOwner.dto.js";
 export * from "./domain/dtos/IService.dto.js";
 
-export * from "./domain/repositories/Auth.repositories.js";
-export * from "./domain/repositories/userBaseRepository.js";
+export * from "./domain/repositories/userBase.repository.js";
+export * from "./domain/repositories/emailCode.repository.js";
+export * from "./domain/repositories/auth.repositories.js";
+export * from "./domain/repositories/userBase.repository.js";
+
 export * from "./types/address.js";
 export * from "./types/petTypes.js";
 export * from "./types/schedulingTypes.js";

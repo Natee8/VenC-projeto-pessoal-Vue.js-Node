@@ -4,7 +4,11 @@ import AuthLayout from "../../layout/auth/authLayout.vue";
 import { useRouter } from "vue-router";
 import Snackbar from "../../components/utils/snackbar.vue";
 import { authRepository } from "src/infrastructure/repositories/authRepository";
+import { Routes } from "src/router/routes.js";
+import AuthFormContainer from "src/interface/layout/auth/authContainerForms.vue";
+import Login from "src/interface/components/form/login.vue";
 
+const loginFormRef = ref();
 const email = ref("");
 const password = ref("");
 const router = useRouter();
@@ -15,14 +19,13 @@ const snackbar = ref({
   type: "success" as "success" | "error",
 });
 
-const handleLogin = async (e: Event) => {
-  e.preventDefault();
+const handleLogin = async () => {
+  const result = await loginFormRef.value?.validate();
+
+  if (!result?.valid) return;
 
   try {
-    await authRepository.login({
-      email: email.value,
-      password: password.value,
-    });
+    await authRepository.login(result.data);
 
     snackbar.value = {
       show: true,
@@ -47,61 +50,39 @@ const handleLogin = async (e: Event) => {
 
 <template>
   <AuthLayout>
-    <div class="flex justify-center items-center h-full py-4 md:py-8">
-      <div class="bg-secondary rounded-2xl md:rounded-3xl px-5 py-8 sm:px-8 md:px-10 lg:px-12 xl:px-16 shadow-xl w-full max-w-[1000px]">
-        <div class="flex flex-col items-center text-center gap-3 mb-8 md:mb-10">
-          <img src="/assets/logos/logoWhite.svg" alt="Logo vencá" class="w-32 md:w-36 lg:w-40" />
-          <p class="text-white/80 text-base md:text-lg">
-            Preencha suas informações para realizar login
+    <AuthFormContainer subtitle="Preencha suas informações para realizar login">
+      <form @submit.prevent="handleLogin">
+        <Login
+          ref="loginFormRef"
+          v-model:email="email"
+          v-model:password="password"
+        />
+
+        <div class="border-t border-dashed border-gray-200 my-8 md:my-10"></div>
+        <div class="flex justify-start">
+          <p
+            class="text-center font-semibold text-white/80 hover:text-white cursor-pointer transition"
+          >
+            Esqueceu a senha?
+            <span
+              @click="router.push(Routes.sendEmail)"
+              class="text-details hover:underline"
+            >
+              Clique aqui para redefinir
+            </span>
           </p>
         </div>
+      </form>
 
-        <form class="flex flex-col gap-5" @submit="handleLogin">
-          <div class="flex flex-col gap-10">
-            <div class="flex flex-col gap-2">
-              <label for="email" class="text-white font-semibold">Email</label>
-              <input
-                v-model="email"
-                type="text"
-                id="email"
-                placeholder="Digite seu email"
-                class="w-full h-14 px-4 rounded-lg bg-white border border-gray-200 outline-none focus:border-details"
-              />
-            </div>
-
-            <div class="flex flex-col gap-2">
-              <label for="password" class="text-white font-semibold"
-                >Senha</label
-              >
-              <input
-                v-model="password"
-                type="password"
-                id="password"
-                placeholder="Digite sua senha"
-                class="w-full h-14 px-4 rounded-lg bg-white border border-gray-200 outline-none focus:border-details"
-              />
-            </div>
-
-            <button
-              type="submit"
-              class="w-full h-16 rounded-lg mt-5 bg-details text-white font-semibold hover:opacity-90 transition"
-            >
-              Login
-            </button>
-          </div>
-
-          <div class="border-t border-gray-200 my-8 md:my-10"></div>
-
-          <div class="flex">
-            <p
-              class="text-center font-semibold text-white/80 hover:text-white cursor-pointer transition"
-            >
-              Esqueceu a senha? Clique aqui para redefinir
-            </p>
-          </div>
-        </form>
-      </div>
-    </div>
+      <template #actions>
+        <button
+          @click="handleLogin"
+          class="w-full h-16 bg-details text-white font-semibold rounded-lg hover:opacity-90 transition"
+        >
+          Login
+        </button>
+      </template>
+    </AuthFormContainer>
 
     <Snackbar
       :show="snackbar.show"

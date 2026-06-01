@@ -4,6 +4,7 @@ import FormProfileBase from "src/interface/components/form/formProfileBase.vue";
 import RegisterFormBase from "src/interface/components/form/RegisterFormBase.vue";
 import RegisterRadiusAndCEP from "src/interface/components/form/RegisterRadiusAndCEP.vue";
 import AuthLayout from "src/interface/layout/auth/authLayout.vue";
+import AuthFormContainer from "src/interface/layout/auth/authContainerForms.vue";
 
 import { createRegisterForm } from "src/interface/utils/registerPayload";
 import { ref } from "vue";
@@ -116,75 +117,61 @@ const handleFinalSubmit = async (profileData: any) => {
 
 <template>
   <AuthLayout>
-    <div class="flex justify-center items-center h-full w-full py-4 md:py-8">
-      <div
-        class="bg-secondary rounded-2xl md:rounded-3xl px-5 pt-8 pb-12 sm:px-8 sm:pt-10 sm:pb-14 md:px-10 md:pt-12 md:pb-16 lg:px-12 lg:pb-20 xl:px-16 shadow-xl w-full max-w-[1200px]"
-      >
-        <div class="flex flex-col items-center text-center gap-3 mb-8 md:mb-10">
-          <img
-            src="/assets/logos/logoWhite.svg"
-            alt="Logo vencá"
-            class="w-32 md:w-36 lg:w-40"
-          />
+    <AuthFormContainer
+      subtitle="Complete seu perfil para começar a utilizar o Vencá"
+    >
+      <!-- FORMS -->
+      <RegisterFormBase
+        v-if="step === 1"
+        ref="baseFormRef"
+        v-model:name="form.base.name"
+        v-model:email="form.base.email"
+        v-model:birthDate="form.base.birthDate"
+        v-model:cpf="form.base.cpf"
+        v-model:password="form.base.password"
+        v-model:confirmPassword="form.base.confirmPassword"
+      />
 
-          <p class="text-white/80 text-base md:text-lg">
-            Complete seu perfil para começar a utilizar o Vencá
-          </p>
-        </div>
+      <RegisterRadiusAndCEP
+        v-if="step === 2"
+        ref="addressFormRef"
+        v-model:street="form.address.street"
+        v-model:number="form.address.number"
+        v-model:neighborhood="form.address.neighborhood"
+        v-model:city="form.address.city"
+        v-model:state="form.address.state"
+        v-model:zipCode="form.address.zipCode"
+        v-model:serviceRadius="form.address.serviceRadiusKm"
+      />
 
-        <div class="pb-2 md:pb-4">
-          <RegisterFormBase
-            v-if="step === 1"
-            ref="baseFormRef"
-            v-model:name="form.base.name"
-            v-model:email="form.base.email"
-            v-model:birthDate="form.base.birthDate"
-            v-model:cpf="form.base.cpf"
-            v-model:password="form.base.password"
-            v-model:confirmPassword="form.base.confirmPassword"
-          />
+      <FormProfileBase v-if="step === 3" ref="profileFormRef" />
 
-          <RegisterRadiusAndCEP
-            v-if="step === 2"
-            ref="addressFormRef"
-            v-model:street="form.address.street"
-            v-model:number="form.address.number"
-            v-model:neighborhood="form.address.neighborhood"
-            v-model:city="form.address.city"
-            v-model:state="form.address.state"
-            v-model:zipCode="form.address.zipCode"
-            v-model:serviceRadius="form.address.serviceRadiusKm"
-          />
+      <template #actions>
+        <button
+          v-if="step > 1"
+          @click="handleBack"
+          :disabled="isLoading"
+          class="w-1/3 h-16 bg-white/10 text-white font-semibold rounded-lg hover:bg-white/20 transition disabled:opacity-50"
+        >
+          Voltar
+        </button>
 
-          <FormProfileBase v-if="step === 3" ref="profileFormRef" />
-        </div>
-        <div class="mt-6 flex gap-4">
-          <button
-            v-if="step > 1"
-            @click="handleBack"
-            :disabled="isLoading"
-            class="w-1/3 h-16 bg-white/10 text-white font-semibold rounded-lg hover:bg-white/20 transition disabled:opacity-50"
-          >
-            Voltar
-          </button>
-
-          <button
-            @click="handleNext"
-            :disabled="isLoading"
-            class="h-16 bg-details text-white font-semibold rounded-lg hover:opacity-90 transition disabled:opacity-50"
-            :class="step > 1 ? 'w-2/3' : 'w-full'"
-          >
-            {{
-              step === 3
-                ? isLoading
-                  ? "Cadastrando..."
-                  : "Cadastrar"
-                : "Continuar"
-            }}
-          </button>
-        </div>
-      </div>
-    </div>
+        <button
+          @click="handleNext"
+          :disabled="isLoading"
+          class="h-16 bg-details text-white font-semibold rounded-lg hover:opacity-90 transition disabled:opacity-50"
+          :class="step > 1 ? 'w-2/3' : 'w-full'"
+        >
+          {{
+            step === 3
+              ? isLoading
+                ? "Cadastrando..."
+                : "Cadastrar"
+              : "Continuar"
+          }}
+        </button>
+      </template>
+    </AuthFormContainer>
 
     <snackbarBase
       :show="snackbarShow"
