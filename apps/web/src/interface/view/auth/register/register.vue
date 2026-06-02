@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { registerRepository } from "src/infrastructure/repositories/userBaseRepository";
-import FormProfileBase from "src/interface/components/form/formProfileBase.vue";
 import RegisterFormBase from "src/interface/components/form/RegisterFormBase.vue";
 import RegisterRadiusAndCEP from "src/interface/components/form/RegisterRadiusAndCEP.vue";
 import AuthLayout from "src/interface/layout/auth/authLayout.vue";
@@ -10,6 +9,7 @@ import { createRegisterForm } from "src/interface/utils/registerPayload";
 import { ref } from "vue";
 
 import { useRoute, useRouter } from "vue-router";
+import FormProfileBase from "src/interface/components/form/FormProfileBase.vue";
 
 const router = useRouter();
 const route = useRoute();

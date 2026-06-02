@@ -6,7 +6,7 @@ import Snackbar from "../../components/utils/snackbar.vue";
 import { authRepository } from "src/infrastructure/repositories/authRepository";
 import { Routes } from "src/router/routes.js";
 import AuthFormContainer from "src/interface/layout/auth/authContainerForms.vue";
-import Login from "src/interface/components/form/login.vue";
+import Login from "src/interface/components/form/Login.vue";
 
 const loginFormRef = ref();
 const email = ref("");

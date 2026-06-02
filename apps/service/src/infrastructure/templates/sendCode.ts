@@ -17,7 +17,7 @@ export const sendCodeEmail = ({
         <td style="background-color: #1e1e2f; text-align: center; padding: 20px;">
           <img
           //trocar por clounairy
-            src="/apps/web/public/assets/logos/logoWhite.svg"
+            src="https://res.cloudinary.com/ditaon8no/image/upload/v1780401406/logoWhite_om94xd.svg"
             alt="Vencá"
             style="width: 140px;"
           />

@@ -15,18 +15,19 @@ export class PrismaVerificationCodeRepository implements VerificationCodeReposit
     });
   }
 
-  async findValidCode(email: string, code: string): Promise<boolean> {
-    const result = await this.prisma.verificationCode.findFirst({
+  async findByEmailAndCode(email: string, code: string) {
+    return await this.prisma.verificationCode.findFirst({
       where: {
         email,
         code,
-        expiresAt: {
-          gt: new Date(),
-        },
       },
     });
+  }
 
-    return !!result;
+  async delete(id: number): Promise<void> {
+    await this.prisma.verificationCode.delete({
+      where: { id },
+    });
   }
 
   async deleteByEmail(email: string): Promise<void> {
