@@ -7,6 +7,7 @@ import { authRepository } from "src/infrastructure/repositories/authRepository";
 import { Routes } from "src/router/routes.js";
 import AuthFormContainer from "src/interface/layout/auth/authContainerForms.vue";
 import Login from "src/interface/components/form/Login.vue";
+import { showSnackbarAndWait } from "src/interface/utils/asyncDelay.js";
 
 const loginFormRef = ref();
 const email = ref("");
@@ -19,32 +20,37 @@ const snackbar = ref({
   type: "success" as "success" | "error",
 });
 
+const loading = ref(false);
+
 const handleLogin = async () => {
   const result = await loginFormRef.value?.validate();
 
   if (!result?.valid) return;
+  if (loading.value) return;
+
+  loading.value = true;
 
   try {
     await authRepository.login(result.data);
 
-    snackbar.value = {
-      show: true,
-      message: "Login realizado com sucesso!",
-      type: "success",
-    };
+    await showSnackbarAndWait(
+      snackbar,
+      "Login realizado com sucesso!",
+      "success",
+      1200,
+    );
 
-    router.push("/home");
+    router.push(Routes.home);
   } catch (error) {
-    snackbar.value = {
-      show: true,
-      message: "Email ou senha inválidos",
-      type: "error",
-    };
+    await showSnackbarAndWait(
+      snackbar,
+      "Email ou senha inválidos",
+      "error",
+      1500,
+    );
+  } finally {
+    loading.value = false;
   }
-
-  setTimeout(() => {
-    snackbar.value.show = false;
-  }, 3000);
 };
 </script>
 
@@ -78,8 +84,9 @@ const handleLogin = async () => {
         <button
           @click="handleLogin"
           class="w-full h-16 bg-details text-white font-semibold rounded-lg hover:opacity-90 transition"
+          :disabled="loading"
         >
-          Login
+          {{ loading ? "Entrando..." : "Login" }}
         </button>
       </template>
     </AuthFormContainer>

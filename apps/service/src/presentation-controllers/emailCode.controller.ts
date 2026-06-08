@@ -8,12 +8,14 @@ import { PrismaVerificationCodeRepository } from "../infrastructure/repositories
 import { NodemailerEmailService } from "../application/service/emailService.js";
 import { SendResetPasswordCodeUseCase } from "../application/usecases/codeEmail/sendCodeVerification.usecase.js";
 import { VerifyResetPasswordCodeUseCase } from "../application/usecases/codeEmail/verifyCodeEmail.usecase.js";
+import { UsersRepository } from "../infrastructure/repositories/auth/authLogin.repository.js";
 
 export const router: Router = Router();
 const prisma = new PrismaClient();
 
 const verificationCodeRepo = new PrismaVerificationCodeRepository(prisma);
 const emailService = new NodemailerEmailService();
+const usersRepository = new UsersRepository();
 
 const verifyResetPasswordCodeUseCase = new VerifyResetPasswordCodeUseCase(
   verificationCodeRepo,
@@ -22,9 +24,9 @@ const verifyResetPasswordCodeUseCase = new VerifyResetPasswordCodeUseCase(
 const sendResetPasswordCodeUseCase = new SendResetPasswordCodeUseCase(
   verificationCodeRepo,
   emailService,
+  usersRepository,
 );
 
-//enivar codigo por email para realizar verificação
 router.post("/send-code", async (req: Request, res: Response) => {
   const { email } = req.body;
 
@@ -39,7 +41,7 @@ router.post("/send-code", async (req: Request, res: Response) => {
   }
 
   try {
-    await sendResetPasswordCodeUseCase.execute(emailVO.getValue());
+    await sendResetPasswordCodeUseCase.execute(emailVO);
 
     return res.status(200).json({
       message: "Código enviado com sucesso",
@@ -50,8 +52,6 @@ router.post("/send-code", async (req: Request, res: Response) => {
     });
   }
 });
-
-//verificar o codigo enviado por email
 
 router.post("/verify-code", async (req: Request, res: Response) => {
   const { email, code } = req.body;

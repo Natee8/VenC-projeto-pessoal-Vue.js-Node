@@ -2,7 +2,7 @@ import { apiInstance } from "../config/ApiConfig";
 
 export const verificationCodeRepository = {
   async sendResetPasswordCode(email: string) {
-    const { data } = await apiInstance.post("/auth/send-reset-password-code", {
+    const { data } = await apiInstance.post("/verification/send-code", {
       email,
     });
 
@@ -10,13 +10,10 @@ export const verificationCodeRepository = {
   },
 
   async verifyResetPasswordCode(email: string, code: string) {
-    const { data } = await apiInstance.post(
-      "/auth/verify-reset-password-code",
-      {
-        email,
-        code,
-      },
-    );
+    const { data } = await apiInstance.post("/verification/verify-code", {
+      email,
+      code,
+    });
 
     return data;
   },

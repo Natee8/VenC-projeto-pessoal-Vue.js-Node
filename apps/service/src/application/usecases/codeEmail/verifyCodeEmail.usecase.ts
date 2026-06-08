@@ -1,4 +1,7 @@
 import { VerificationCodeRepository } from "@packages";
+import jwt from "jsonwebtoken";
+
+const secret = process.env.JWT_SECRET || "dev-secret";
 
 export class VerifyResetPasswordCodeUseCase {
   constructor(private repo: VerificationCodeRepository) {}
@@ -9,7 +12,7 @@ export class VerifyResetPasswordCodeUseCase {
   }: {
     email: string;
     code: string;
-  }): Promise<void> {
+  }): Promise<{ resetToken: string }> {
     const record = await this.repo.findByEmailAndCode(email, code);
 
     if (!record) {
@@ -21,6 +24,17 @@ export class VerifyResetPasswordCodeUseCase {
     }
 
     await this.repo.delete(record.id);
+
+    const resetToken = jwt.sign(
+      {
+        email,
+        purpose: "reset-password",
+      },
+      secret,
+      { expiresIn: "10m" },
+    );
+
+    return { resetToken };
   }
 
   private isExpired(expiresAt: Date): boolean {

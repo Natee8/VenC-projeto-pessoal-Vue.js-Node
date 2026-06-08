@@ -1,18 +1,30 @@
-import { VerificationCodeRepository } from "@packages";
-import { EmailService } from "apps/service/src/core/interface/IEmail.js";
+import { Email, VerificationCodeRepository } from "@packages";
+import { EmailService } from "apps/service/src/domain/dtos/email.sto.js";
+import { UsersRepository } from "apps/service/src/infrastructure/repositories/auth/authLogin.repository.js";
 import { sendCodeEmail } from "apps/service/src/infrastructure/templates/sendCode.js";
 
 export class SendResetPasswordCodeUseCase {
   constructor(
     private repo: VerificationCodeRepository,
     private emailService: EmailService,
+    private userRepository: UsersRepository,
   ) {}
 
-  async execute(email: string): Promise<void> {
+  async execute(email: Email): Promise<void> {
+    const emailValue = email.getValue();
+
+    const user = await this.userRepository.findByEmail(email);
+
+    if (!user) {
+      return;
+    }
+
     const code = this.generateCode();
 
+    await this.repo.deleteByEmail(emailValue);
+
     await this.repo.save({
-      email,
+      email: emailValue,
       code,
       expiresAt: this.getExpiration(),
     });
@@ -20,7 +32,7 @@ export class SendResetPasswordCodeUseCase {
     const html = sendCodeEmail({ code });
 
     await this.emailService.send({
-      to: email,
+      to: emailValue,
       subject: "Recuperação de senha",
       html,
     });
@@ -31,6 +43,6 @@ export class SendResetPasswordCodeUseCase {
   }
 
   private getExpiration(): Date {
-    return new Date(Date.now() + 10 * 60 * 1000); // 10 minutos
+    return new Date(Date.now() + 10 * 60 * 1000);
   }
 }

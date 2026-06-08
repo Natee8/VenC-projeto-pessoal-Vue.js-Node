@@ -1,57 +1,62 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
+export type EmailConfirmFormData = {
+  email: string;
+  confirmEmail: string;
+};
+
 export type EmailConfirmErrors = {
   email?: string;
   confirmEmail?: string;
 };
 
 const emit = defineEmits<{
-  (e: "change", value: { email: string; confirmEmail: string }): void;
+  (e: "change", value: EmailConfirmFormData): void;
 }>();
 
 const email = ref("");
 const confirmEmail = ref("");
-
 const errors = ref<EmailConfirmErrors>({});
 
 const validateEmail = (value: string) => {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 };
 
+const validate = () => {
+  errors.value = {};
+
+  if (!email.value) {
+    errors.value.email = "Email é obrigatório";
+  } else if (!validateEmail(email.value)) {
+    errors.value.email = "Email inválido";
+  }
+
+  if (!confirmEmail.value) {
+    errors.value.confirmEmail = "Confirme o email";
+  } else if (confirmEmail.value !== email.value) {
+    errors.value.confirmEmail = "Os emails não coincidem";
+  }
+
+  const valid = Object.keys(errors.value).length === 0;
+
+  return {
+    valid,
+    data: {
+      email: email.value,
+      confirmEmail: confirmEmail.value,
+    },
+  };
+};
+
 defineExpose({
-  validate: () => {
-    errors.value = {};
-
-    if (!email.value) {
-      errors.value.email = "Email é obrigatório";
-    } else if (!validateEmail(email.value)) {
-      errors.value.email = "Email inválido";
-    }
-
-    if (!confirmEmail.value) {
-      errors.value.confirmEmail = "Confirme o email";
-    } else if (confirmEmail.value !== email.value) {
-      errors.value.confirmEmail = "Os emails não coincidem";
-    }
-
-    if (Object.keys(errors.value).length > 0) {
-      return { valid: false };
-    }
-
-    return {
-      valid: true,
-      data: {
-        email: email.value,
-        confirmEmail: confirmEmail.value,
-      },
-    };
-  },
+  validate,
 });
 </script>
 
 <template>
   <div class="flex flex-col gap-6 md:gap-7 pb-2 md:pb-4">
+    <!-- Email -->
     <div class="flex flex-col gap-2">
       <label class="text-white font-semibold">Email</label>
 
@@ -68,7 +73,7 @@ defineExpose({
       </span>
     </div>
 
-    <!-- Confirmar Email -->
+    <!-- Confirm Email -->
     <div class="flex flex-col gap-2">
       <label class="text-white font-semibold">Confirmar Email</label>
 
