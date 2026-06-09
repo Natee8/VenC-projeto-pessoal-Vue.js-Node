@@ -1,10 +1,15 @@
 export const sendCodeEmail = ({
   code,
+  token,
   userName,
 }: {
   code: string;
+  token?: string;
   userName?: string;
 }) => {
+  const frontendUrl = process.env.FRONTEND_URL ?? "http://localhost:5173";
+  const resetLink = token ? `${frontendUrl}/reset-password?token=${token}` : "";
+
   return `
   <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
     <table
@@ -49,6 +54,8 @@ export const sendCodeEmail = ({
           >
             ${code}
           </div>
+
+          ${resetLink ? `<p style="margin-top: 10px;"><a href="${resetLink}" style="display:inline-block;padding:12px 20px;background:#1e1e2f;color:#fff;border-radius:6px;text-decoration:none;">Redefinir senha</a></p>` : ""}
 
           <p style="color: #999; font-size: 12px;">
             Esse código expira em 10 minutos.

@@ -10,6 +10,7 @@ import { JwtTokenGenerator } from "../infrastructure/repositories/auth/tokenGene
 import { RefreshTokenRepository } from "../infrastructure/repositories/auth/refreshToken.repository.js";
 import { getErrorMessage } from "../utils/getErrorMessage.js";
 import { PasswordService } from "../application/service/passwordComparer.js";
+import { verifyResetToken } from "../utils/jwt.js";
 import { Email } from "@packages";
 import { RegisterUseCase } from "../application/usecases/auth/register.usecase.js";
 import { OwnerProfileRepository } from "../infrastructure/repositories/user/userOwner.repository.js";
@@ -129,5 +130,55 @@ router.post(
   uploadProfileImage.single("profileImage"),
   registerController.handle.bind(registerController),
 );
+
+/**
+ * RESET PASSWORD
+ * Accepts { token, newPassword } or { email, code, newPassword }
+ */
+router.post("/reset-password", async (req: Request, res: Response) => {
+  const { token, email, code, newPassword } = req.body;
+
+  if (!newPassword) {
+    return res.status(400).json({ message: "Nova senha é obrigatória" });
+  }
+
+  try {
+    let targetEmail = email;
+
+    if (token) {
+      const payload = verifyResetToken(token);
+      targetEmail = payload.email;
+    } else if (!email || !code) {
+      return res
+        .status(400)
+        .json({ message: "Token ou email+code são obrigatórios" });
+    }
+
+    // validate email
+    let emailVO: Email;
+
+    try {
+      emailVO = Email.create(targetEmail);
+    } catch (err: unknown) {
+      return res.status(400).json({ message: "Email inválido" });
+    }
+
+    const user = await usersRepo.findByEmail(emailVO);
+
+    if (!user) {
+      return res.status(404).json({ message: "Usuário não encontrado" });
+    }
+
+    const newHash = await passwordService.hash(newPassword);
+
+    user.changePassword(newHash);
+
+    await usersRepo.save(user);
+
+    return res.status(200).json({ message: "Senha alterada com sucesso" });
+  } catch (error) {
+    return res.status(400).json({ message: getErrorMessage(error) });
+  }
+});
 
 export default router;

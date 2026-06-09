@@ -54,11 +54,15 @@ const handleSendEmail = async () => {
       1500,
     );
 
+    // store email in sessionStorage to avoid leaking it in the URL
+    try {
+      sessionStorage.setItem("resetEmail", result.data.email);
+    } catch {
+      // ignore storage errors
+    }
+
     router.push({
       name: "send-code",
-      query: {
-        email: result.data.email,
-      },
     });
   } catch (error) {
     await showSnackbarAndWait(

@@ -1,6 +1,7 @@
 import { VerifyResetPasswordCodeUseCase } from "../application/usecases/codeEmail/verifyCodeEmail.usecase.js";
 import { Request, Response } from "express";
 import { getErrorMessage } from "../utils/getErrorMessage.js";
+import { verifyResetToken } from "../utils/jwt.js";
 
 export class VerifyResetPasswordCodeController {
   constructor(
@@ -8,22 +9,24 @@ export class VerifyResetPasswordCodeController {
   ) {}
 
   async handle(req: Request, res: Response) {
-    const { email, code } = req.body;
+    const { token } = req.body;
 
-    if (!email || !code) {
+    if (!token) {
       return res.status(400).json({
-        message: "Email e código são obrigatórios",
+        message: "Token é obrigatório",
       });
     }
 
     try {
+      const payload = verifyResetToken(token);
+
       await this.verifyResetPasswordCodeUseCase.execute({
-        email,
-        code,
+        email: payload.email,
+        code: payload.code,
       });
 
       return res.status(200).json({
-        message: "Código válido",
+        message: "Token e código válidos",
       });
     } catch (error) {
       return res.status(400).json({

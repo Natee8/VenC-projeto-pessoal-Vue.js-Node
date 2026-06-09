@@ -54,11 +54,32 @@ router.post("/send-code", async (req: Request, res: Response) => {
 });
 
 router.post("/verify-code", async (req: Request, res: Response) => {
-  const { email, code } = req.body;
+  const { token, email, code } = req.body;
 
+  // If token provided, just verify it
+  if (token) {
+    try {
+      // verifyResetToken will throw if invalid/expired
+      const { email: tokenEmail } = await import("../utils/jwt.js").then((m) =>
+        m.verifyResetToken(token),
+      );
+
+      return res.status(200).json({
+        message: "Token válido",
+        email: tokenEmail,
+        resetToken: token,
+      });
+    } catch (error) {
+      return res.status(400).json({
+        message: getErrorMessage(error),
+      });
+    }
+  }
+
+  // Otherwise expect email + code flow and return a reset token
   if (!email || !code) {
     return res.status(400).json({
-      message: "Email e código são obrigatórios",
+      message: "Token ou email+code são obrigatórios",
     });
   }
 
@@ -73,13 +94,14 @@ router.post("/verify-code", async (req: Request, res: Response) => {
   }
 
   try {
-    await verifyResetPasswordCodeUseCase.execute({
+    const { resetToken } = await verifyResetPasswordCodeUseCase.execute({
       email: emailVO.getValue(),
       code,
     });
 
     return res.status(200).json({
       message: "Código válido",
+      resetToken,
     });
   } catch (error) {
     return res.status(400).json({

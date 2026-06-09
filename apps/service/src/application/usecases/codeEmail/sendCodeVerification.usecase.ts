@@ -2,6 +2,7 @@ import { Email, VerificationCodeRepository } from "@packages";
 import { EmailService } from "apps/service/src/domain/dtos/email.sto.js";
 import { UsersRepository } from "apps/service/src/infrastructure/repositories/auth/authLogin.repository.js";
 import { sendCodeEmail } from "apps/service/src/infrastructure/templates/sendCode.js";
+import { signResetToken } from "apps/service/src/utils/jwt.js";
 
 export class SendResetPasswordCodeUseCase {
   constructor(
@@ -29,7 +30,9 @@ export class SendResetPasswordCodeUseCase {
       expiresAt: this.getExpiration(),
     });
 
-    const html = sendCodeEmail({ code });
+    const token = signResetToken({ email: emailValue, code }, "10m");
+
+    const html = sendCodeEmail({ code, token });
 
     await this.emailService.send({
       to: emailValue,

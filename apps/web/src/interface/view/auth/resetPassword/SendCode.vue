@@ -18,7 +18,8 @@ const loading = ref(false);
 const route = useRoute();
 const router = useRouter();
 
-const email = route.query.email as string;
+const email =
+  (route.query.email as string) || sessionStorage.getItem("resetEmail") || "";
 
 const snackbar = ref({
   show: false,
@@ -47,10 +48,16 @@ const handleVerifyCode = async () => {
   loading.value = true;
 
   try {
-    await verificationCodeRepository.verifyResetPasswordCode(
+    const data = await verificationCodeRepository.verifyResetPasswordCode(
       email,
       result.data.code,
     );
+
+    const resetToken = data.resetToken || data.resetToken;
+
+    if (!resetToken) {
+      throw new Error("Não foi possível obter token de reset");
+    }
 
     await showSnackbarAndWait(
       snackbar,
@@ -62,8 +69,7 @@ const handleVerifyCode = async () => {
     router.push({
       name: "reset-password",
       query: {
-        email,
-        code: result.data.code,
+        token: resetToken,
       },
     });
   } catch (error) {

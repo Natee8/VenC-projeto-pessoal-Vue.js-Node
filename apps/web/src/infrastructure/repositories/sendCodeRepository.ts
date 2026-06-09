@@ -19,19 +19,25 @@ export const verificationCodeRepository = {
   },
 
   async resetPassword({
+    token,
     email,
     code,
     newPassword,
   }: {
-    email: string;
-    code: string;
+    token?: string;
+    email?: string;
+    code?: string;
     newPassword: string;
   }) {
-    const { data } = await apiInstance.post("/auth/reset-password", {
-      email,
-      code,
-      newPassword,
-    });
+    const payload: any = { newPassword };
+
+    if (token) payload.token = token;
+    else {
+      payload.email = email;
+      payload.code = code;
+    }
+
+    const { data } = await apiInstance.post("/auth/reset-password", payload);
 
     return data;
   },
