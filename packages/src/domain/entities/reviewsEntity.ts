@@ -2,13 +2,12 @@ import { UserRole } from "../../types/userType.js";
 
 export class Review {
   constructor(
-    public readonly id: string,
-    public readonly serviceId: string | null,
-    public readonly reviewerUserId: string,
-    public readonly targetUserId: string,
+    public readonly id: number,
+    public readonly serviceOfferId: number | null,
+    public readonly reviewerUserId: number,
+    public readonly targetUserId: number,
     private rating: number,
     private comment: string | null,
-    private targetRoleSnapshot: UserRole,
     public readonly createdAt: Date,
   ) {
     this.validate();
@@ -34,9 +33,5 @@ export class Review {
 
   getComment(): string | null {
     return this.comment;
-  }
-
-  getTargetRole(): UserRole {
-    return this.targetRoleSnapshot;
   }
 }

@@ -1,3 +1,4 @@
+import { ListCaregiversFilters } from "apps/service/src/domain/dtos/service.dto.js";
 import { PrismaClient } from "../../../generated/prisma/index.js";
 import type { Prisma } from "../../../generated/prisma/index.js";
 import { Caregiver, UserId, Address, State } from "@packages";
@@ -29,6 +30,8 @@ export class CaregiverRepository {
       record.isPublicProfile ?? false,
       record.createdAt,
       record.updatedAt,
+      record.reviewsCount ?? 0,
+      record.averageRating ?? 0,
     );
   }
 
@@ -110,27 +113,80 @@ export class CaregiverRepository {
     return record ? this.mapToEntity(record) : null;
   }
 
-  async findPublicCaregivers(filters?: { city?: string; state?: string }) {
+  async findPublicCaregivers(filters?: ListCaregiversFilters) {
     const where: Prisma.CaregiverWhereInput = {
       isPublicProfile: true,
+      isActive: true,
     };
 
+    // 📍 localização
     if (filters?.city || filters?.state) {
       where.address = {};
 
-      if (filters?.city) {
+      if (filters.city) {
         where.address.city = filters.city;
       }
 
-      if (filters?.state) {
+      if (filters.state) {
         where.address.state = filters.state as State;
       }
     }
 
+    if (filters?.offersHosting !== undefined) {
+      where.offersHosting = filters.offersHosting;
+    }
+
+    if (filters?.minRating) {
+      where.averageRating = {
+        gte: filters.minRating,
+      };
+    }
+
+    if (filters?.serviceIds || filters?.minPrice || filters?.maxPrice) {
+      where.services = {
+        some: {
+          isActive: true,
+
+          ...(filters.serviceIds && {
+            serviceId: {
+              in: filters.serviceIds,
+            },
+          }),
+
+          ...(filters.minPrice && {
+            price: {
+              gte: filters.minPrice,
+            },
+          }),
+
+          ...(filters.maxPrice && {
+            price: {
+              ...(filters.minPrice ? { gte: filters.minPrice } : {}),
+              lte: filters.maxPrice,
+            },
+          }),
+        },
+      };
+    }
+
     const records = await this.prisma.caregiver.findMany({
       where,
+
       include: {
         address: true,
+
+        services: {
+          where: {
+            isActive: true,
+          },
+          include: {
+            service: true,
+          },
+        },
+      },
+
+      orderBy: {
+        averageRating: "desc",
       },
     });
 

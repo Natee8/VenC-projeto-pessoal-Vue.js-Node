@@ -4,4 +4,6 @@ export type ListCaregiversFilters = {
   serviceIds?: number[];
   minPrice?: number;
   maxPrice?: number;
+  minRating?: number;
+  offersHosting?: boolean;
 };

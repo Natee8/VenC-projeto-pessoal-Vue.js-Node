@@ -6,15 +6,11 @@ enum ReviewTargetRole {
 model Review {
   id                Int      @id @default(autoincrement())
   serviceOfferId    Int?
-  serviceOffer      ServiceOffer? @relation(fields: [serviceOfferId], references: [id])
   reviewerUserId    Int
-  reviewer          UserAuth @relation("Reviewer", fields: [reviewerUserId], references: [id])
   targetUserId      Int
-  targetUser        UserAuth @relation("Target", fields: [targetUserId], references: [id])
   rating            Int
   comment           String?
   createdAt         DateTime @default(now())
-
 
   @@index([targetUserId, createdAt])
   @@index([reviewerUserId])

@@ -20,6 +20,7 @@ export * from "./domain/repositories/userBase.repository.js";
 export * from "./domain/repositories/emailCode.repository.js";
 export * from "./domain/repositories/auth.repositories.js";
 export * from "./domain/repositories/userBase.repository.js";
+export * from "./domain/repositories/rating.repositories.js";
 
 export * from "./types/address.js";
 export * from "./types/petTypes.js";

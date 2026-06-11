@@ -33,6 +33,8 @@ export class OwnerProfileRepository {
       record.createdAt,
       record.updatedAt,
 
+      record.reviewsCount ?? 0,
+      record.averageRating,
       record.searchRadiusKm ?? undefined,
     );
   }
