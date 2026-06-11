@@ -8,6 +8,7 @@ import {
 
 import { RegisterFormErrors } from "./types/typeErrors";
 import { registerFormBaseSchema } from "./schemas/formBaseSchema";
+import { formatCPF } from "../utils/formatters/cpf";
 
 const props = defineProps<RegisterFormBaseProps>();
 const emit = defineEmits<RegisterFormBaseEmits>();
@@ -17,7 +18,14 @@ const errors = ref<RegisterFormErrors>({});
 const updateField = (event: Event, emitName: string) => {
   const target = event.target as HTMLInputElement;
 
-  emit(emitName as any, target.value);
+  let value = target.value;
+
+  if (emitName === "update:cpf") {
+    value = formatCPF(value);
+    target.value = value;
+  }
+
+  emit(emitName as any, value);
 };
 
 defineExpose({

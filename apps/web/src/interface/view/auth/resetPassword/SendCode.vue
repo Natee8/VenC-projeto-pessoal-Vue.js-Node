@@ -30,7 +30,7 @@ const snackbar = ref({
 const handleChange = (value: { code: string }) => {};
 
 const handleVerifyCode = async () => {
-  const result = codeFormRef.value?.validate();
+  const result = await codeFormRef.value?.validate();
 
   if (!result?.valid) return;
   if (loading.value) return;

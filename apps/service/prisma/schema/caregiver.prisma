@@ -9,10 +9,14 @@ model Caregiver {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
+  averageRating Float @default(0)
+  reviewsCount  Int   @default(0)
+
   address Address?
 
   user     UserAuth      @relation(fields: [userId], references: [id])
   services ServiceOffer[]
 
   @@index([isPublicProfile, isActive])
+  @@index([averageRating])
 }

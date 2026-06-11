@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { sendEmailSchema } from "src/interface/components/form/schemas/sendEmailSchema";
 
 export type EmailConfirmFormData = {
   email: string;
@@ -19,34 +20,38 @@ const email = ref("");
 const confirmEmail = ref("");
 const errors = ref<EmailConfirmErrors>({});
 
-const validateEmail = (value: string) => {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-};
+const validate = async () => {
+  try {
+    const data = await sendEmailSchema.validate(
+      {
+        email: email.value,
+        confirmEmail: confirmEmail.value,
+      },
+      { abortEarly: false },
+    );
 
-const validate = () => {
-  errors.value = {};
+    errors.value = {};
 
-  if (!email.value) {
-    errors.value.email = "Email é obrigatório";
-  } else if (!validateEmail(email.value)) {
-    errors.value.email = "Email inválido";
+    return {
+      valid: true,
+      data,
+    };
+  } catch (err: any) {
+    errors.value = {};
+
+    err.inner.forEach((validationError: any) => {
+      errors.value[validationError.path as keyof EmailConfirmErrors] =
+        validationError.message;
+    });
+
+    return {
+      valid: false,
+      data: {
+        email: email.value,
+        confirmEmail: confirmEmail.value,
+      },
+    };
   }
-
-  if (!confirmEmail.value) {
-    errors.value.confirmEmail = "Confirme o email";
-  } else if (confirmEmail.value !== email.value) {
-    errors.value.confirmEmail = "Os emails não coincidem";
-  }
-
-  const valid = Object.keys(errors.value).length === 0;
-
-  return {
-    valid,
-    data: {
-      email: email.value,
-      confirmEmail: confirmEmail.value,
-    },
-  };
 };
 
 defineExpose({
@@ -56,7 +61,6 @@ defineExpose({
 
 <template>
   <div class="flex flex-col gap-6 md:gap-7 pb-2 md:pb-4">
-    <!-- Email -->
     <div class="flex flex-col gap-2">
       <label class="text-white font-semibold">Email</label>
 
@@ -73,7 +77,6 @@ defineExpose({
       </span>
     </div>
 
-    <!-- Confirm Email -->
     <div class="flex flex-col gap-2">
       <label class="text-white font-semibold">Confirmar Email</label>
 

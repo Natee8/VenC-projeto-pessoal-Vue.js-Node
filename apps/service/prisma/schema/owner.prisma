@@ -5,9 +5,14 @@ model OwnerProfile {
   updatedAt      DateTime @updatedAt
   searchRadiusKm Float?
 
+  averageRating Float @default(0)
+  reviewsCount  Int   @default(0)
+
   phone String?
 
   address Address?
 
   user UserAuth @relation(fields: [userId], references: [id])
+    @@index([averageRating])
+
 }

@@ -9,6 +9,8 @@ export class OwnerProfile {
     private phone: Phone | null,
     private createdAt: Date,
     private updatedAt: Date,
+    private averageRating: number,
+    private reviewsCount: number,
     private searchRadiusKm?: number,
   ) {}
 
@@ -44,6 +46,14 @@ export class OwnerProfile {
   updatePhone(phone: Phone) {
     this.phone = phone;
     this.updatedAt = new Date();
+  }
+
+  getAverageRating() {
+    return this.averageRating;
+  }
+
+  getReviewsCount() {
+    return this.reviewsCount;
   }
 
   updateSearchRadius(radius: number) {

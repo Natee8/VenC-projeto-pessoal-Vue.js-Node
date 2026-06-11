@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { verifyCodeSchema } from "./schemas/verifyCode";
 
 export type CodeFormData = {
   code: string;
@@ -51,23 +52,34 @@ const onKeyDown = (e: KeyboardEvent, index: number) => {
   }
 };
 
-const validate = () => {
-  errors.value = {};
-
+const validate = async () => {
   const code = inputs.value.join("");
 
-  if (code.length !== 6) {
-    errors.value.code = "Código deve ter 6 dígitos";
+  try {
+    const data = await verifyCodeSchema.validate(
+      { code },
+      { abortEarly: false },
+    );
+
+    errors.value = {};
+
+    return {
+      valid: true,
+      data,
+    };
+  } catch (err: any) {
+    errors.value = {};
+
+    err.inner.forEach((validationError: any) => {
+      errors.value[validationError.path as keyof CodeFormErrors] =
+        validationError.message;
+    });
+
+    return {
+      valid: false,
+      data: { code },
+    };
   }
-
-  const valid = Object.keys(errors.value).length === 0;
-
-  return {
-    valid,
-    data: {
-      code,
-    },
-  };
 };
 
 defineExpose({

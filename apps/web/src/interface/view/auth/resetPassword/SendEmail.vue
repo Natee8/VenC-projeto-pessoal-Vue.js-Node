@@ -37,7 +37,7 @@ const openSnackbar = (message: string, type: "success" | "error") => {
 const router = useRouter();
 
 const handleSendEmail = async () => {
-  const result = sendEmailForm.value?.validate();
+  const result = await sendEmailForm.value?.validate();
 
   if (!result?.valid) return;
   if (loading.value) return;

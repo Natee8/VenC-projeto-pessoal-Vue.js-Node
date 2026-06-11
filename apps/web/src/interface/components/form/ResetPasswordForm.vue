@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { resetPasswordFormSchema } from "./schemas/resetPassword";
 
 export type ResetPasswordFormData = {
   password: string;
@@ -19,34 +20,38 @@ const password = ref("");
 const confirmPassword = ref("");
 const errors = ref<ResetPasswordErrors>({});
 
-const validatePassword = (value: string) => {
-  return value.length >= 6;
-};
+const validate = async () => {
+  try {
+    const data = await resetPasswordFormSchema.validate(
+      {
+        password: password.value,
+        confirmPassword: confirmPassword.value,
+      },
+      { abortEarly: false },
+    );
 
-const validate = () => {
-  errors.value = {};
+    errors.value = {};
 
-  if (!password.value) {
-    errors.value.password = "Senha é obrigatória";
-  } else if (!validatePassword(password.value)) {
-    errors.value.password = "Senha deve ter pelo menos 6 caracteres";
+    return {
+      valid: true,
+      data,
+    };
+  } catch (err: any) {
+    errors.value = {};
+
+    err.inner.forEach((validationError: any) => {
+      errors.value[validationError.path as keyof ResetPasswordErrors] =
+        validationError.message;
+    });
+
+    return {
+      valid: false,
+      data: {
+        password: password.value,
+        confirmPassword: confirmPassword.value,
+      },
+    };
   }
-
-  if (!confirmPassword.value) {
-    errors.value.confirmPassword = "Confirme a senha";
-  } else if (confirmPassword.value !== password.value) {
-    errors.value.confirmPassword = "As senhas não coincidem";
-  }
-
-  const valid = Object.keys(errors.value).length === 0;
-
-  return {
-    valid,
-    data: {
-      password: password.value,
-      confirmPassword: confirmPassword.value,
-    },
-  };
 };
 
 defineExpose({

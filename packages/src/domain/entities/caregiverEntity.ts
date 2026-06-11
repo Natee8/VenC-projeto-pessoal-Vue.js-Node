@@ -12,6 +12,8 @@ export class Caregiver {
     private isPublicProfile: boolean,
     public readonly createdAt: Date,
     private updatedAt: Date,
+    private averageRating: number,
+    private reviewsCount: number,
   ) {
     if (serviceRadiusKm <= 0) {
       throw new Error("Raio de atendimento inválido");
@@ -59,6 +61,14 @@ export class Caregiver {
 
   getUpdatedAt(): Date {
     return this.updatedAt;
+  }
+
+  getAverageRating() {
+    return this.averageRating ?? 0;
+  }
+
+  getReviewsCount() {
+    return this.reviewsCount ?? 0;
   }
 
   private touch() {
