@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { resetPasswordFormSchema } from "./schemas/resetPassword";
 
 export type ResetPasswordFormData = {
   password: string;
@@ -18,42 +17,43 @@ const emit = defineEmits<{
 
 const password = ref("");
 const confirmPassword = ref("");
-
 const errors = ref<ResetPasswordErrors>({});
 
-const validate = async () => {
+const validatePassword = (value: string) => {
+  return value.length >= 6;
+};
+
+const validate = () => {
   errors.value = {};
 
-  try {
-    const data = await resetPasswordFormSchema.validate(
-      {
-        password: password.value,
-        confirmPassword: confirmPassword.value,
-      },
-      { abortEarly: false },
-    );
-
-    return {
-      valid: true,
-      data,
-    };
-  } catch (err: any) {
-    if (err.inner) {
-      err.inner.forEach((error: any) => {
-        errors.value[error.path as keyof ResetPasswordErrors] = error.message;
-      });
-    }
-
-    return {
-      valid: false,
-    };
+  if (!password.value) {
+    errors.value.password = "Senha é obrigatória";
+  } else if (!validatePassword(password.value)) {
+    errors.value.password = "Senha deve ter pelo menos 6 caracteres";
   }
+
+  if (!confirmPassword.value) {
+    errors.value.confirmPassword = "Confirme a senha";
+  } else if (confirmPassword.value !== password.value) {
+    errors.value.confirmPassword = "As senhas não coincidem";
+  }
+
+  const valid = Object.keys(errors.value).length === 0;
+
+  return {
+    valid,
+    data: {
+      password: password.value,
+      confirmPassword: confirmPassword.value,
+    },
+  };
 };
 
 defineExpose({
   validate,
 });
 </script>
+
 <template>
   <div class="flex flex-col gap-6 md:gap-7 pb-2 md:pb-4">
     <div class="flex flex-col gap-2">
@@ -62,6 +62,7 @@ defineExpose({
       <input
         v-model="password"
         type="password"
+        placeholder="Digite sua nova senha"
         class="w-full h-14 px-4 rounded-lg bg-white border border-gray-200 outline-none focus:border-details"
         @input="emit('change', { password, confirmPassword })"
       />
@@ -77,6 +78,7 @@ defineExpose({
       <input
         v-model="confirmPassword"
         type="password"
+        placeholder="Repita a senha"
         class="w-full h-14 px-4 rounded-lg bg-white border border-gray-200 outline-none focus:border-details"
         @input="emit('change', { password, confirmPassword })"
       />

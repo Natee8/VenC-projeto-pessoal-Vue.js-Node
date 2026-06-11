@@ -3,6 +3,10 @@ import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import Snackbar from "src/interface/components/utils/snackbar.vue";
 import { verificationCodeRepository } from "src/infrastructure/repositories/sendCodeRepository";
+import AuthLayout from "src/interface/layout/auth/authLayout.vue";
+import AuthFormContainer from "src/interface/layout/auth/authContainerForms.vue";
+import ResetPasswordForm from "src/interface/components/form/ResetPasswordForm.vue";
+import { showSnackbarAndWait } from "src/interface/utils/asyncDelay";
 
 const formRef = ref(null as any);
 const loading = ref(false);
@@ -41,6 +45,13 @@ const handleResetPassword = async () => {
     });
 
     showSnackbar("Senha alterada com sucesso", "success");
+    await showSnackbarAndWait(
+      snackbar,
+      "Senha alterada com sucesso",
+      "success",
+      1200,
+    );
+
     router.push({ name: "login" });
   } catch (err) {
     console.error(err);
@@ -54,7 +65,7 @@ const handleResetPassword = async () => {
 <template>
   <AuthLayout>
     <AuthFormContainer subtitle="Crie sua nova senha">
-      <resetPassword ref="formRef" />
+      <ResetPasswordForm ref="formRef" />
 
       <template #actions>
         <button

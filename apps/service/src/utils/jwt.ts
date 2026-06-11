@@ -1,10 +1,10 @@
-import jwt from "jsonwebtoken";
+import jwt, { SignOptions } from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET ?? "change_me_secure_secret";
 
 export function signResetToken(
   payload: { email: string; code: string },
-  expiresIn = "15m",
+  expiresIn: SignOptions["expiresIn"] = "15m",
 ) {
   return jwt.sign(payload, JWT_SECRET, { expiresIn });
 }
