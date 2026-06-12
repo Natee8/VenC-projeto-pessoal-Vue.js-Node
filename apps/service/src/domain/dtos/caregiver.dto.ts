@@ -1,10 +1,6 @@
-export type ListCaregiversFilters = {
-  city?: string;
+export type GetCaregiversFilters = {
   state?: string;
-  serviceId?: number;
-  minPrice?: number;
-  maxPrice?: number;
-  radiusKm?: number;
-  userLat?: number;
-  userLng?: number;
+  city?: string;
+  serviceType?: string;
+  minRating?: number;
 };

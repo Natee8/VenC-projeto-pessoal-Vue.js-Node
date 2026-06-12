@@ -1,18 +1,29 @@
-enum ReviewTargetRole {
-  OWNER
-  CAREGIVER
+
+
+model ServiceReview {
+  id             Int      @id @default(autoincrement())
+  serviceOfferId Int
+  reviewerUserId Int
+  rating         Int
+  comment        String?
+  createdAt      DateTime @default(now())
+
+  serviceOffer ServiceOffer @relation(fields: [serviceOfferId], references: [id])
+
+  @@unique([reviewerUserId, serviceOfferId])
+  reviewer UserAuth @relation(fields: [reviewerUserId], references: [id])
 }
 
-model Review {
-  id                Int      @id @default(autoincrement())
-  serviceOfferId    Int?
-  reviewerUserId    Int
-  targetUserId      Int
-  rating            Int
-  comment           String?
-  createdAt         DateTime @default(now())
+model UserReview {
+  id             Int      @id @default(autoincrement())
+  reviewerUserId Int
+  targetUserId   Int
+  rating         Int
+  comment        String?
+  createdAt      DateTime @default(now())
 
-  @@index([targetUserId, createdAt])
-  @@index([reviewerUserId])
-  @@unique([reviewerUserId, targetUserId, serviceOfferId])
+  reviewer UserAuth @relation("Reviewer", fields: [reviewerUserId], references: [id])
+  target   UserAuth @relation("Target", fields: [targetUserId], references: [id])
+
+  @@unique([reviewerUserId, targetUserId])
 }

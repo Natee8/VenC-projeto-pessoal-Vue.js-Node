@@ -1,15 +1,13 @@
 import { PrismaClient } from "../../../generated/prisma/index.js";
-import { Review } from "@packages";
-import { IReviewRepository } from "@packages";
+import { IUserReviewRepository } from "@packages";
+import { UserReview } from "@packages";
 
-export class PrismaReviewRepository implements IReviewRepository {
+export class UserReviewRepository implements IUserReviewRepository {
   constructor(private prisma: PrismaClient) {}
 
-  async create(review: Review): Promise<void> {
-    await this.prisma.review.create({
+  async create(review: UserReview): Promise<void> {
+    await this.prisma.userReview.create({
       data: {
-        id: review.id,
-        serviceOfferId: review.serviceOfferId,
         rating: review.getRating(),
         comment: review.getComment(),
         createdAt: review.createdAt,
@@ -19,8 +17,8 @@ export class PrismaReviewRepository implements IReviewRepository {
     });
   }
 
-  async findByCaregiverId(caregiverId: number): Promise<Review[]> {
-    const records = await this.prisma.review.findMany({
+  async findByCaregiverId(caregiverId: number): Promise<UserReview[]> {
+    const records = await this.prisma.userReview.findMany({
       where: {
         targetUserId: caregiverId,
       },
@@ -28,9 +26,8 @@ export class PrismaReviewRepository implements IReviewRepository {
 
     return records.map(
       (r) =>
-        new Review(
+        new UserReview(
           r.id,
-          r.serviceOfferId,
           r.reviewerUserId,
           r.targetUserId,
           r.rating,
@@ -60,7 +57,7 @@ export class PrismaReviewRepository implements IReviewRepository {
     average: number;
     count: number;
   }> {
-    const result = await this.prisma.review.aggregate({
+    const result = await this.prisma.userReview.aggregate({
       where: {
         targetUserId: caregiverId,
       },

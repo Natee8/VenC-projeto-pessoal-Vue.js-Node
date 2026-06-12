@@ -27,6 +27,8 @@ export class OwnerProfileMapper {
 
       record.createdAt,
       record.updatedAt,
+      record.averageRating,
+      record.reviewsCount ?? 0,
 
       record.searchRadiusKm ?? undefined,
     );

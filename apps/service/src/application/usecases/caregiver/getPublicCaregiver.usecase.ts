@@ -1,10 +1,11 @@
+import { Caregiver } from "@packages";
 import {
   Either,
   left,
   right,
 } from "apps/service/src/core/interface/IEighter.js";
-import { ListCaregiversFilters } from "apps/service/src/domain/dtos/caregiver.dto.js";
-import { Caregiver } from "@packages";
+import { normalizeText } from "apps/service/src/core/utils/normalizeText.js";
+import { ListCaregiversFilters } from "apps/service/src/domain/dtos/service.dto.js";
 import { CaregiverRepository } from "apps/service/src/infrastructure/repositories/user/userCaregiver.repository.js";
 
 export class ListPublicCaregiversUseCase {
@@ -13,17 +14,23 @@ export class ListPublicCaregiversUseCase {
   async execute(
     filters?: ListCaregiversFilters,
   ): Promise<Either<{ message: string }, Caregiver[]>> {
-    if (filters?.radiusKm && (!filters.userLat || !filters.userLng)) {
+    if (
+      filters?.minRating &&
+      (filters.minRating < 1 || filters.minRating > 5)
+    ) {
       return left({
-        message: "Latitude e longitude são obrigatórias para busca por raio",
+        message: "A avaliação mínima deve estar entre 1 e 5",
       });
     }
 
-    if (filters?.radiusKm && filters.radiusKm > 100) {
-      return left({ message: "Raio máximo permitido é 100km" });
-    }
+    const normalizedFilters: ListCaregiversFilters = {
+      ...filters,
+      city: normalizeText(filters?.city),
+      state: normalizeText(filters?.state),
+    };
 
-    const caregivers = await this.caregiverRepo.findPublicCaregivers(filters);
+    const caregivers =
+      await this.caregiverRepo.findPublicCaregivers(normalizedFilters);
 
     return right(caregivers);
   }

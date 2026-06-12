@@ -13,10 +13,22 @@ const caregiverUseCase = new CaregiverFacadeUseCase(
   geolocationService,
 );
 
-// Endpoint para obter os perfis públicos dos cuidadores
 router.get("/public", async (req: Request, res: Response) => {
   try {
-    const caregivers = await caregiverUseCase.getPublicCaregivers();
+    const { state, city, minRating, services } = req.query;
+
+    const filters = {
+      state: state ? String(state) : undefined,
+      city: city ? String(city) : undefined,
+      minRating: minRating ? Number(minRating) : undefined,
+      services: services
+        ? Array.isArray(services)
+          ? services.map(Number)
+          : [Number(services)]
+        : undefined,
+    };
+
+    const caregivers = await caregiverUseCase.getPublicCaregivers(filters);
 
     return res.status(200).json({
       message: "Caregivers públicos encontrados",

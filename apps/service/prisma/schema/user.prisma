@@ -14,8 +14,10 @@ model UserAuth {
   caregiver     Caregiver?
   refreshTokens RefreshToken[]
 
-  reviewsGiven    Review[] @relation("Reviewer")
-  reviewsReceived Review[] @relation("Target")
+  userReviewsGiven     UserReview[] @relation("Reviewer")
+  userReviewsReceived  UserReview[] @relation("Target")
+
+  serviceReviewsGiven  ServiceReview[]
 }
 
 model RefreshToken {

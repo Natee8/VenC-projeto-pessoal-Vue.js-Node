@@ -6,6 +6,8 @@ export interface CaregiverDTO {
   offersHosting: boolean;
   address: IAddress;
   serviceRadiusKm: number;
+  averageRating: number;
+  reviewsCount: number;
   isVerified: boolean;
   isPublic: boolean;
 }

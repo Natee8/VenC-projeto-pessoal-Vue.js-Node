@@ -24,6 +24,8 @@ export class OwnerProfileFacadeUseCase {
       input.phone ? Phone.restore(input.phone) : null,
       new Date(),
       new Date(),
+      0,
+      0,
       input.searchRadiusKm,
     );
 

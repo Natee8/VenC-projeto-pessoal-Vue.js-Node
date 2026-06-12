@@ -48,14 +48,6 @@ export class OwnerProfile {
     this.updatedAt = new Date();
   }
 
-  getAverageRating() {
-    return this.averageRating;
-  }
-
-  getReviewsCount() {
-    return this.reviewsCount;
-  }
-
   updateSearchRadius(radius: number) {
     this.searchRadiusKm = radius;
     this.updatedAt = new Date();

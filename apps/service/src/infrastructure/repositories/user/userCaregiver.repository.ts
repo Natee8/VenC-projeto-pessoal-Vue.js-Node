@@ -28,10 +28,10 @@ export class CaregiverRepository {
       record.serviceRadiusKm,
       record.isVerified,
       record.isPublicProfile ?? false,
+      record.averageRating,
+      record.reviewsCount ?? 0,
       record.createdAt,
       record.updatedAt,
-      record.reviewsCount ?? 0,
-      record.averageRating ?? 0,
     );
   }
 

@@ -8,6 +8,7 @@ import {
   left,
   right,
 } from "apps/service/src/core/interface/IEighter.js";
+import { ListCaregiversFilters } from "apps/service/src/domain/dtos/service.dto.js";
 
 export class CaregiverFacadeUseCase {
   constructor(
@@ -54,6 +55,8 @@ export class CaregiverFacadeUseCase {
         input.serviceRadiusKm,
         false,
         input.isPublicProfile ?? true,
+        0,
+        0,
         new Date(),
         new Date(),
       );
@@ -74,13 +77,23 @@ export class CaregiverFacadeUseCase {
     return right(this.toDTO(caregiver));
   }
 
-  async getPublicCaregivers(): Promise<Either<Error, CaregiverDTO[]>> {
-    const caregivers = await this.caregiverRepo.findPublicCaregivers();
+  async getPublicCaregivers(
+    filters?: ListCaregiversFilters,
+  ): Promise<Either<Error, CaregiverDTO[]>> {
+    // 🔹 validação básica
+    if (
+      filters?.minRating &&
+      (filters.minRating < 1 || filters.minRating > 5)
+    ) {
+      return left(new Error("minRating deve estar entre 1 e 5"));
+    }
+
+    const caregivers = await this.caregiverRepo.findPublicCaregivers(filters);
 
     return right(caregivers.map(this.toDTO));
   }
 
-  private toDTO(caregiver: Caregiver) {
+  private toDTO(caregiver: Caregiver): CaregiverDTO {
     return {
       id: caregiver.id,
       userId: caregiver.getUserId().getValue(),
@@ -89,6 +102,9 @@ export class CaregiverFacadeUseCase {
       serviceRadiusKm: caregiver.getServiceRadius(),
       isVerified: caregiver.hasVerification(),
       isPublic: caregiver.isPublic(),
+
+      averageRating: caregiver.getAverageRating(),
+      reviewsCount: caregiver.getReviewsCount(),
     };
   }
 }
