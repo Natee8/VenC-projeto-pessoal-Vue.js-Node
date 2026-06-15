@@ -11,4 +11,5 @@ export const Routes = {
   sendEmail: "/send-email",
   sendCode: "/send-code",
   resetPassword: "/reset-password",
+  caregiversPublic: "/caregivers/public",
 } as const;

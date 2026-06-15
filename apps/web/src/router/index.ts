@@ -14,6 +14,8 @@ const ResetPassword = () =>
 const about = () => import("../interface/view/About/About.vue");
 const forCaregivers = () =>
   import("../interface/view/ForCarregivers/Carregiver.vue");
+const caregiversPublic = () =>
+  import("../interface/view/CarregiversPublic/CarregiverPublic.vue");
 const forOwners = () => import("../interface/view/ForOwners/Owners.vue");
 
 export const router = createRouter({
@@ -28,6 +30,11 @@ export const router = createRouter({
       path: Routes.about,
       name: "about",
       component: about,
+    },
+    {
+      path: Routes.caregiversPublic,
+      name: "caregivers-public",
+      component: caregiversPublic,
     },
     {
       path: Routes.forCaregivers,

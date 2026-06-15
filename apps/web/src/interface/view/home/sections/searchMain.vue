@@ -5,6 +5,7 @@ import { ArrowRightIcon } from "@heroicons/vue/16/solid";
 import { searchRepository } from "src/infrastructure/repositories/searchRepository";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
+import { MagnifyingGlassIcon } from "@heroicons/vue/24/outline";
 
 const query = ref("");
 const loading = ref(false);
@@ -24,24 +25,27 @@ const handleSearch = async () => {
 
     if (!serviceIds) {
       return router.push({
-        path: "/caregivers",
-        query: { q, minRating: 4 },
+        name: "caregivers-public",
+        query: {
+          q,
+        },
       });
     }
 
     router.push({
-      path: "/caregivers",
+      name: "caregivers-public",
       query: {
         services: serviceIds,
-        minRating: 4,
       },
     });
   } catch (err) {
     console.error("Erro na busca:", err);
 
     router.push({
-      path: "/caregivers",
-      query: { q, minRating: 4 },
+      name: "caregivers-public",
+      query: {
+        q,
+      },
     });
   } finally {
     loading.value = false;
@@ -104,7 +108,7 @@ const handleSearch = async () => {
           class="flex flex-col sm:flex-row gap-4 sm:gap-6 items-stretch sm:items-center w-full"
         >
           <div class="relative w-full sm:w-[65%]">
-            <Search
+            <MagnifyingGlassIcon
               class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-texts-default"
             />
             <input
