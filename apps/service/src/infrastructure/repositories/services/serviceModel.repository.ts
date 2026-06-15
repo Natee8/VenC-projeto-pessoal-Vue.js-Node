@@ -49,6 +49,30 @@ export class ServiceRepository {
     return record ? this.toDTO(record) : null;
   }
 
+  async searchByText(query: string): Promise<ServiceModelDTO[]> {
+    return this.prisma.service.findMany({
+      where: {
+        OR: [
+          {
+            name: {
+              contains: query,
+              mode: "insensitive",
+            },
+          },
+          {
+            description: {
+              contains: query,
+              mode: "insensitive",
+            },
+          },
+        ],
+      },
+      orderBy: {
+        name: "asc",
+      },
+    });
+  }
+
   async findByName(name: string): Promise<ServiceModelDTO | null> {
     const record = await this.prisma.service.findUnique({
       where: { name },

@@ -8,10 +8,24 @@ export class SearchServicesUseCase {
   ) {}
 
   async execute(query: string) {
-    const ids = await this.vectorService.search(query);
+    try {
+      const ids = await this.vectorService.search(query);
 
-    const services = await this.serviceRepo.findManyByIds(ids);
+      if (ids.length) {
+        const services = await this.serviceRepo.findManyByIds(ids);
 
-    return ids.map((id) => services.find((s) => s.id === id));
+        const map = new Map(services.map((s) => [s.id, s]));
+
+        return ids.map((id) => map.get(id)).filter(Boolean);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        console.warn("⚠️ Fallback ativado:", error.message);
+      } else {
+        console.warn("⚠️ Fallback ativado:", error);
+      }
+    }
+
+    return this.serviceRepo.searchByText(query);
   }
 }
