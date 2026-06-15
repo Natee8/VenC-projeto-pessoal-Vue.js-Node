@@ -23,6 +23,16 @@ export class ServiceRepository {
     return this.toDTO(record);
   }
 
+  async findManyByIds(ids: number[]): Promise<ServiceModelDTO[]> {
+    const records = await this.prisma.service.findMany({
+      where: {
+        id: { in: ids },
+      },
+    });
+
+    return records.map((service) => this.toDTO(service));
+  }
+
   async findAll(): Promise<ServiceModelDTO[]> {
     const records = await this.prisma.service.findMany({
       orderBy: { name: "asc" },

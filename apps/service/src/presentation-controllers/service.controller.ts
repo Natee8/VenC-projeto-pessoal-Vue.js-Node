@@ -2,12 +2,14 @@ import { Router, Request, Response } from "express";
 import { ServiceRepository } from "../infrastructure/repositories/services/serviceModel.repository.js";
 import { ServiceModelUseCase } from "../application/usecases/services/serviceModel.usecase.js";
 import { PrismaClient } from "../generated/prisma/index.js";
+import { VectorSearchService } from "../application/service/vectorSearchService.js";
 
 const prisma = new PrismaClient();
 export const router = Router();
 
 const serviceRepo = new ServiceRepository(prisma);
-const serviceUseCase = new ServiceModelUseCase(serviceRepo);
+const vectorService = new VectorSearchService();
+const serviceUseCase = new ServiceModelUseCase(serviceRepo, vectorService);
 
 router.post("/create-catalogo", async (req: Request, res: Response) => {
   try {

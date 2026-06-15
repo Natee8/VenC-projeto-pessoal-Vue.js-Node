@@ -6,9 +6,13 @@ import {
   right,
 } from "apps/service/src/core/interface/IEighter.js";
 import { ServiceRepository } from "apps/service/src/infrastructure/repositories/services/serviceModel.repository.js";
+import { VectorSearchService } from "../../service/vectorSearchService.js";
 
 export class ServiceModelUseCase {
-  constructor(private serviceRepo: ServiceRepository) {}
+  constructor(
+    private serviceRepo: ServiceRepository,
+    private readonly vectorService: VectorSearchService,
+  ) {}
 
   async create(
     input: CreateServiceModelDTO,
@@ -33,6 +37,11 @@ export class ServiceModelUseCase {
     const created = await this.serviceRepo.create({
       name: normalizedName,
       description: normalizedDescription,
+    });
+
+    await this.vectorService.indexService({
+      id: created.id,
+      text: `${created.name} ${created.description}`,
     });
 
     return right(created);
