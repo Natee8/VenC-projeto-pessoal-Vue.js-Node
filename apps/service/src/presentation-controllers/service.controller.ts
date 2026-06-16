@@ -11,6 +11,26 @@ const serviceRepo = new ServiceRepository(prisma);
 const vectorService = new VectorSearchService();
 const serviceUseCase = new ServiceModelUseCase(serviceRepo, vectorService);
 
+router.get("/catalogo", async (_, res) => {
+  try {
+    const result = await serviceUseCase.getAll();
+
+    if (result.isException()) {
+      return res.status(400).json({
+        message: result.error.message,
+      });
+    }
+
+    return res.status(200).json({
+      data: result.value,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error instanceof Error ? error.message : "Erro desconhecido",
+    });
+  }
+});
+
 router.post("/create-catalogo", async (req: Request, res: Response) => {
   try {
     const { name, description } = req.body;

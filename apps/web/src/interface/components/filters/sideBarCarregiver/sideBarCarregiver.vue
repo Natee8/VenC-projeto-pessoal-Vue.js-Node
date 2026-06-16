@@ -1,13 +1,57 @@
 <script setup lang="ts">
-import { StarIcon } from "@heroicons/vue/24/solid";
+import { ref, watch } from "vue";
+import Checkbox from "../../inputs/Checkbox.vue";
+import Radio from "../../inputs/Radio.vue";
+import { StarIcon } from "@heroicons/vue/24/outline";
+import { ServiceResponseDTO } from "src/domain/dtos/serviceResponse.dto.js";
+import {
+  BrazilianState,
+  BrazilianStateLabels,
+} from "src/infrastructure/utils/enumState.js";
+import { brasilApiRepository } from "src/infrastructure/external/brasilAPi.js";
+
+const props = defineProps<{
+  services: ServiceResponseDTO[];
+  loading: boolean;
+}>();
+
+const selectedServices = ref<number[]>([]);
+const rating = ref<number | null>(null);
+const petTypes = ref<string[]>([]);
+
+// 🔥 novos estados
+const selectedState = ref<BrazilianState | "">("");
+const selectedCity = ref<string>("");
+
+const cities = ref<{ nome: string }[]>([]);
+const loadingCities = ref(false);
+
+// 👇 observa mudança de estado
+watch(selectedState, async (uf) => {
+  selectedCity.value = "";
+  cities.value = [];
+
+  if (!uf) return;
+
+  try {
+    loadingCities.value = true;
+
+    const data = await brasilApiRepository.getCitiesByState(uf);
+
+    cities.value = data;
+  } catch (error) {
+    console.error("Erro ao carregar cidades", error);
+  } finally {
+    loadingCities.value = false;
+  }
+});
 </script>
 
 <template>
   <aside
     class="w-full max-w-lg min-h-screen p-6 bg-secondary border-r border-white/10"
   >
-    <!-- HEADER -->
-    <header class="mb-8">
+    <header class="mb-6">
       <h1 class="text-xl font-bold text-details">
         Encontre o melhor cuidador para seu pet
       </h1>
@@ -15,69 +59,88 @@ import { StarIcon } from "@heroicons/vue/24/solid";
     </header>
 
     <form class="flex flex-col gap-8">
-      <!-- SERVIÇOS -->
       <section>
         <h2 class="font-semibold text-white mb-3">Serviços desejados</h2>
+        <div v-if="loading" class="text-white/60 text-sm">
+          Carregando serviços...
+        </div>
 
-        <div class="space-y-3">
-          <label class="flex items-center gap-3 text-white cursor-pointer">
-            <input
-              type="checkbox"
-              class="w-5 h-5 accent-primary cursor-pointer"
-            />
-            <span class="text-sm">Exemplo de serviço</span>
-          </label>
+        <div v-else class="flex flex-col gap-3">
+          <Checkbox
+            v-for="service in services"
+            :key="service.id"
+            size="lg"
+            v-model="selectedServices"
+            :value="service.id"
+            :label="service.name"
+          />
         </div>
       </section>
 
-      <!-- LOCALIZAÇÃO -->
       <section class="space-y-4">
-        <div>
-          <label class="block font-semibold text-white mb-2 text-sm">
-            Cidade
-          </label>
-
-          <select
-            class="w-full h-12 px-4 rounded-lg bg-white border border-gray-200 outline-none focus:border-details text-sm"
-          >
-            <option value="">Selecione a cidade</option>
-            <option value="sp">São Paulo</option>
-            <option value="rj">Rio de Janeiro</option>
-          </select>
-        </div>
-
         <div>
           <label class="block font-semibold text-white mb-2 text-sm">
             Estado
           </label>
 
           <select
+            v-model="selectedState"
             class="w-full h-12 px-4 rounded-lg bg-white border border-gray-200 outline-none focus:border-details text-sm"
           >
             <option value="">Selecione o estado</option>
-            <option value="sp">SP</option>
-            <option value="rj">RJ</option>
+
+            <option
+              v-for="uf in Object.values(BrazilianState)"
+              :key="uf"
+              :value="uf"
+            >
+              {{ BrazilianStateLabels[uf] }}
+            </option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-semibold text-white mb-2 text-sm">
+            Cidade
+          </label>
+
+          <select
+            v-model="selectedCity"
+            :disabled="!selectedState || loadingCities"
+            class="w-full h-12 px-4 rounded-lg bg-white border border-gray-200 outline-none focus:border-details text-sm disabled:opacity-50"
+          >
+            <option value="">
+              {{ loadingCities ? "Carregando..." : "Selecione a cidade" }}
+            </option>
+
+            <option v-for="city in cities" :key="city.nome" :value="city.nome">
+              {{ city.nome }}
+            </option>
           </select>
         </div>
       </section>
 
-      <!-- AVALIAÇÃO -->
       <section>
-        <h2 class="font-semibold text-white mb-3">Avaliação mínima</h2>
+        <h2 class="font-semibold text-white mb-8">Avaliação mínima</h2>
 
         <div class="flex flex-col gap-3">
-          <button
-            v-for="n in 5"
-            :key="n"
-            type="button"
-            class="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition"
-          >
-            <input
-              type="checkbox"
-              class="w-5 h-5 accent-primary cursor-pointer"
-            />
-            <StarIcon v-for="i in n" :key="i" class="w-5 h-5 text-yellow-400" />
-          </button>
+          <div class="flex flex-col gap-6">
+            <Radio v-for="n in 5" v-model="rating" :value="n">
+              <p class="text-sm text-white w-6">{{ n }}+</p>
+              <StarIcon
+                v-for="i in n"
+                :key="i"
+                class="w-5 h-5 text-stars fill-stars"
+              />
+            </Radio>
+          </div>
+        </div>
+      </section>
+      <section>
+        <h2 class="font-semibold text-white mb-3">Tipo de animal:</h2>
+        <div class="flex gap-6">
+          <Checkbox size="lg" v-model="petTypes" value="dog" label="Cachorro" />
+          <Checkbox size="lg" v-model="petTypes" value="cat" label="Gato" />
+          <Checkbox size="lg" v-model="petTypes" value="bird" label="Pássaro" />
         </div>
       </section>
     </form>

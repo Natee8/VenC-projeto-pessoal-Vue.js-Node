@@ -5,6 +5,7 @@ export default {
     extend: {
       colors: {
         primary: "#F07142",
+        stars: "#ffb14c",
         details: "#69CE96",
         primaryHover: "#C9552A",
         secondary: "#12354D",
@@ -25,8 +26,8 @@ export default {
               "linear-gradient(180deg, #69CE96 63%, #163A5D 63%)",
           },
           errors: {
-              success: "#69CE96",
-              error: "#F8212C"
+            success: "#69CE96",
+            error: "#F8212C",
           },
         },
       },
