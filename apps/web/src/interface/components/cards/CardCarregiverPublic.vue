@@ -1,14 +1,31 @@
 <script setup lang="ts">
 import { StarIcon } from "@heroicons/vue/24/solid";
 import { Props } from "./types/carregiverCards";
+import { computed } from "vue";
 
 const props = defineProps<Props>();
 
 const emit = defineEmits(["viewProfile", "requestQuote"]);
+
+const hasPrice = computed(() => {
+  return props.price !== null && props.price !== undefined;
+});
+
+const formattedPrice = computed(() => {
+  if (!hasPrice.value) return "?";
+  return `R$ ${props.price.toFixed(2)}`;
+});
+
+const initial = computed(() => {
+  if (!props.name) return "?";
+  return props.name.charAt(0).toUpperCase();
+});
 </script>
 
 <template>
-  <div class="bg-white rounded-xl shadow-md p-6 flex flex-col gap-6 max-w-4xl">
+  <div
+    class="bg-white rounded-xl shadow-md p-6 flex flex-col gap-6 min-w-[1000px]"
+  >
     <div class="flex justify-between items-start">
       <div class="flex gap-4">
         <div
@@ -19,6 +36,10 @@ const emit = defineEmits(["viewProfile", "requestQuote"]);
             :src="avatarUrl"
             class="w-full h-full object-cover"
           />
+
+          <span v-else class="text-lg font-semibold text-gray-600">
+            {{ initial }}
+          </span>
         </div>
 
         <div>
@@ -38,18 +59,38 @@ const emit = defineEmits(["viewProfile", "requestQuote"]);
         </div>
       </div>
 
-      <div class="text-right">
-        <p class="text-lg font-bold text-orange-500">
-          R$ {{ price.toFixed(2) }}
-        </p>
-        <p class="text-sm text-gray-500">/ A partir de</p>
+      <!-- DIREITA (PREÇO) -->
+      <div class="flex flex-col items-end">
+        <div class="flex justify-end">
+          <div
+            v-if="!hasPrice"
+            class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 text-gray-600 font-bold text-sm cursor-help"
+            title="Entre em contato para saber o valor"
+          >
+            ?
+          </div>
+
+          <p v-else class="text-lg font-bold text-orange-500 leading-none">
+            {{ formattedPrice }}
+          </p>
+        </div>
+
+        <p class="text-sm text-gray-500">A partir de</p>
       </div>
     </div>
 
-    <p class="text-gray-600 text-sm leading-relaxed">
-      {{ description }}
+    <!-- DESCRIÇÃO -->
+    <p
+      class="leading-relaxed"
+      :class="description ? 'text-gray-600' : 'text-gray-400 italic'"
+    >
+      {{
+        description ||
+        "Este cuidador ainda não adicionou uma descrição. Entre em contato para saber mais."
+      }}
     </p>
 
+    <!-- SERVIÇOS -->
     <div class="flex gap-2 flex-wrap">
       <span
         v-for="service in services"
@@ -62,6 +103,7 @@ const emit = defineEmits(["viewProfile", "requestQuote"]);
 
     <div class="border-t border-gray-200"></div>
 
+    <!-- AÇÕES -->
     <div class="flex gap-4">
       <button
         class="flex-1 bg-secondary text-white py-3 rounded-lg font-medium hover:opacity-90 transition"

@@ -1,4 +1,4 @@
-import { Caregiver } from "@packages";
+import { CaregiverPublicDTO } from "@packages";
 import {
   Either,
   left,
@@ -13,7 +13,7 @@ export class ListPublicCaregiversUseCase {
 
   async execute(
     filters?: ListCaregiversFilters,
-  ): Promise<Either<{ message: string }, Caregiver[]>> {
+  ): Promise<Either<{ message: string }, CaregiverPublicDTO[]>> {
     if (
       filters?.minRating &&
       (filters.minRating < 1 || filters.minRating > 5)

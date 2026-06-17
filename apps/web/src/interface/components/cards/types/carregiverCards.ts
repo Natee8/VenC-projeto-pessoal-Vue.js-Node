@@ -8,8 +8,8 @@ export interface Props {
   rating: number;
   reviewsCount: number;
   location: string;
-  lastActive: string;
-  description: string;
+  lastActive?: string;
+  description?: string;
   services: Service[];
   price: number;
   avatarUrl?: string;

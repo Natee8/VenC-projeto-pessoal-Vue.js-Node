@@ -19,14 +19,14 @@ const selectedServices = ref<number[]>([]);
 const rating = ref<number | null>(null);
 const petTypes = ref<string[]>([]);
 
-// 🔥 novos estados
 const selectedState = ref<BrazilianState | "">("");
 const selectedCity = ref<string>("");
 
 const cities = ref<{ nome: string }[]>([]);
 const loadingCities = ref(false);
 
-// 👇 observa mudança de estado
+const emit = defineEmits(["changeFilters"]);
+
 watch(selectedState, async (uf) => {
   selectedCity.value = "";
   cities.value = [];
@@ -37,7 +37,6 @@ watch(selectedState, async (uf) => {
     loadingCities.value = true;
 
     const data = await brasilApiRepository.getCitiesByState(uf);
-
     cities.value = data;
   } catch (error) {
     console.error("Erro ao carregar cidades", error);
@@ -45,6 +44,19 @@ watch(selectedState, async (uf) => {
     loadingCities.value = false;
   }
 });
+
+watch(
+  [selectedServices, rating, selectedState, selectedCity],
+  () => {
+    emit("changeFilters", {
+      serviceIds: selectedServices.value,
+      minRating: rating.value,
+      state: selectedState.value || undefined,
+      city: selectedCity.value || undefined,
+    });
+  },
+  { deep: true },
+);
 </script>
 
 <template>

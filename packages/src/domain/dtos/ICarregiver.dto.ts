@@ -11,3 +11,19 @@ export interface CaregiverDTO {
   isVerified: boolean;
   isPublic: boolean;
 }
+
+export type CaregiverPublicDTO = {
+  id: number;
+  name: string;
+  avatarUrl: string | null;
+  rating: number;
+  reviewsCount: number;
+  city: string;
+  state: string;
+  startingPrice: number | null;
+  services: {
+    id: number;
+    name: string;
+    price: number;
+  }[];
+};

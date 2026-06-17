@@ -13,6 +13,7 @@ export class CaregiverRepository {
     }
 
     return new Caregiver(
+      record.basePrice,
       record.id,
       UserId.create(record.userId),
       record.offersHosting,
@@ -48,6 +49,7 @@ export class CaregiverRepository {
 
       include: {
         address: true,
+        user: true,
       },
 
       create: {
@@ -119,7 +121,6 @@ export class CaregiverRepository {
       isActive: true,
     };
 
-    // 📍 localização
     if (filters?.city || filters?.state) {
       where.address = {};
 
@@ -174,6 +175,7 @@ export class CaregiverRepository {
 
       include: {
         address: true,
+        user: true,
 
         services: {
           where: {
@@ -190,6 +192,20 @@ export class CaregiverRepository {
       },
     });
 
-    return records.map((r) => this.mapToEntity(r as CaregiverWithAddress));
+    return records.map((r) => ({
+      id: r.id,
+      name: r.user.name,
+      avatarUrl: r.user.profilePhotoUrl,
+      rating: r.averageRating,
+      reviewsCount: r.reviewsCount,
+      city: r.address?.city,
+      state: r.address?.state,
+      startingPrice: r.basePrice,
+      services: r.services.map((s) => ({
+        id: s.service.id,
+        name: s.service.name,
+        price: s.price,
+      })),
+    }));
   }
 }

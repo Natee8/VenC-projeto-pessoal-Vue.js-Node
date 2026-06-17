@@ -3,6 +3,7 @@ import { UserId } from "../../valuesObjects/userId.js";
 
 export class Caregiver {
   constructor(
+    private basePrice: number | null,
     public readonly id: number,
     public readonly userId: UserId,
     private offersHosting: boolean,
@@ -17,6 +18,9 @@ export class Caregiver {
   ) {
     if (serviceRadiusKm <= 0) {
       throw new Error("Raio de atendimento inválido");
+    }
+    if (basePrice !== null && basePrice <= 0) {
+      throw new Error("Preço inválido");
     }
   }
 

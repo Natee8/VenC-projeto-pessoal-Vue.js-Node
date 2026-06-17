@@ -8,3 +8,12 @@ html {
   height: 100%;
   background-color: #fcf5f0;
 }
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Firefox */
+.no-scrollbar {
+  scrollbar-width: none;
+}

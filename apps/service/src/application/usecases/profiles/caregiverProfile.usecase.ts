@@ -1,4 +1,10 @@
-import { Address, Caregiver, CaregiverDTO, IAddress } from "@packages";
+import {
+  Address,
+  Caregiver,
+  CaregiverDTO,
+  CaregiverPublicDTO,
+  IAddress,
+} from "@packages";
 import { UserId } from "@packages";
 import { CaregiverRepository } from "../../../infrastructure/repositories/user/userCaregiver.repository.js";
 import { Prisma } from "../../../generated/prisma/wasm.js";
@@ -48,6 +54,7 @@ export class CaregiverFacadeUseCase {
       });
 
       const caregiver = new Caregiver(
+        null,
         0,
         UserId.create(input.userId),
         input.offersHosting,
@@ -79,8 +86,7 @@ export class CaregiverFacadeUseCase {
 
   async getPublicCaregivers(
     filters?: ListCaregiversFilters,
-  ): Promise<Either<Error, CaregiverDTO[]>> {
-    // 🔹 validação básica
+  ): Promise<Either<Error, CaregiverPublicDTO[]>> {
     if (
       filters?.minRating &&
       (filters.minRating < 1 || filters.minRating > 5)
@@ -90,7 +96,7 @@ export class CaregiverFacadeUseCase {
 
     const caregivers = await this.caregiverRepo.findPublicCaregivers(filters);
 
-    return right(caregivers.map(this.toDTO));
+    return right(caregivers);
   }
 
   private toDTO(caregiver: Caregiver): CaregiverDTO {
