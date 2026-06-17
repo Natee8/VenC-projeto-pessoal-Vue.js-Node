@@ -1,0 +1,14 @@
+model CaregiverPetPreference {
+  id          Int      @id @default(autoincrement())
+  caregiverId Int
+
+  animalType  String
+  category    String
+
+  minSize     String?
+  maxSize     String?
+
+  accepted    Boolean
+
+  notes       String?
+}
