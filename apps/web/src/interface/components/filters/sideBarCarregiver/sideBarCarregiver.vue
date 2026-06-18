@@ -9,23 +9,25 @@ import {
   BrazilianStateLabels,
 } from "src/infrastructure/utils/enumState.js";
 import { brasilApiRepository } from "src/infrastructure/external/brasilAPi.js";
+import { useCaregiverFilters } from "src/interface/hooks/useFilters.js";
+import { PetSpecies } from "@packages";
 
 const props = defineProps<{
   services: ServiceResponseDTO[];
   loading: boolean;
 }>();
 
+const { setFilters } = useCaregiverFilters();
+
 const selectedServices = ref<number[]>([]);
 const rating = ref<number | null>(null);
-const petTypes = ref<string[]>([]);
+const petTypes = ref<PetSpecies[]>([]);
 
 const selectedState = ref<BrazilianState | "">("");
 const selectedCity = ref<string>("");
 
 const cities = ref<{ nome: string }[]>([]);
 const loadingCities = ref(false);
-
-const emit = defineEmits(["changeFilters"]);
 
 watch(selectedState, async (uf) => {
   selectedCity.value = "";
@@ -46,13 +48,14 @@ watch(selectedState, async (uf) => {
 });
 
 watch(
-  [selectedServices, rating, selectedState, selectedCity],
+  [selectedServices, rating, selectedState, selectedCity, petTypes],
   () => {
-    emit("changeFilters", {
+    setFilters({
       serviceIds: selectedServices.value,
-      minRating: rating.value,
+      minRating: rating.value || undefined,
       state: selectedState.value || undefined,
       city: selectedCity.value || undefined,
+      petTypes: petTypes.value,
     });
   },
   { deep: true },

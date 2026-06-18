@@ -2,6 +2,8 @@ import { Router, Request, Response } from "express";
 import { CaregiverFacadeUseCase } from "../application/usecases/profiles/caregiverProfile.usecase.js";
 import { CaregiverRepository } from "../infrastructure/repositories/user/userCaregiver.repository.js";
 import { GeolocationService } from "../infrastructure/repositories/geolocation/geolocation.repository.js";
+import { failure } from "../core/http/failure.js";
+import { success } from "../core/http/success.js";
 
 export const router = Router();
 
@@ -28,15 +30,23 @@ router.get("/public", async (req: Request, res: Response) => {
         : undefined,
     };
 
-    const caregivers = await caregiverUseCase.getPublicCaregivers(filters);
+    const result = await caregiverUseCase.getPublicCaregivers(filters);
 
-    return res.status(200).json({
+    if (result.type === "left") {
+      return failure(res, {
+        message: result.error.message,
+        code: 400,
+      });
+    }
+
+    return success(res, {
       message: "Caregivers públicos encontrados",
-      data: caregivers,
+      data: result.value,
     });
   } catch (error) {
-    return res.status(400).json({
+    return failure(res, {
       message: error instanceof Error ? error.message : "Erro desconhecido",
+      code: 500,
     });
   }
 });

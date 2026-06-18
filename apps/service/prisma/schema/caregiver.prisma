@@ -17,6 +17,7 @@ model Caregiver {
 
   user     UserAuth      @relation(fields: [userId], references: [id])
   services ServiceOffer[]
+  petPreferences CaregiverPetPreference[]
 
   @@index([isPublicProfile, isActive])
   @@index([averageRating])

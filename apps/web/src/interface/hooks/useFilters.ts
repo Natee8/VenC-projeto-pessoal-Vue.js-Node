@@ -1,9 +1,9 @@
 import { CaregiverFilters } from "src/domain/dtos/caregivers.dto";
 import { ref } from "vue";
 
-export function useCaregiverFilters() {
-  const filters = ref<CaregiverFilters>({});
+const filters = ref<CaregiverFilters>({});
 
+export function useCaregiverFilters() {
   const setFilters = (newFilters: CaregiverFilters) => {
     filters.value = {
       ...filters.value,

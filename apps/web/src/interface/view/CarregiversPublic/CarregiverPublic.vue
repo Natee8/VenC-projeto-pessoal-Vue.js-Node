@@ -12,7 +12,6 @@ const services = ref<ServiceResponseDTO[]>([]);
 const loading = ref(false);
 
 const selectedService = ref<ServiceResponseDTO | null>(null);
-const emit = defineEmits(["changeFilters"]);
 const { filters, setFilters } = useCaregiverFilters();
 
 const caregivers = ref<any[]>([]);
@@ -23,7 +22,7 @@ const fetchCaregivers = async (customFilters?: CaregiverFilters) => {
     customFilters || filters.value,
   );
 
-  caregivers.value = response.data._value;
+  caregivers.value = response.data;
 };
 onMounted(async () => {
   try {
@@ -33,24 +32,21 @@ onMounted(async () => {
 
     services.value = servicesRes.data;
     selectedService.value = servicesRes.data[0] ?? null;
-
-    await fetchCaregivers();
   } catch (error) {
     console.error("Erro ao carregar dados", error);
   } finally {
     loading.value = false;
   }
 });
-const handleFilters = (newFilters: CaregiverFilters) => {
-  setFilters(newFilters);
-};
 
 watch(
   filters,
-  () => {
-    fetchCaregivers(filters.value);
+  (newFilters) => {
+    console.log("FILTROS ENVIADOS:", newFilters); // 👈 DEBUG
+
+    fetchCaregivers(newFilters);
   },
-  { deep: true },
+  { deep: true, immediate: true },
 );
 </script>
 
@@ -61,7 +57,6 @@ watch(
       :loading="loading"
       class="w-1/3"
       @select="selectedService = $event"
-      @changeFilters="handleFilters"
     />
 
     <div

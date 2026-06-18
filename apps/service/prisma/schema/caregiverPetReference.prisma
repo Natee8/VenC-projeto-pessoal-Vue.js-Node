@@ -1,12 +1,20 @@
+enum PetSize {
+  SMALL
+  MEDIUM
+  LARGE
+}
+
+
 model CaregiverPetPreference {
   id          Int      @id @default(autoincrement())
   caregiverId Int
+  caregiver   Caregiver @relation(fields: [caregiverId], references: [id], onDelete: Cascade)
 
   animalType  String
   category    String
 
-  minSize     String?
-  maxSize     String?
+  minSize PetSize?
+  maxSize PetSize?
 
   accepted    Boolean
 
