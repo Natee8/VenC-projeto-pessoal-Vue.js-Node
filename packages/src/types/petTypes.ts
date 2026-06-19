@@ -3,18 +3,35 @@ export enum PetSpecies {
   CAT = "cat",
   BIRD = "bird",
   FISH = "fish",
-  REPTILE = "reptile",
   RABBIT = "rabbit",
   HORSE = "horse",
-  FARM = "farm",
-  EXOTIC = "exotic",
+  PIG = "pig",
+  LHAMA = "lhama",
+  IGUANA = "iguana",
+  SNAKE = "snake",
+  MOUSE = "mouse",
 }
 
 export enum AnimalCategory {
   DOMESTIC = "domestic",
   EXOTIC = "exotic",
   FARM = "farm",
-  WILD = "wild",
 }
+
+export const speciesCategoryMap: Record<PetSpecies, AnimalCategory> = {
+  [PetSpecies.DOG]: AnimalCategory.DOMESTIC,
+  [PetSpecies.CAT]: AnimalCategory.DOMESTIC,
+  [PetSpecies.RABBIT]: AnimalCategory.DOMESTIC,
+
+  [PetSpecies.HORSE]: AnimalCategory.FARM,
+  [PetSpecies.PIG]: AnimalCategory.FARM,
+  [PetSpecies.LHAMA]: AnimalCategory.FARM,
+
+  [PetSpecies.BIRD]: AnimalCategory.EXOTIC,
+  [PetSpecies.FISH]: AnimalCategory.EXOTIC,
+  [PetSpecies.IGUANA]: AnimalCategory.EXOTIC,
+  [PetSpecies.SNAKE]: AnimalCategory.EXOTIC,
+  [PetSpecies.MOUSE]: AnimalCategory.EXOTIC,
+};
 
 export type sizePets = "SMALL" | "MEDIUM" | "LARGE";

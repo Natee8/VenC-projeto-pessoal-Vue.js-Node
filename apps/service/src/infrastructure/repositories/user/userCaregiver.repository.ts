@@ -143,12 +143,17 @@ export class CaregiverRepository {
       };
     }
 
-    if (filters?.serviceIds || filters?.minPrice || filters?.maxPrice) {
+    if (filters?.serviceIds?.length || filters?.minPrice || filters?.maxPrice) {
+      console.log("🟡 SERVICE FILTER CHECK:");
+      console.log({
+        serviceIds: filters?.serviceIds,
+        hasServiceIds: filters?.serviceIds?.length,
+      });
       where.services = {
         some: {
           isActive: true,
 
-          ...(filters.serviceIds && {
+          ...(filters.serviceIds?.length && {
             serviceId: {
               in: filters.serviceIds,
             },
@@ -169,6 +174,8 @@ export class CaregiverRepository {
         },
       };
     }
+    console.log("🟢 WHERE FINAL:");
+    console.log(JSON.stringify(where, null, 2));
 
     const records = await this.prisma.caregiver.findMany({
       where,
@@ -190,6 +197,19 @@ export class CaregiverRepository {
       orderBy: {
         averageRating: "desc",
       },
+    });
+
+    console.log("🔵 RAW RECORDS:");
+    console.dir(records, { depth: 5 });
+
+    records.forEach((r) => {
+      console.log(`🧩 Caregiver ${r.id} services:`);
+      console.log(
+        r.services.map((s) => ({
+          serviceId: s.serviceId,
+          serviceName: s.service.name,
+        })),
+      );
     });
 
     return records.map((r) => ({

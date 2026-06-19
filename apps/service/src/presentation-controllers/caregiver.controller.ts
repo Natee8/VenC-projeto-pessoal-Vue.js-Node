@@ -4,33 +4,30 @@ import { CaregiverRepository } from "../infrastructure/repositories/user/userCar
 import { GeolocationService } from "../infrastructure/repositories/geolocation/geolocation.repository.js";
 import { failure } from "../core/http/failure.js";
 import { success } from "../core/http/success.js";
+import { ListPublicCaregiversUseCase } from "../application/usecases/caregiver/getPublicCaregiver.usecase.js";
 
 export const router = Router();
 
 const caregiverRepo = new CaregiverRepository();
-const geolocationService = new GeolocationService();
 
-const caregiverUseCase = new CaregiverFacadeUseCase(
-  caregiverRepo,
-  geolocationService,
-);
+const caregiverUseCase = new ListPublicCaregiversUseCase(caregiverRepo);
 
 router.get("/public", async (req: Request, res: Response) => {
   try {
-    const { state, city, minRating, services } = req.query;
+    const { state, city, minRating, serviceIds } = req.query;
 
     const filters = {
       state: state ? String(state) : undefined,
       city: city ? String(city) : undefined,
       minRating: minRating ? Number(minRating) : undefined,
-      services: services
-        ? Array.isArray(services)
-          ? services.map(Number)
-          : [Number(services)]
+      serviceIds: serviceIds
+        ? Array.isArray(serviceIds)
+          ? serviceIds.map(Number)
+          : [Number(serviceIds)]
         : undefined,
     };
 
-    const result = await caregiverUseCase.getPublicCaregivers(filters);
+    const result = await caregiverUseCase.execute(filters);
 
     if (result.type === "left") {
       return failure(res, {

@@ -16,6 +16,48 @@ const addressSchema = z.object({
   complement: z.string().optional(),
 });
 
+const listCaregiversQuerySchema = z.object({
+  city: z.string().optional(),
+
+  state: z.nativeEnum(State).optional(),
+
+  minRating: z
+    .string()
+    .optional()
+    .transform((v) => (v ? Number(v) : undefined))
+    .refine((v) => v === undefined || !isNaN(v), {
+      message: "minRating inválido",
+    }),
+
+  serviceIds: z
+    .union([z.string(), z.array(z.string())])
+    .optional()
+    .transform((val) => {
+      if (!val) return undefined;
+
+      if (Array.isArray(val)) {
+        return val.map(Number);
+      }
+
+      return val.split(",").map(Number);
+    })
+    .refine(
+      (arr) => !arr || arr.every((n) => !isNaN(n)),
+      "serviceIds inválido",
+    ),
+
+  petTypes: z
+    .union([z.string(), z.array(z.string())])
+    .optional()
+    .transform((val) => {
+      if (!val) return undefined;
+
+      if (Array.isArray(val)) return val;
+
+      return val.split(",");
+    }),
+});
+
 const saveCaregiverSchema = z.object({
   userId: z.string().transform(Number),
 
@@ -108,7 +150,19 @@ export class CaregiverController {
 
   async getPublicCaregivers(req: Request, res: Response) {
     try {
-      const result = await this.caregiverUseCase.getPublicCaregivers();
+      const parsed = listCaregiversQuerySchema.safeParse(req.query);
+
+      if (!parsed.success) {
+        return failure(res, {
+          message: "Erro de validação dos filtros",
+          errors: parsed.error.flatten().fieldErrors,
+          code: 400,
+        });
+      }
+
+      const filters = parsed.data;
+
+      const result = await this.caregiverUseCase.getPublicCaregivers(filters);
 
       if (result.type === "left") {
         return failure(res, {
