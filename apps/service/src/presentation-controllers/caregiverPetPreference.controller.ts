@@ -15,21 +15,29 @@ router.post(
     try {
       const caregiverId = Number(req.params.caregiverId);
 
-      const result = await useCase.create({
-        caregiverId,
-        ...req.body,
-      });
+      const body = Array.isArray(req.body) ? req.body : [req.body];
 
-      if (result.type === "left") {
+      const results = await Promise.all(
+        body.map((item) =>
+          useCase.create({
+            caregiverId,
+            ...item,
+          }),
+        ),
+      );
+
+      const hasError = results.find((r) => r.type === "left");
+
+      if (hasError) {
         return failure(res, {
-          message: result.error.message,
+          message: hasError.error.message,
           code: 400,
         });
       }
 
       return success(res, {
-        message: "Preferência criada com sucesso",
-        data: result.value,
+        message: "Preferências criadas com sucesso",
+        data: results.map((r) => r.value),
         code: 201,
       });
     } catch {

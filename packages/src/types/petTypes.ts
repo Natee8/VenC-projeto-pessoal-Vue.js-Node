@@ -34,4 +34,17 @@ export const speciesCategoryMap: Record<PetSpecies, AnimalCategory> = {
   [PetSpecies.MOUSE]: AnimalCategory.EXOTIC,
 };
 
+export const PetSpeciesLabels: Record<PetSpecies, string> = {
+  [PetSpecies.DOG]: "Cachorro",
+  [PetSpecies.CAT]: "Gato",
+  [PetSpecies.BIRD]: "Pássaro",
+  [PetSpecies.FISH]: "Peixe",
+  [PetSpecies.RABBIT]: "Coelho",
+  [PetSpecies.HORSE]: "Cavalo",
+  [PetSpecies.PIG]: "Porco",
+  [PetSpecies.LHAMA]: "Lhama",
+  [PetSpecies.IGUANA]: "Iguana",
+  [PetSpecies.SNAKE]: "Cobra",
+  [PetSpecies.MOUSE]: "Rato",
+};
 export type sizePets = "SMALL" | "MEDIUM" | "LARGE";

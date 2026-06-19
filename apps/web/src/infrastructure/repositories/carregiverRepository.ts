@@ -32,4 +32,24 @@ export const caregiverRepository = {
 
     return data;
   },
+
+  async getPetPreferences(caregiverId: number) {
+    const { data } = await apiInstance.get(
+      `/caregivers/${caregiverId}/preferences`,
+    );
+    return data;
+  },
+
+  async createPetPreferences(
+    caregiverId: number,
+    payload: {
+      petTypes: string[];
+    },
+  ) {
+    const { data } = await apiInstance.post(
+      `/caregivers/${caregiverId}/preferences`,
+      payload,
+    );
+    return data;
+  },
 };

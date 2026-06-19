@@ -10,7 +10,7 @@ import {
 } from "src/infrastructure/utils/enumState.js";
 import { brasilApiRepository } from "src/infrastructure/external/brasilAPi.js";
 import { useCaregiverFilters } from "src/interface/hooks/useFilters.js";
-import { PetSpecies } from "@packages";
+import { PetSpecies, PetSpeciesLabels } from "@packages";
 
 const props = defineProps<{
   services: ServiceResponseDTO[];
@@ -28,6 +28,8 @@ const selectedCity = ref<string>("");
 
 const cities = ref<{ nome: string }[]>([]);
 const loadingCities = ref(false);
+
+const petSpeciesOptions = Object.values(PetSpecies);
 
 watch(selectedState, async (uf) => {
   selectedCity.value = "";
@@ -152,10 +154,15 @@ watch(
       </section>
       <section>
         <h2 class="font-semibold text-white mb-3">Tipo de animal:</h2>
-        <div class="flex gap-6">
-          <Checkbox size="lg" v-model="petTypes" value="dog" label="Cachorro" />
-          <Checkbox size="lg" v-model="petTypes" value="cat" label="Gato" />
-          <Checkbox size="lg" v-model="petTypes" value="bird" label="Pássaro" />
+        <div class="flex flex-col gap-6">
+          <Checkbox
+            v-for="type in petSpeciesOptions"
+            :key="type"
+            size="lg"
+            v-model="petTypes"
+            :value="type"
+            :label="PetSpeciesLabels[type]"
+          />
         </div>
       </section>
     </form>

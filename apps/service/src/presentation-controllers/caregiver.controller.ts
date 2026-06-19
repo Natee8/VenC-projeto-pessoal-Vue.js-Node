@@ -1,7 +1,5 @@
 import { Router, Request, Response } from "express";
-import { CaregiverFacadeUseCase } from "../application/usecases/profiles/caregiverProfile.usecase.js";
 import { CaregiverRepository } from "../infrastructure/repositories/user/userCaregiver.repository.js";
-import { GeolocationService } from "../infrastructure/repositories/geolocation/geolocation.repository.js";
 import { failure } from "../core/http/failure.js";
 import { success } from "../core/http/success.js";
 import { ListPublicCaregiversUseCase } from "../application/usecases/caregiver/getPublicCaregiver.usecase.js";
