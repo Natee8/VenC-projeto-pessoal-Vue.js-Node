@@ -1,6 +1,14 @@
 import { UserId } from "../../valuesObjects/userId.js";
 import { UserAuth } from "../entities/userAuthEntity.js";
 
+//tipo de usuario pra contexto
+export const Role = {
+  OWNER: "OWNER",
+  CAREGIVER: "CAREGIVER",
+} as const;
+
+export type Role = (typeof Role)[keyof typeof Role];
+
 export interface IRefreshToken {
   token: string;
   userId: UserId;
@@ -49,6 +57,6 @@ export interface RegisterPayload {
   serviceRadiusKm: number;
   isPublicProfile: boolean;
   offersHosting: boolean;
-  type: "owner" | "caregiver";
+  type: Role;
   profileImage?: File | null;
 }

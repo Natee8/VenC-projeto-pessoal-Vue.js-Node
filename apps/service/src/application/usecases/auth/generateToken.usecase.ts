@@ -1,4 +1,4 @@
-import { RefreshTokenEntity } from "@packages";
+import { RefreshTokenEntity, Role } from "@packages";
 import { UserAuth } from "@packages";
 import { IRefreshTokenRepository, TokenGenerator } from "@packages";
 import { Either, left, right } from "../../../core/interface/IEighter.js";
@@ -9,14 +9,17 @@ export class GenerateTokenUseCase {
     private readonly refreshTokenRepo: IRefreshTokenRepository,
   ) {}
 
-  async execute(
-    user: UserAuth,
-  ): Promise<
+  async execute(input: {
+    user: UserAuth;
+    type: Role;
+  }): Promise<
     Either<{ message: string }, { accessToken: string; refreshToken: string }>
   > {
     try {
+      const { user, type } = input;
       const accessToken = await this.tokenGenerator.generateAccessToken(
         user.getId(),
+        type,
       );
       const refreshToken = new RefreshTokenEntity({
         token: await this.tokenGenerator.generateRefreshToken(user.getId()),

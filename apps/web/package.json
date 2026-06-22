@@ -13,6 +13,7 @@
     "@phosphor-icons/vue": "^2.2.1",
     "@reduxjs/toolkit": "^2.11.2",
     "axios": "^1.13.5",
+    "jwt-decode": "^4.0.0",
     "pinia": "^3.0.4",
     "react-redux": "^9.2.0",
     "vee-validate": "^4.15.1",

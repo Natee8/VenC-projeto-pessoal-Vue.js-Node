@@ -84,6 +84,18 @@ export class UsersRepository implements IUsersRepository<Prisma.TransactionClien
     return this.mapToEntity(user);
   }
 
+  async findWithProfilesByEmail(email: Email, tx?: Prisma.TransactionClient) {
+    const client = tx ?? this.prisma;
+
+    return client.userAuth.findUnique({
+      where: { email: email.getValue() },
+      include: {
+        ownerProfile: true,
+        caregiver: true,
+      },
+    });
+  }
+
   async save(user: UserAuth, tx?: Prisma.TransactionClient): Promise<UserAuth> {
     const client = tx ?? this.prisma;
 

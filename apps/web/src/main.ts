@@ -5,6 +5,7 @@ import { router } from "./router";
 import { Notyf } from "notyf";
 import "notyf/notyf.min.css";
 import { createPinia } from "pinia";
+import { useAuthStore } from "./infrastructure/stores/auth/authStore";
 
 const notyf = new Notyf({
   duration: 3000,
@@ -16,6 +17,11 @@ const app = createApp(App);
 
 app.config.globalProperties.$notyf = notyf;
 
+const pinia = createPinia();
+app.use(pinia);
 app.use(router);
-app.use(createPinia());
+
+const auth = useAuthStore();
+auth.loadFromStorage();
+
 app.mount("#app");

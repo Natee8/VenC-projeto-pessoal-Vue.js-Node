@@ -1,5 +1,6 @@
 import { Email } from "../../valuesObjects/email.js";
 import { UserId } from "../../valuesObjects/userId.js";
+import { Role } from "../dtos/IAuth.dto.js";
 import { RefreshTokenEntity } from "../entities/refreshTokenEntity.js";
 import { UserAuth } from "../entities/userAuthEntity.js";
 
@@ -17,6 +18,6 @@ export interface IRefreshTokenRepository {
 }
 
 export interface TokenGenerator {
-  generateAccessToken(userId: UserId): Promise<string>;
+  generateAccessToken(userId: UserId, role: Role): Promise<string>;
   generateRefreshToken(userId: UserId): Promise<string>;
 }

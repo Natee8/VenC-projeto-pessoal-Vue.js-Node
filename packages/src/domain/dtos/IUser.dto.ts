@@ -1,5 +1,6 @@
 import { UploadedFile } from "../../types/formData.js";
 import { IAddress } from "./IAddress.dto.js";
+import { Role } from "./IAuth.dto.js";
 
 //dato de saida do registro do usuario
 export interface RegisterOutput {
@@ -34,7 +35,7 @@ export interface RegisterInput {
 
 // dto de entrada para o registro do perfil do usuario, pode ser extendido para owner ou caregiver
 export interface RegisterInputProfiles {
-  type: "owner" | "caregiver";
+  type: Role;
 
   name: string;
   email: string;

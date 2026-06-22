@@ -8,11 +8,13 @@ import { Routes } from "src/router/routes.js";
 import AuthFormContainer from "src/interface/layout/auth/authContainerForms.vue";
 import Login from "src/interface/components/form/Login.vue";
 import { showSnackbarAndWait } from "src/interface/utils/asyncDelay.js";
+import { useAuthStore } from "src/infrastructure/stores/auth/authStore.js";
 
 const loginFormRef = ref();
 const email = ref("");
 const password = ref("");
 const router = useRouter();
+const authStore = useAuthStore();
 
 const snackbar = ref({
   show: false,
@@ -31,7 +33,9 @@ const handleLogin = async () => {
   loading.value = true;
 
   try {
-    await authRepository.login(result.data);
+    const response = await authRepository.login(result.data);
+
+    authStore.setToken(response.accessToken);
 
     await showSnackbarAndWait(
       snackbar,

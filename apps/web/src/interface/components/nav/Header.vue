@@ -6,20 +6,21 @@ import ModalRegister from "../../components/modal/ModalRegister.vue";
 import NavAnimation from "../texts/NavAnimation.vue";
 import { useRoute } from "vue-router";
 import { Bars3Icon, XMarkIcon } from "@heroicons/vue/24/outline";
+import { useAuthStore } from "src/infrastructure/stores/auth/authStore";
 
-const isAuthenticated = ref(false);
-const userRole = ref<"OWNER" | "CAREGIVER" | null>(null);
 const modalAberta = ref(false);
 const mobileMenuOpen = ref(false);
+const authStore = useAuthStore();
 
 const headerItems = computed(() => {
-  if (!isAuthenticated.value || !userRole.value) {
+  if (!authStore.isAuthenticated || !authStore.userRole) {
     return HeaderByRole.DEFAULT;
   }
-  return HeaderByRole[userRole.value];
+
+  return HeaderByRole[authStore.userRole];
 });
 
-const showAuthButtons = computed(() => !isAuthenticated.value);
+const showAuthButtons = computed(() => !authStore.isAuthenticated);
 
 const route = useRoute();
 watch(
@@ -35,9 +36,15 @@ watch(
   <header
     class="sticky top-0 left-0 w-full bg-headerColor/60 backdrop-blur-sm border-b border-borderDefault z-50"
   >
-    <div class="w-full mx-auto px-4 sm:px-6 lg:px-16 h-20 flex items-center justify-between gap-4">
+    <div
+      class="w-full mx-auto px-4 sm:px-6 lg:px-16 h-20 flex items-center justify-between gap-4"
+    >
       <RouterLink :to="Routes.home" class="flex items-center">
-        <img class="w-[74px] sm:w-[90px]" src="/assets/logos/logoBlue.svg" alt="Logotipo Venca" />
+        <img
+          class="w-[74px] sm:w-[90px]"
+          src="/assets/logos/logoBlue.svg"
+          alt="Logotipo Venca"
+        />
       </RouterLink>
 
       <nav class="hidden lg:block">

@@ -75,7 +75,7 @@ export class RegisterUseCase {
           tx,
         );
 
-        return { user, profile, warnings };
+        return { user, profile, type: input.type, warnings };
       }
 
       if (input.type === "caregiver") {

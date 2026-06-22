@@ -1,5 +1,5 @@
 import { PasswordService } from "../../service/passwordComparer.js";
-import { UserAuth } from "@packages";
+import { Role, UserAuth } from "@packages";
 import { Email } from "@packages";
 import { Either, left, right } from "../../../core/interface/IEighter.js";
 import { UsersRepository } from "../../../infrastructure/repositories/auth/authLogin.repository.js";
@@ -13,22 +13,37 @@ export class AuthenticateUserUseCase {
   async execute(
     email: Email,
     password: string,
-  ): Promise<Either<{ message: string }, UserAuth>> {
-    const user = await this.usersRepo.findByEmail(email);
+  ): Promise<Either<{ message: string }, { user: UserAuth; type: Role }>> {
+    const userWithProfiles =
+      await this.usersRepo.findWithProfilesByEmail(email);
 
-    if (!user) {
+    if (!userWithProfiles) {
       return left({ message: "Usuário não encontrado" });
     }
 
     const passwordValid = await this.passwordService.compare(
       password,
-      user.getPasswordHash(),
+      userWithProfiles.passwordHash,
     );
 
     if (!passwordValid) {
       return left({ message: "Senha inválida" });
     }
 
-    return right(user);
+    const hasOwner = !!userWithProfiles.ownerProfile;
+    const hasCaregiver = !!userWithProfiles.caregiver;
+
+    if (hasOwner === hasCaregiver) {
+      return left({ message: "Estado inválido" });
+    }
+
+    const type: Role = hasOwner ? Role.OWNER : Role.CAREGIVER;
+
+    const user = this.usersRepo["mapToEntity"](userWithProfiles);
+
+    return right({
+      user,
+      type,
+    });
   }
 }
