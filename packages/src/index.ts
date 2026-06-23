@@ -8,7 +8,7 @@ export * from "./domain/entities/schedulingEntity.js";
 export * from "./domain/entities/serviceOfferEntity.js";
 export * from "./domain/entities/userAuthEntity.js";
 export * from "./domain/entities/userProfile.js";
-export * from "./domain/entities/caregiverPetReference.js"
+export * from "./domain/entities/caregiverPetReference.js";
 
 export * from "./core/errors/normalizeErrors.js";
 export * from "./domain/dtos/IAddress.dto.js";

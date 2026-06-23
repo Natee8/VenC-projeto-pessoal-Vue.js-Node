@@ -22,6 +22,10 @@ import { CaregiverFacadeUseCase } from "../application/usecases/profiles/caregiv
 import { PrismaClient } from "../generated/prisma/index.js";
 import { uploadProfileImage } from "../application/service/uploadImages.js";
 import { RegisterController } from "../controllers/register.js";
+import { authMiddleware } from "../core/http/middlewares/auth.middlewares.js";
+import { failure } from "../core/http/failure.js";
+import { GetMeUseCase } from "../application/usecases/profiles/getMe.usecase.js";
+import { success } from "../core/http/response.js";
 
 export const router: Router = Router();
 const prisma = new PrismaClient();
@@ -39,6 +43,8 @@ const createUserBaseUseCase = new CreateUserBaseUseCase(
   usersRepo,
   passwordService,
 );
+
+const getMeUseCase = new GetMeUseCase(usersRepo);
 
 const ownerProfileUseCase = new OwnerProfileFacadeUseCase(ownerRepo);
 
@@ -178,6 +184,31 @@ router.post("/reset-password", async (req: Request, res: Response) => {
     return res.status(200).json({ message: "Senha alterada com sucesso" });
   } catch (error) {
     return res.status(400).json({ message: getErrorMessage(error) });
+  }
+});
+
+router.get("/me", authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?.sub;
+
+    if (!userId) {
+      return failure(res, {
+        message: "Não autenticado",
+        code: 401,
+      });
+    }
+
+    const result = await getMeUseCase.execute(userId);
+
+    return success(res, {
+      message: "Usuário autenticado",
+      data: result,
+    });
+  } catch (error) {
+    return failure(res, {
+      message: "Erro ao buscar usuário",
+      code: 500,
+    });
   }
 });
 

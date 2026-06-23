@@ -24,13 +24,9 @@ export class GetMeUseCase {
       name: user.name,
       email: user.email,
       profilePhotoUrl: user.profilePhotoUrl,
-
       role,
 
-      profile: {
-        owner: user.ownerProfile ?? null,
-        caregiver: user.caregiver ?? null,
-      },
+      profile: hasOwner ? user.ownerProfile : user.caregiver,
     };
   }
 }
