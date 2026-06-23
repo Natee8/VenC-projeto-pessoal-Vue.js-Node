@@ -19,7 +19,6 @@ export class UsersRepository implements IUsersRepository<Prisma.TransactionClien
       Email.create(record.email),
       record.passwordHash,
       record.isActive,
-      // assuming the prisma schema now has profilePhotoUrl
       record.profilePhotoUrl ?? "",
       BirthDate.create(record.birthDate),
       CPF.create(record.cpf),
@@ -96,6 +95,22 @@ export class UsersRepository implements IUsersRepository<Prisma.TransactionClien
     });
   }
 
+  async findWithProfilesById(id: number, tx?: Prisma.TransactionClient) {
+    const client = tx ?? this.prisma;
+
+    const user = await client.userAuth.findUnique({
+      where: { id },
+      include: {
+        ownerProfile: true,
+        caregiver: true,
+      },
+    });
+
+    if (!user) return null;
+
+    return user;
+  }
+
   async save(user: UserAuth, tx?: Prisma.TransactionClient): Promise<UserAuth> {
     const client = tx ?? this.prisma;
 
@@ -104,7 +119,6 @@ export class UsersRepository implements IUsersRepository<Prisma.TransactionClien
       update: {
         passwordHash: user.getPasswordHash(),
         isActive: user.isEnabled(),
-        // support profile photo update if user changed
         profilePhotoUrl: user.getProfilePhoto(),
         updatedAt: new Date(),
       },

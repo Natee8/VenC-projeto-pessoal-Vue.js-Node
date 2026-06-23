@@ -3,6 +3,7 @@ import { CPF } from "../../valuesObjects/cpf.js";
 import { Email } from "../../valuesObjects/email.js";
 import { Name } from "../../valuesObjects/name.js";
 import { UserId } from "../../valuesObjects/userId.js";
+import { Role } from "../dtos/IAuth.dto.js";
 
 export class UserAuth {
   constructor(

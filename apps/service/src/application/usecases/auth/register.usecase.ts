@@ -64,7 +64,7 @@ export class RegisterUseCase {
         }
       }
 
-      if (input.type === "owner") {
+      if (input.type === "OWNER") {
         const profile = await this.ownerProfile.save(
           {
             userId: user.id,
@@ -78,7 +78,7 @@ export class RegisterUseCase {
         return { user, profile, type: input.type, warnings };
       }
 
-      if (input.type === "caregiver") {
+      if (input.type === "CAREGIVER") {
         const result = await this.caregiverProfile.save(
           {
             userId: user.id,

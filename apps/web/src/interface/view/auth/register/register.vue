@@ -10,6 +10,7 @@ import { ref } from "vue";
 
 import { useRoute, useRouter } from "vue-router";
 import FormProfileBase from "src/interface/components/form/FormProfileBase.vue";
+import { Role } from "@packages";
 
 const router = useRouter();
 const route = useRoute();
@@ -28,7 +29,13 @@ const baseFormRef = ref();
 const addressFormRef = ref();
 const profileFormRef = ref();
 
-const userType = route.query.user as "owner" | "caregiver";
+const rawUserType = route.query.user;
+
+if (rawUserType !== "OWNER" && rawUserType !== "CAREGIVER") {
+  router.replace({ name: "login" });
+}
+
+const userType = rawUserType as Role;
 
 const showSnackbar = (message: string, type: "success" | "error") => {
   snackbarMessage.value = message;

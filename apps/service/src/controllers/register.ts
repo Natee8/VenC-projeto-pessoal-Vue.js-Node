@@ -7,7 +7,7 @@ import { success } from "../core/http/response.js";
 import { failure } from "../core/http/failure.js";
 
 const registerSchema = z.object({
-  type: z.enum(["owner", "caregiver"]),
+  type: z.enum(["OWNER", "CAREGIVER"]),
 
   name: z.string().min(1),
   email: z.string().email(),

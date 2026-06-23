@@ -16,10 +16,9 @@ export class GenerateTokenUseCase {
     Either<{ message: string }, { accessToken: string; refreshToken: string }>
   > {
     try {
-      const { user, type } = input;
+      const { user } = input;
       const accessToken = await this.tokenGenerator.generateAccessToken(
         user.getId(),
-        type,
       );
       const refreshToken = new RefreshTokenEntity({
         token: await this.tokenGenerator.generateRefreshToken(user.getId()),
