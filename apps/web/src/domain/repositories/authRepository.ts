@@ -1,3 +1,4 @@
+import { User } from "src/infrastructure/stores/auth/types/user.js";
 import {
   AuthSession,
   LoginParams,
@@ -7,6 +8,7 @@ import {
 
 export interface AuthRepository {
   login(params: LoginParams): Promise<AuthSession>;
+  me(): Promise<User>;
 
   /* sendResetCode(email: string): Promise<void>;
 

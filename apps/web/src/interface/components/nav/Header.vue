@@ -13,11 +13,13 @@ const mobileMenuOpen = ref(false);
 const authStore = useAuthStore();
 
 const headerItems = computed(() => {
-  if (!authStore.isAuthenticated || !authStore.userRole) {
+  const role = authStore.user?.role;
+
+  if (!authStore.isAuthenticated || !role) {
     return HeaderByRole.DEFAULT;
   }
 
-  return HeaderByRole[authStore.userRole];
+  return HeaderByRole[role];
 });
 
 const showAuthButtons = computed(() => !authStore.isAuthenticated);

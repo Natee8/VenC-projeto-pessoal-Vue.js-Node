@@ -1,5 +1,7 @@
 import { defineStore } from "pinia";
 import { jwtDecode } from "jwt-decode";
+import { authRepository } from "src/infrastructure/repositories/authRepository";
+import { AuthState } from "./types/state";
 
 export type Role = "OWNER" | "CAREGIVER";
 
@@ -9,32 +11,45 @@ type JwtPayload = {
   exp: number;
 };
 
-interface AuthState {
-  accessToken: string | null;
-  userRole: Role | null;
-  isAuthenticated: boolean;
-}
-
 export const useAuthStore = defineStore("auth", {
   state: (): AuthState => ({
     accessToken: null,
-    userRole: null,
+    user: null,
     isAuthenticated: false,
   }),
 
   getters: {
-    isOwner: (state) => state.userRole === "OWNER",
-    isCaregiver: (state) => state.userRole === "CAREGIVER",
+    isOwner: (state) => state.user?.role === "OWNER",
+    isCaregiver: (state) => state.user?.role === "CAREGIVER",
   },
 
   actions: {
     setToken(token: string) {
-      console.log("🔥 setToken FOI CHAMADO", token);
+      console.log("🔥 setToken:", token);
 
       this.accessToken = token;
       localStorage.setItem("accessToken", token);
+    },
 
-      this.decodeToken();
+    async fetchMe() {
+      console.log("🚀 fetchMe chamado");
+
+      if (!this.accessToken) {
+        console.log("❌ SEM TOKEN");
+        return;
+      }
+
+      try {
+        const user = await authRepository.me();
+
+        console.log("👤 USER DO /me:", user);
+
+        this.user = user;
+        this.isAuthenticated = true;
+      } catch (e) {
+        console.log("❌ ERRO NO /me:", e);
+        this.logout();
+      }
     },
 
     loadFromStorage() {
@@ -52,27 +67,19 @@ export const useAuthStore = defineStore("auth", {
       try {
         const decoded = jwtDecode<JwtPayload>(this.accessToken);
 
-        console.log("TOKEN DECODADO:", decoded);
-        console.log("ROLE:", decoded.role);
-
         const isExpired = decoded.exp * 1000 < Date.now();
 
         if (isExpired) {
           this.logout();
-          return;
         }
-
-        this.userRole = decoded.role;
-        this.isAuthenticated = true;
-      } catch (error) {
-        console.error("Erro ao decodificar token:", error);
+      } catch {
         this.logout();
       }
     },
 
     logout() {
       this.accessToken = null;
-      this.userRole = null;
+      this.user = null;
       this.isAuthenticated = false;
 
       localStorage.removeItem("accessToken");

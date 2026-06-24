@@ -18,10 +18,11 @@ const app = createApp(App);
 app.config.globalProperties.$notyf = notyf;
 
 const pinia = createPinia();
+
 app.use(pinia);
 app.use(router);
 
-const auth = useAuthStore();
+const auth = useAuthStore(pinia);
 auth.loadFromStorage();
 
 app.mount("#app");

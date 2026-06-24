@@ -12,7 +12,10 @@ export const authRepository: AuthRepository = {
 
     return data;
   },
-
+  async me() {
+    const { data } = await apiInstance.get("/auth/me");
+    return data;
+  },
   /* async refreshToken(refreshToken) {
     const { data } = await apiInstance.post("/refresh", {
       refreshToken,

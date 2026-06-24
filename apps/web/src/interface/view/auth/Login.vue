@@ -35,6 +35,8 @@ const handleLogin = async () => {
   try {
     const response = await authRepository.login(result.data);
 
+    console.log("✅ LOGIN RESPONSE:", response);
+
     authStore.setToken(response.accessToken);
 
     await showSnackbarAndWait(
