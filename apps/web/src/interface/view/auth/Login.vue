@@ -37,7 +37,7 @@ const handleLogin = async () => {
 
     console.log("✅ LOGIN RESPONSE:", response);
 
-    authStore.setToken(response.accessToken);
+    authStore.setToken(response.data.accessToken);
 
     await showSnackbarAndWait(
       snackbar,
