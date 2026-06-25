@@ -2,6 +2,7 @@
 
 import { AuthRepository } from "../../domain/repositories/authRepository";
 import { apiInstance } from "../config/ApiConfig";
+import api from "../config/axios";
 
 export const authRepository: AuthRepository = {
   async login({ email, password }) {
@@ -13,8 +14,8 @@ export const authRepository: AuthRepository = {
     return data;
   },
   async me() {
-    const { data } = await apiInstance.get("/auth/me");
-    return data;
+    const response = await api.get("/auth/me");
+    return response.data.data;
   },
   /* async refreshToken(refreshToken) {
     const { data } = await apiInstance.post("/refresh", {

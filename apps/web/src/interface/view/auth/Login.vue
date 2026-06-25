@@ -37,7 +37,12 @@ const handleLogin = async () => {
 
     console.log("✅ LOGIN RESPONSE:", response);
 
+    if (!response.data?.accessToken) {
+      throw new Error("Token não veio na resposta");
+    }
+
     authStore.setToken(response.data.accessToken);
+    await authStore.fetchMe();
 
     await showSnackbarAndWait(
       snackbar,

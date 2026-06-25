@@ -52,13 +52,16 @@ export const useAuthStore = defineStore("auth", {
       }
     },
 
-    loadFromStorage() {
+    async loadFromStorage() {
       const token = localStorage.getItem("accessToken");
 
       if (!token) return;
 
       this.accessToken = token;
+
       this.decodeToken();
+
+      await this.fetchMe();
     },
 
     decodeToken() {

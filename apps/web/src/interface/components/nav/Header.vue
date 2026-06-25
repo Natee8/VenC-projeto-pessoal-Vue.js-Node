@@ -5,14 +5,26 @@ import { HeaderByRole } from "../../../config/home/headerConfig";
 import ModalRegister from "../../components/modal/ModalRegister.vue";
 import NavAnimation from "../texts/NavAnimation.vue";
 import { useRoute } from "vue-router";
-import { Bars3Icon, XMarkIcon } from "@heroicons/vue/24/outline";
+import {
+  ArrowRightIcon,
+  Bars3Icon,
+  XMarkIcon,
+} from "@heroicons/vue/24/outline";
 import { useAuthStore } from "src/infrastructure/stores/auth/authStore";
+import { ArrowRightEndOnRectangleIcon } from "@heroicons/vue/24/solid";
+import {
+  ArrowRightStartOnRectangleIcon,
+  UserIcon,
+} from "@heroicons/vue/16/solid";
 
 const modalAberta = ref(false);
 const mobileMenuOpen = ref(false);
 const authStore = useAuthStore();
 
 const headerItems = computed(() => {
+  console.log("AUTH:", authStore.isAuthenticated);
+  console.log("USER:", authStore.user);
+
   const role = authStore.user?.role;
 
   if (!authStore.isAuthenticated || !role) {
@@ -90,10 +102,18 @@ watch(
         </div>
 
         <div
-          class="h-10 px-4 bg-gray-200 border border-gray-300 transition-transform duration-200 hover:scale-105 hover:bg-red-600/90 hover:border-red-600 hover:text-white flex gap-3 cursor-pointer rounded items-center"
+          @click="authStore.logout()"
+          class="h-10 px-5 bg-gray-200 border border-gray-200 border border-gray-300 transition-all duration-200 ease-in-out hover:scale-105 hover:bg-red-500 hover:border-red-500 hover:text-white flex gap-2 items-center rounded-xl cursor-pointer group"
         >
-          <p class="font-semibold">Sair</p>
-          <ArrowRightEndOnRectangleIcon class="w-6 h-6" />
+          <p
+            class="font-semibold text-gray-700 group-hover:text-white transition"
+          >
+            Sair
+          </p>
+
+          <ArrowRightStartOnRectangleIcon
+            class="w-5 h-5 text-gray-500 group-hover:text-white transition-transform duration-200 group-hover:translate-x-1"
+          />
         </div>
       </div>
 
