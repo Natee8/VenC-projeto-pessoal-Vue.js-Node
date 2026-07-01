@@ -1,39 +1,9 @@
 import { Request, Response } from "express";
-import { z } from "zod";
-import { State } from "@packages";
 
 import { OwnerProfileFacadeUseCase } from "../application/usecases/profiles/ownerProfile.usecase.js";
 import { success } from "../core/http/response.js";
 import { failure } from "../core/http/failure.js";
-
-const addressSchema = z.object({
-  street: z.string(),
-  number: z.string(),
-  neighborhood: z.string(),
-  city: z.string(),
-  state: z.nativeEnum(State),
-  zipCode: z.string().min(8, "CEP inválido"),
-  complement: z.string().optional(),
-});
-
-const ownerSaveSchema = z.object({
-  userId: z.string().transform(Number),
-
-  phone: z.string().optional(),
-
-  searchRadiusKm: z
-    .string()
-    .optional()
-    .transform((v) => (v ? Number(v) : undefined))
-    .refine((v) => v === undefined || !isNaN(v), {
-      message: "searchRadiusKm inválido",
-    }),
-
-  address: z
-    .string()
-    .transform((v) => JSON.parse(v))
-    .pipe(addressSchema),
-});
+import { ownerSaveSchema } from "../core/validators/profile/owner.validator.js";
 
 export class OwnerProfileController {
   constructor(private ownerProfileUseCase: OwnerProfileFacadeUseCase) {}

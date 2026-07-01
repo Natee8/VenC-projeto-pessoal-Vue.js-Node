@@ -1,46 +1,10 @@
 import { Request, Response } from "express";
-import { z } from "zod";
 
 import { RegisterUseCase } from "../application/usecases/auth/register.usecase.js";
 
 import { success } from "../core/http/response.js";
 import { failure } from "../core/http/failure.js";
-
-const registerSchema = z.object({
-  type: z.enum(["OWNER", "CAREGIVER"]),
-
-  name: z.string().min(1),
-  email: z.string().email(),
-  password: z.string().min(6),
-  cpf: z.string().min(11),
-
-  birthDate: z.string(),
-
-  profileImage: z.any().optional(),
-
-  address: z.string().transform((v) => JSON.parse(v)),
-
-  offersHosting: z
-    .string()
-    .optional()
-    .transform((v) => v === "true"),
-  isPublicProfile: z
-    .string()
-    .optional()
-    .transform((v) => v === "true"),
-
-  serviceRadiusKm: z
-    .string()
-    .optional()
-    .transform((v) => (v ? Number(v) : undefined)),
-
-  searchRadiusKm: z
-    .string()
-    .optional()
-    .transform((v) => (v ? Number(v) : undefined)),
-
-  phone: z.string().optional(),
-});
+import { registerSchema } from "../core/validators/auth/register.validator.js";
 
 export class RegisterController {
   constructor(private registerUseCase: RegisterUseCase) {}

@@ -36,6 +36,28 @@ export class Caregiver {
     return this.averageRating;
   }
 
+  getProfileCompletion(): number {
+    let total = 0;
+    let completed = 0;
+
+    total += 1;
+    if (this.basePrice !== null) completed += 1;
+
+    total += 1;
+    if (this.address !== null) completed += 1;
+
+    total += 1;
+    if (this.serviceRadiusKm > 0) completed += 1;
+
+    total += 1;
+    if (this.offersHosting !== null) completed += 1;
+
+    total += 1;
+    if (this.isVerified) completed += 1;
+
+    return (completed / total) * 100;
+  }
+
   getReviewsCount() {
     return this.reviewsCount;
   }

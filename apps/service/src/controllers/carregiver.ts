@@ -1,86 +1,12 @@
 import { CaregiverFacadeUseCase } from "../application/usecases/profiles/caregiverProfile.usecase.js";
 import { Request, Response } from "express";
-import { State } from "@packages";
-import { z } from "zod";
 
 import { failure } from "../core/http/failure.js";
 import { success } from "../core/http/response.js";
-
-const addressSchema = z.object({
-  street: z.string(),
-  number: z.string(),
-  neighborhood: z.string(),
-  city: z.string(),
-  state: z.nativeEnum(State),
-  zipCode: z.string().min(8, "CEP inválido"),
-  complement: z.string().optional(),
-});
-
-const listCaregiversQuerySchema = z.object({
-  city: z.string().optional(),
-
-  state: z.nativeEnum(State).optional(),
-
-  minRating: z
-    .string()
-    .optional()
-    .transform((v) => (v ? Number(v) : undefined))
-    .refine((v) => v === undefined || !isNaN(v), {
-      message: "minRating inválido",
-    }),
-
-  serviceIds: z
-    .union([z.string(), z.array(z.string())])
-    .optional()
-    .transform((val) => {
-      if (!val) return undefined;
-
-      if (Array.isArray(val)) {
-        return val.map(Number);
-      }
-
-      return val.split(",").map(Number);
-    })
-    .refine(
-      (arr) => !arr || arr.every((n) => !isNaN(n)),
-      "serviceIds inválido",
-    ),
-
-  petTypes: z
-    .union([z.string(), z.array(z.string())])
-    .optional()
-    .transform((val) => {
-      if (!val) return undefined;
-
-      if (Array.isArray(val)) return val;
-
-      return val.split(",");
-    }),
-});
-
-const saveCaregiverSchema = z.object({
-  userId: z.string().transform(Number),
-
-  offersHosting: z
-    .union([z.boolean(), z.string()])
-    .optional()
-    .transform((v) => v === true || v === "true")
-    .default(false),
-
-  serviceRadiusKm: z
-    .string()
-    .transform(Number)
-    .refine((v) => !isNaN(v), {
-      message: "serviceRadiusKm inválido",
-    }),
-
-  isPublicProfile: z.string().transform((v) => v === "true"),
-
-  address: z
-    .string()
-    .transform((v) => JSON.parse(v))
-    .pipe(addressSchema),
-});
+import {
+  listCaregiversQuerySchema,
+  saveCaregiverSchema,
+} from "../core/validators/profile/caregiver.validator.js";
 
 export class CaregiverController {
   constructor(private caregiverUseCase: CaregiverFacadeUseCase) {}
