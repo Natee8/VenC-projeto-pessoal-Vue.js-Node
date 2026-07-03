@@ -1,21 +1,21 @@
 export enum PetSpecies {
-  DOG = "dog",
-  CAT = "cat",
-  BIRD = "bird",
-  FISH = "fish",
-  RABBIT = "rabbit",
-  HORSE = "horse",
-  PIG = "pig",
-  LHAMA = "lhama",
-  IGUANA = "iguana",
-  SNAKE = "snake",
-  MOUSE = "mouse",
+  DOG = "DOG",
+  CAT = "CAT",
+  BIRD = "BIRD",
+  FISH = "FISH",
+  RABBIT = "RABBIT",
+  HORSE = "HORSE",
+  PIG = "PIG",
+  LHAMA = "LHAMA",
+  IGUANA = "IGUANA",
+  SNAKE = "SNAKE",
+  MOUSE = "MOUSE",
 }
 
 export enum AnimalCategory {
-  DOMESTIC = "domestic",
-  EXOTIC = "exotic",
-  FARM = "farm",
+  DOMESTIC = "DOMESTIC",
+  EXOTIC = "EXOTIC",
+  FARM = "FARM",
 }
 
 export const speciesCategoryMap: Record<PetSpecies, AnimalCategory> = {

@@ -4,10 +4,7 @@ import Checkbox from "../../inputs/Checkbox.vue";
 import Radio from "../../inputs/Radio.vue";
 import { StarIcon } from "@heroicons/vue/24/outline";
 import { ServiceResponseDTO } from "src/domain/dtos/serviceResponse.dto.js";
-import {
-  BrazilianState,
-  BrazilianStateLabels,
-} from "src/infrastructure/utils/enumState.js";
+import { BRAZIL_STATES, BrazilStateCode } from "src/types/IStates";
 import { brasilApiRepository } from "src/infrastructure/external/brasilAPi.js";
 import { useCaregiverFilters } from "src/interface/hooks/useFilters.js";
 import { PetSpecies, PetSpeciesLabels } from "@packages";
@@ -23,7 +20,7 @@ const selectedServices = ref<number[]>([]);
 const rating = ref<number | null>(null);
 const petTypes = ref<PetSpecies[]>([]);
 
-const selectedState = ref<BrazilianState | "">("");
+const selectedState = ref<BrazilStateCode | "">("");
 const selectedCity = ref<string>("");
 
 const cities = ref<{ nome: string }[]>([]);
@@ -107,11 +104,11 @@ watch(
             <option value="">Selecione o estado</option>
 
             <option
-              v-for="uf in Object.values(BrazilianState)"
-              :key="uf"
-              :value="uf"
+              v-for="state in BRAZIL_STATES"
+              :key="state.value"
+              :value="state.value"
             >
-              {{ BrazilianStateLabels[uf] }}
+              {{ state.label }}
             </option>
           </select>
         </div>

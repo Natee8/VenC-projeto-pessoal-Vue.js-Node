@@ -13,7 +13,7 @@ export class CaregiverPetPreference {
   ) {}
 
   isExotic(): boolean {
-    return this.category === "exotic";
+    return this.category === AnimalCategory.EXOTIC;
   }
 
   acceptsLargeAnimals(): boolean {

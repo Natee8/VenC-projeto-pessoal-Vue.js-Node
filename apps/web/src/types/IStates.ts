@@ -29,3 +29,14 @@ export const BRAZIL_STATES = [
 ] as const;
 
 export type BrazilStateCode = (typeof BRAZIL_STATES)[number]["value"];
+
+export type BrazilianState = BrazilStateCode;
+
+export const BrazilianStateLabels: Record<BrazilianState, string> =
+  BRAZIL_STATES.reduce(
+    (acc, item) => {
+      acc[item.value] = item.label;
+      return acc;
+    },
+    {} as Record<BrazilianState, string>,
+  );

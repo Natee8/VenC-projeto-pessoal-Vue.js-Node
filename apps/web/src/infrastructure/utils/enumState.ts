@@ -1,59 +1,18 @@
-export enum BrazilianState {
-  AC = "AC",
-  AL = "AL",
-  AP = "AP",
-  AM = "AM",
-  BA = "BA",
-  CE = "CE",
-  DF = "DF",
-  ES = "ES",
-  GO = "GO",
-  MA = "MA",
-  MT = "MT",
-  MS = "MS",
-  MG = "MG",
-  PA = "PA",
-  PB = "PB",
-  PR = "PR",
-  PE = "PE",
-  PI = "PI",
-  RJ = "RJ",
-  RN = "RN",
-  RS = "RS",
-  RO = "RO",
-  RR = "RR",
-  SC = "SC",
-  SP = "SP",
-  SE = "SE",
-  TO = "TO",
-}
+import {
+  BRAZIL_STATES,
+  BrazilianStateLabels,
+  BrazilStateCode,
+} from "src/types/IStates";
 
-export const BrazilianStateLabels: Record<BrazilianState, string> = {
-  AC: "Acre",
-  AL: "Alagoas",
-  AP: "Amapá",
-  AM: "Amazonas",
-  BA: "Bahia",
-  CE: "Ceará",
-  DF: "Distrito Federal",
-  ES: "Espírito Santo",
-  GO: "Goiás",
-  MA: "Maranhão",
-  MT: "Mato Grosso",
-  MS: "Mato Grosso do Sul",
-  MG: "Minas Gerais",
-  PA: "Pará",
-  PB: "Paraíba",
-  PR: "Paraná",
-  PE: "Pernambuco",
-  PI: "Piauí",
-  RJ: "Rio de Janeiro",
-  RN: "Rio Grande do Norte",
-  RS: "Rio Grande do Sul",
-  RO: "Rondônia",
-  RR: "Roraima",
-  SC: "Santa Catarina",
-  SP: "São Paulo",
-  SE: "Sergipe",
-  TO: "Tocantins",
-};
+export type BrazilianState = BrazilStateCode;
+
+export const BrazilianState: Record<BrazilianState, BrazilianState> =
+  BRAZIL_STATES.reduce(
+    (acc, item) => {
+      acc[item.value] = item.value;
+      return acc;
+    },
+    {} as Record<BrazilianState, BrazilianState>,
+  );
+
+export { BrazilianStateLabels };
