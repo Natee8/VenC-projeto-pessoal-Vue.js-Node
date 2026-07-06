@@ -42,7 +42,7 @@ onMounted(async () => {
 watch(
   filters,
   (newFilters) => {
-    console.log("FILTROS ENVIADOS:", newFilters); // 👈 DEBUG
+    console.log("FILTROS ENVIADOS:", newFilters); // DEBUG
 
     fetchCaregivers(newFilters);
   },

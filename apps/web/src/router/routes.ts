@@ -12,4 +12,7 @@ export const Routes = {
   sendCode: "/send-code",
   resetPassword: "/reset-password",
   caregiversPublic: "/caregivers/public",
+  carregivers: {
+    carregiversWork: "/caregivers/work",
+  },
 } as const;

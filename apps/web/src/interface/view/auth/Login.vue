@@ -51,7 +51,7 @@ const handleLogin = async () => {
       1200,
     );
 
-    router.push(Routes.home);
+    router.push(Routes.carregivers.carregiversWork);
   } catch (error) {
     await showSnackbarAndWait(
       snackbar,

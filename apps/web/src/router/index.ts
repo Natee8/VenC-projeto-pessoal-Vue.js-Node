@@ -17,6 +17,8 @@ const forCaregivers = () =>
 const caregiversPublic = () =>
   import("../interface/view/CarregiversPublic/CarregiverPublic.vue");
 const forOwners = () => import("../interface/view/ForOwners/Owners.vue");
+const carregiversWork = () =>
+  import("../interface/view/Carregivers/Work/CarregiversWork.vue");
 
 export const router = createRouter({
   history: createWebHistory(),
