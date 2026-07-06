@@ -3,6 +3,7 @@ import { failure } from "../core/http/failure.js";
 import { success } from "../core/http/success.js";
 import { CaregiverPetPreferenceFacadeUseCase } from "../application/usecases/caregiver/caregiverPreferencePet.usecase.js";
 import { CaregiverPetPreferenceRepository } from "../infrastructure/repositories/user/caregiverPetPreference.repository.js";
+import { authMiddleware } from "../core/http/middlewares/auth.middlewares.js";
 
 export const router = Router();
 
@@ -10,10 +11,11 @@ const repo = new CaregiverPetPreferenceRepository();
 const useCase = new CaregiverPetPreferenceFacadeUseCase(repo);
 
 router.post(
-  "/:caregiverId/preferences",
+  "/preferences",
+  authMiddleware,
   async (req: Request, res: Response) => {
     try {
-      const caregiverId = Number(req.params.caregiverId);
+      const caregiverId = req.user!.sub;
 
       const body = Array.isArray(req.body) ? req.body : [req.body];
 
