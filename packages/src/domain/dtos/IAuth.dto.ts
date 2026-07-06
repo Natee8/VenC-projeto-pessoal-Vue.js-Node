@@ -27,6 +27,13 @@ export interface RefreshToken {
   isExpired(): boolean;
 }
 
+export type ResetPasswordWithToken = {
+  token: string;
+  newPassword: string;
+};
+
+
+
 export interface IUserAuthDto {
   id: string | number;
   email: string;

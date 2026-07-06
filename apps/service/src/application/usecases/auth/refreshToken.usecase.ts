@@ -13,6 +13,11 @@ export class RefreshTokenUseCase {
     const tokenRecord = await this.refreshTokenRepo.find(refreshToken);
     if (!tokenRecord) return left({ message: "Refresh token inválido" });
 
+    if (tokenRecord.isExpired()) {
+      await this.refreshTokenRepo.revoke(tokenRecord.getToken());
+      return left({ message: "Refresh token expirado" });
+    }
+
     const newAccessToken = await this.tokenGenerator.generateAccessToken(
       tokenRecord.userId,
     );

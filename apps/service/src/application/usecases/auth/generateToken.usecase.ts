@@ -20,6 +20,16 @@ export class GenerateTokenUseCase {
       const accessToken = await this.tokenGenerator.generateAccessToken(
         user.getId(),
       );
+      const existingTokens = await this.refreshTokenRepo.findByUserId(
+        user.getId(),
+      );
+
+      await Promise.all(
+        existingTokens.map((token) =>
+          this.refreshTokenRepo.revoke(token.getToken()),
+        ),
+      );
+
       const refreshToken = new RefreshTokenEntity({
         token: await this.tokenGenerator.generateRefreshToken(user.getId()),
         userId: user.getId(),
