@@ -18,6 +18,7 @@ model UserAuth {
   userReviewsReceived  UserReview[] @relation("Target")
 
   serviceReviewsGiven  ServiceReview[]
+  notifications Notification[]
 }
 
 model RefreshToken {
