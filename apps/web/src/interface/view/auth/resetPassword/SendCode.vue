@@ -1,111 +1,90 @@
 <script setup lang="ts">
-import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-
+import { computed } from "vue";
 import AuthLayout from "src/interface/layout/auth/authLayout.vue";
 import AuthFormContainer from "src/interface/layout/auth/authContainerForms.vue";
-import Snackbar from "src/interface/components/utils/snackbar.vue";
-
-import sendCode from "src/interface/components/form/sendCode.vue";
-
-import { verificationCodeRepository } from "src/infrastructure/repositories/sendCodeRepository";
-import { showSnackbarAndWait } from "src/interface/utils/asyncDelay";
-
-const codeFormRef = ref<InstanceType<typeof sendCode> | null>(null);
-
-const loading = ref(false);
 
 const route = useRoute();
 const router = useRouter();
 
-const email =
+const rawEmail =
   (route.query.email as string) || sessionStorage.getItem("resetEmail") || "";
 
-const snackbar = ref({
-  show: false,
-  message: "",
-  type: "success" as "success" | "error",
+const email = computed(() => {
+  if (!rawEmail) return "";
+  const [name, domain] = rawEmail.split("@");
+  return `${name.slice(0, 2)}•••${name.slice(-2)}@${domain}`;
 });
 
-const handleChange = (value: { code: string }) => {};
+const goBack = () => router.push({ name: "send-email" });
 
-const handleVerifyCode = async () => {
-  const result = await codeFormRef.value?.validate();
-
-  if (!result?.valid) return;
-  if (loading.value) return;
-
-  if (!email) {
-    await showSnackbarAndWait(
-      snackbar,
-      "Email não encontrado. Reinicie o processo.",
-      "error",
-      1500,
-    );
-    return;
-  }
-
-  loading.value = true;
-
-  try {
-    const data = await verificationCodeRepository.verifyResetPasswordCode(
-      email,
-      result.data.code,
-    );
-
-    const resetToken = data.resetToken || data.resetToken;
-
-    if (!resetToken) {
-      throw new Error("Não foi possível obter token de reset");
-    }
-
-    await showSnackbarAndWait(
-      snackbar,
-      "Código validado com sucesso!",
-      "success",
-      1200,
-    );
-
-    router.push({
-      name: "reset-password",
-      query: {
-        token: resetToken,
-      },
-    });
-  } catch (error) {
-    await showSnackbarAndWait(
-      snackbar,
-      "Código inválido ou expirado",
-      "error",
-      1500,
-    );
-
-    console.error(error);
-  } finally {
-    loading.value = false;
-  }
+const goToLogin = () => {
+  router.push({ name: "login" });
 };
 </script>
+
 <template>
   <AuthLayout>
-    <AuthFormContainer subtitle="Digite o código enviado para seu email">
-      <sendCode ref="codeFormRef" @change="handleChange" />
-
-      <template #actions>
-        <button
-          class="w-full h-16 bg-details text-white font-semibold rounded-lg hover:opacity-90 transition disabled:opacity-50"
-          :disabled="loading"
-          @click="handleVerifyCode"
+    <AuthFormContainer>
+      <div class="flex items-center justify-center">
+        <div
+          class="w-full max-w-[800px] flex flex-col items-center text-center"
         >
-          {{ loading ? "Verificando..." : "Confirmar código" }}
-        </button>
+          <div class="relative mb-10 flex items-center justify-center">
+            <!-- glow base -->
+            <div
+              class="absolute w-60 h-60 bg-primary/20 rounded-full blur-[100px]"
+            ></div>
 
-        <Snackbar
-          :show="snackbar.show"
-          :message="snackbar.message"
-          :type="snackbar.type"
-        />
-      </template>
+            <!-- glow animado -->
+            <div
+              class="absolute w-72 h-72 bg-primary/10 rounded-full blur-[120px] animate-pulse"
+            ></div>
+
+            <!-- imagem -->
+            <img
+              src="/assets/icons/petEmail.svg"
+              alt="E-mail enviado"
+              class="w-44 relative drop-shadow-xl animate-float"
+            />
+          </div>
+
+          <h2 class="text-2xl font-semibold text-white mb-3">Link enviado</h2>
+
+          <p class="text-white/80 leading-relaxed mb-12">
+            Enviamos um link para o e-mail
+            <span class="text-white font-medium break-all">{{ email }}</span
+            >.
+            <br />
+            Caso ele exista em nossa base, você poderá redefinir sua senha.
+          </p>
+
+          <button
+            class="w-full h-12 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 transition"
+            @click="goToLogin"
+          >
+            Voltar para o login
+          </button>
+
+          <div class="w-full flex items-center gap-3 my-6">
+            <div class="flex-1 h-[1px] bg-white/20"></div>
+            <span class="text-white/50 text-xs">ou</span>
+            <div class="flex-1 h-[1px] bg-white/20"></div>
+          </div>
+
+          <div class="flex flex-col items-center gap-3">
+            <p class="text-white/70 text-sm">
+              Não recebeu?
+              <span
+                class="text-primary cursor-pointer hover:underline ml-1"
+                @click="goBack"
+              >
+                Reenviar
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
     </AuthFormContainer>
   </AuthLayout>
 </template>

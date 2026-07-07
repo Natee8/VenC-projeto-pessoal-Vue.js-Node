@@ -1,4 +1,4 @@
-import { apiInstance } from "../config/ApiConfig";
+import { apiInstance } from "../config/ApiConfig.js";
 
 export const verificationCodeRepository = {
   async sendResetPasswordCode(email: string) {
@@ -20,25 +20,13 @@ export const verificationCodeRepository = {
 
   async resetPassword({
     token,
-    email,
-    code,
     newPassword,
   }: {
-    token?: string;
-    email?: string;
-    code?: string;
+    token: string;
     newPassword: string;
   }) {
-    const payload: any = { newPassword };
-
-    if (token) payload.token = token;
-    else {
-      payload.email = email;
-      payload.code = code;
-    }
-
+    const payload = { token, newPassword };
     const { data } = await apiInstance.post("/auth/reset-password", payload);
-
     return data;
   },
 };

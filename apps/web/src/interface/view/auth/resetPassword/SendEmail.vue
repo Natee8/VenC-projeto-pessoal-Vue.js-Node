@@ -49,21 +49,20 @@ const handleSendEmail = async () => {
 
     await showSnackbarAndWait(
       snackbar,
-      "Código enviado para seu email!",
+      "Se o email existir, um link para redefinir a senha foi enviado. Verifique sua caixa de entrada.",
       "success",
       1500,
     );
 
-    // store email in sessionStorage to avoid leaking it in the URL
+    // store email in sessionStorage to allow the fallback visual page to reference it
     try {
       sessionStorage.setItem("resetEmail", result.data.email);
     } catch {
       // ignore storage errors
     }
 
-    router.push({
-      name: "send-code",
-    });
+    // redirect user to the fallback visual page (send-code)
+    router.push({ name: "send-code" });
   } catch (error) {
     await showSnackbarAndWait(
       snackbar,

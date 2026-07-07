@@ -40,25 +40,13 @@ export const sendCodeEmail = ({
           </p>
 
           <p style="color: #666; font-size: 14px;">
-            Use o código abaixo para redefinir sua senha:
+            Enviamos um link para redefinir sua senha para o endereço de e-mail informado (caso ele exista em nosso sistema).
           </p>
-
-          <div
-            style="
-              margin: 25px 0;
-              font-size: 32px;
-              font-weight: bold;
-              letter-spacing: 8px;
-              color: #1e1e2f;
-            "
-          >
-            ${code}
-          </div>
 
           ${resetLink ? `<p style="margin-top: 10px;"><a href="${resetLink}" style="display:inline-block;padding:12px 20px;background:#1e1e2f;color:#fff;border-radius:6px;text-decoration:none;">Redefinir senha</a></p>` : ""}
 
           <p style="color: #999; font-size: 12px;">
-            Esse código expira em 10 minutos.
+            O link expira em 10 minutos.
           </p>
         </td>
       </tr>

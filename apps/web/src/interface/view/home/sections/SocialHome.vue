@@ -23,29 +23,26 @@ const buildSlides = (cardsCount: number) => [
 ];
 const slides = ref(buildSlides(visibleCards.value));
 
-// avança 1 card
 const nextSlide = async () => {
   isTransitioning.value = true;
   currentIndex.value += 1;
 };
 
-// clicar na bolinha
 const goToSlide = async (index: number) => {
   isTransitioning.value = true;
-  currentIndex.value = index + visibleCards.value; // ajusta pro clone
+  currentIndex.value = index + visibleCards.value;
 };
 
-// reset do clone para loop infinito sem engasgar
 const handleTransitionEnd = async () => {
   if (currentIndex.value >= total + visibleCards.value) {
     isTransitioning.value = false;
-    currentIndex.value = visibleCards.value; // volta pro real
+    currentIndex.value = visibleCards.value; 
     await nextTick();
-    isTransitioning.value = true; // reativa a transição pro próximo
+    isTransitioning.value = true;
   }
   if (currentIndex.value < visibleCards.value) {
     isTransitioning.value = false;
-    currentIndex.value = total + visibleCards.value - 1; // volta pro real
+    currentIndex.value = total + visibleCards.value - 1;
     await nextTick();
     isTransitioning.value = true;
   }
@@ -74,20 +71,30 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <section class="py-14 md:py-20 xl:py-28 px-4 sm:px-6 md:px-10 xl:px-20 flex flex-col items-center gap-10 bg-bgColor">
-    <div class="flex flex-col items-center gap-12 md:gap-16 xl:gap-20 py-8 md:py-12 xl:py-16 w-full">
+  <section
+    class="py-14 md:py-20 xl:py-28 px-4 sm:px-6 md:px-10 xl:px-20 flex flex-col items-center gap-10 bg-bgColor"
+  >
+    <div
+      class="flex flex-col items-center gap-12 md:gap-16 xl:gap-20 py-8 md:py-12 xl:py-16 w-full"
+    >
       <div class="w-full flex flex-col items-center gap-5">
-        <h1 class="text-3xl md:text-4xl font-bold text-texts-primary-dark text-center">
+        <h1
+          class="text-3xl md:text-4xl font-bold text-texts-primary-dark text-center"
+        >
           Siga-nos nas redes sociais!
         </h1>
-        <p class="w-full md:w-[75%] xl:w-[60%] font-medium text-texts-primary-dark/70 text-center">
+        <p
+          class="w-full md:w-[75%] xl:w-[60%] font-medium text-texts-primary-dark/70 text-center"
+        >
           Aqui você encontra dog walkers e cuidadores verificados, escolhe quem
           combina com você e com seu pet, e pode entrar em contato direto, sem
           intermediários nem enrolação.
         </p>
       </div>
 
-      <div class="flex flex-wrap w-full justify-center xl:justify-between gap-3">
+      <div
+        class="flex flex-wrap w-full justify-center xl:justify-between gap-3"
+      >
         <a
           v-for="social in socials"
           :key="social.name"

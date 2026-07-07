@@ -71,6 +71,8 @@ const refreshTokenUseCase = new RefreshTokenUseCase(
   tokenGenerator,
 );
 
+/* verification-by-code repository/instance removed — reset now requires token only */
+
 /**
  * LOGIN
  */
@@ -142,27 +144,21 @@ router.post(
  * Accepts { token, newPassword } or { email, code, newPassword }
  */
 router.post("/reset-password", async (req: Request, res: Response) => {
-  const { token, email, code, newPassword } = req.body;
+  const { token, newPassword } = req.body;
+
+  if (!token) {
+    return res.status(400).json({ message: "Token é obrigatório" });
+  }
 
   if (!newPassword) {
     return res.status(400).json({ message: "Nova senha é obrigatória" });
   }
 
   try {
-    let targetEmail = email;
+    const payload = verifyResetToken(token);
+    const targetEmail = payload.email;
 
-    if (token) {
-      const payload = verifyResetToken(token);
-      targetEmail = payload.email;
-    } else if (!email || !code) {
-      return res
-        .status(400)
-        .json({ message: "Token ou email+code são obrigatórios" });
-    }
-
-    // validate email
     let emailVO: Email;
-
     try {
       emailVO = Email.create(targetEmail);
     } catch (err: unknown) {
@@ -170,15 +166,12 @@ router.post("/reset-password", async (req: Request, res: Response) => {
     }
 
     const user = await usersRepo.findByEmail(emailVO);
-
     if (!user) {
       return res.status(404).json({ message: "Usuário não encontrado" });
     }
 
     const newHash = await passwordService.hash(newPassword);
-
     user.changePassword(newHash);
-
     await usersRepo.save(user);
 
     return res.status(200).json({ message: "Senha alterada com sucesso" });

@@ -32,7 +32,9 @@ export class SendResetPasswordCodeUseCase {
 
     const token = signResetToken({ email: emailValue, code }, "10m");
 
-    const html = sendCodeEmail({ code, token });
+    const userName = user.getName().getValue();
+
+    const html = sendCodeEmail({ code, token, userName });
 
     await this.emailService.send({
       to: emailValue,
