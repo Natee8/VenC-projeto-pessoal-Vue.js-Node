@@ -9,7 +9,10 @@ import { IResponse } from "src/types/IResponse.js";
 
 export interface AuthRepository {
   login(params: LoginParams): Promise<IResponse<AuthSession>>;
+
   me(): Promise<User>;
+
+  logout(refreshToken: string): Promise<void>;
 
   /* sendResetCode(email: string): Promise<void>;
 

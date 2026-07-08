@@ -14,6 +14,7 @@ type JwtPayload = {
 export const useAuthStore = defineStore("auth", {
   state: (): AuthState => ({
     accessToken: null,
+    refreshToken: null,
     user: null,
     isAuthenticated: false,
   }),
@@ -24,11 +25,12 @@ export const useAuthStore = defineStore("auth", {
   },
 
   actions: {
-    setToken(token: string) {
-      console.log("🔥 setToken:", token);
+    setToken(accessToken: string, refreshToken: string) {
+      this.accessToken = accessToken;
+      this.refreshToken = refreshToken;
 
-      this.accessToken = token;
-      localStorage.setItem("accessToken", token);
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
     },
 
     async fetchMe() {
@@ -53,14 +55,15 @@ export const useAuthStore = defineStore("auth", {
     },
 
     async loadFromStorage() {
-      const token = localStorage.getItem("accessToken");
+      const accessToken = localStorage.getItem("accessToken");
+      const refreshToken = localStorage.getItem("refreshToken");
 
-      if (!token) return;
+      if (!accessToken) return;
 
-      this.accessToken = token;
+      this.accessToken = accessToken;
+      this.refreshToken = refreshToken;
 
       this.decodeToken();
-
       await this.fetchMe();
     },
 
@@ -80,12 +83,22 @@ export const useAuthStore = defineStore("auth", {
       }
     },
 
-    logout() {
+    async logout() {
+      try {
+        if (this.refreshToken) {
+          await authRepository.logout(this.refreshToken);
+        }
+      } catch (e) {
+        console.error("Erro ao deslogar:", e);
+      }
+
       this.accessToken = null;
+      this.refreshToken = null;
       this.user = null;
       this.isAuthenticated = false;
 
       localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
     },
   },
 });

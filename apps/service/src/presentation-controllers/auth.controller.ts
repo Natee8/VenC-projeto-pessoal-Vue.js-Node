@@ -11,7 +11,7 @@ import { RefreshTokenRepository } from "../infrastructure/repositories/auth/refr
 import { getErrorMessage } from "../utils/getErrorMessage.js";
 import { PasswordService } from "../application/service/passwordComparer.js";
 import { verifyResetToken } from "../utils/jwt.js";
-import { Email } from "@packages";
+import { Email, UserId } from "@packages";
 import { RegisterUseCase } from "../application/usecases/auth/register.usecase.js";
 import { OwnerProfileRepository } from "../infrastructure/repositories/user/userOwner.repository.js";
 import { CaregiverRepository } from "../infrastructure/repositories/user/userCaregiver.repository.js";
@@ -25,12 +25,12 @@ import { RegisterController } from "../controllers/register.js";
 import { authMiddleware } from "../core/http/middlewares/auth.middlewares.js";
 import {
   loginLimiter,
-  codeEmailLimiter,
   resetPasswordLimiter,
 } from "../core/http/middlewares/rateLimiter.middlewares.js";
 import { failure } from "../core/http/failure.js";
 import { GetMeUseCase } from "../application/usecases/profiles/getMe.usecase.js";
 import { success } from "../core/http/response.js";
+import { LogoutUseCase } from "../application/usecases/auth/logout.usecase.js";
 
 export const router: Router = Router();
 const prisma = new PrismaClient();
@@ -116,6 +116,38 @@ router.post("/login", loginLimiter, async (req: Request, res: Response) => {
   });
 });
 
+//logout
+
+const logoutUseCase = new LogoutUseCase(refreshTokenRepo);
+
+router.post("/logout", authMiddleware, async (req: Request, res: Response) => {
+  const { refreshToken } = req.body;
+  const userId = req.user?.sub;
+
+  if (!userId) {
+    return failure(res, {
+      message: "Não autenticado",
+      code: 401,
+    });
+  }
+
+  try {
+    await logoutUseCase.execute(
+      UserId.create(userId),
+      refreshToken, // opcional
+    );
+
+    return success(res, {
+      message: "Logout realizado com sucesso",
+    });
+  } catch (error) {
+    return failure(res, {
+      message: getErrorMessage(error),
+      code: 400,
+    });
+  }
+});
+
 /**
  * REFRESH TOKEN
  */
@@ -175,7 +207,6 @@ router.post(
 
       const user = await usersRepo.findByEmail(emailVO);
       if (!user) {
-        // Não revelar se o usuário existe ou não
         return res.status(200).json({
           message:
             "Se o email existe em nosso sistema, você receberá um link para resetar sua senha",

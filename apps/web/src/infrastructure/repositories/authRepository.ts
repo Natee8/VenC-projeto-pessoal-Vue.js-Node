@@ -17,6 +17,13 @@ export const authRepository: AuthRepository = {
     const response = await api.get("/auth/me");
     return response.data.data;
   },
+
+  async logout(refreshToken: string) {
+    await api.post("/auth/logout", {
+      refreshToken,
+    });
+  },
+  
   /* async refreshToken(refreshToken) {
     const { data } = await apiInstance.post("/refresh", {
       refreshToken,

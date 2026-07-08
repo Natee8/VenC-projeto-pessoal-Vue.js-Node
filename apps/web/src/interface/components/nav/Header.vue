@@ -4,22 +4,25 @@ import { Routes } from "../../../router/routes";
 import { HeaderByRole } from "../../../config/home/headerConfig";
 import ModalRegister from "../../components/modal/ModalRegister.vue";
 import NavAnimation from "../texts/NavAnimation.vue";
-import { useRoute } from "vue-router";
-import {
-  ArrowRightIcon,
-  Bars3Icon,
-  XMarkIcon,
-} from "@heroicons/vue/24/outline";
+import { useRoute, useRouter } from "vue-router";
+import { Bars3Icon, XMarkIcon } from "@heroicons/vue/24/outline";
 import { useAuthStore } from "src/infrastructure/stores/auth/authStore";
-import { ArrowRightEndOnRectangleIcon } from "@heroicons/vue/24/solid";
 import {
   ArrowRightStartOnRectangleIcon,
   UserIcon,
 } from "@heroicons/vue/16/solid";
+import { showSnackbarAndWait } from "src/interface/utils/asyncDelay";
+import Snackbar from "../utils/snackbar.vue";
 
 const modalAberta = ref(false);
 const mobileMenuOpen = ref(false);
 const authStore = useAuthStore();
+
+const snackbar = ref({
+  show: false,
+  message: "",
+  type: "success" as "success" | "error",
+});
 
 const headerItems = computed(() => {
   console.log("AUTH:", authStore.isAuthenticated);
@@ -33,6 +36,25 @@ const headerItems = computed(() => {
 
   return HeaderByRole[role];
 });
+
+const router = useRouter();
+
+const handleLogout = async () => {
+  try {
+    await authStore.logout();
+
+    await showSnackbarAndWait(
+      snackbar,
+      "Logout realizado com sucesso!",
+      "success",
+      1200,
+    );
+
+    router.push(Routes.home);
+  } catch (e) {
+    await showSnackbarAndWait(snackbar, "Erro ao sair", "error", 1200);
+  }
+};
 
 const showAuthButtons = computed(() => !authStore.isAuthenticated);
 
@@ -102,8 +124,8 @@ watch(
         </div>
 
         <div
-          @click="authStore.logout()"
-          class="h-10 px-5 bg-gray-200 border border-gray-200 border border-gray-300 transition-all duration-200 ease-in-out hover:scale-105 hover:bg-red-500 hover:border-red-500 hover:text-white flex gap-2 items-center rounded-xl cursor-pointer group"
+          @click="handleLogout"
+          class="h-10 px-5 bg-gray-200 border border-gray-300 transition-all duration-200 ease-in-out hover:scale-105 hover:bg-red-500 hover:border-red-500 hover:text-white flex gap-2 items-center rounded-xl cursor-pointer group"
         >
           <p
             class="font-semibold text-gray-700 group-hover:text-white transition"
@@ -157,6 +179,12 @@ watch(
       </div>
     </div>
   </header>
+
+  <Snackbar
+    :show="snackbar.show"
+    :message="snackbar.message"
+    :type="snackbar.type"
+  />
 
   <ModalRegister
     v-if="modalAberta"
