@@ -1,3 +1,5 @@
+import crypto from "crypto";
+
 export class UserId {
   private readonly _value: number;
 
@@ -7,7 +9,7 @@ export class UserId {
 
   static create(value?: number): UserId {
     if (value === undefined) {
-      return new UserId(Math.floor(Math.random() * 1_000_000_000));
+      return new UserId(crypto.randomInt(1, 1_000_000_000));
     }
 
     if (!value || value <= 0) {

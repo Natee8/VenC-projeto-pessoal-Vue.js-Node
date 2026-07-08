@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import { Email, VerificationCodeRepository } from "@packages";
 import { EmailService } from "apps/service/src/domain/dtos/email.sto.js";
 import { UsersRepository } from "apps/service/src/infrastructure/repositories/auth/authLogin.repository.js";
@@ -44,7 +45,7 @@ export class SendResetPasswordCodeUseCase {
   }
 
   private generateCode(): string {
-    return Math.floor(100000 + Math.random() * 900000).toString();
+    return crypto.randomInt(100000, 999999).toString();
   }
 
   private getExpiration(): Date {

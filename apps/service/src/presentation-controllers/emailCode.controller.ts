@@ -9,6 +9,7 @@ import { NodemailerEmailService } from "../application/service/emailService.js";
 import { SendResetPasswordCodeUseCase } from "../application/usecases/codeEmail/sendCodeVerification.usecase.js";
 import { VerifyResetPasswordCodeUseCase } from "../application/usecases/codeEmail/verifyCodeEmail.usecase.js";
 import { UsersRepository } from "../infrastructure/repositories/auth/authLogin.repository.js";
+import { codeEmailLimiter } from "../core/http/middlewares/rateLimiter.middlewares.js";
 
 export const router: Router = Router();
 const prisma = new PrismaClient();
@@ -27,31 +28,35 @@ const sendResetPasswordCodeUseCase = new SendResetPasswordCodeUseCase(
   usersRepository,
 );
 
-router.post("/send-code", async (req: Request, res: Response) => {
-  const { email } = req.body;
+router.post(
+  "/send-code",
+  codeEmailLimiter,
+  async (req: Request, res: Response) => {
+    const { email } = req.body;
 
-  let emailVO: Email;
+    let emailVO: Email;
 
-  try {
-    emailVO = Email.create(email);
-  } catch (error: unknown) {
-    return res.status(400).json({
-      message: getErrorMessage(error),
-    });
-  }
+    try {
+      emailVO = Email.create(email);
+    } catch (error: unknown) {
+      return res.status(400).json({
+        message: getErrorMessage(error),
+      });
+    }
 
-  try {
-    await sendResetPasswordCodeUseCase.execute(emailVO);
+    try {
+      await sendResetPasswordCodeUseCase.execute(emailVO);
 
-    return res.status(200).json({
-      message: "Código enviado com sucesso",
-    });
-  } catch (error) {
-    return res.status(500).json({
-      message: getErrorMessage(error),
-    });
-  }
-});
+      return res.status(200).json({
+        message: "Código enviado com sucesso",
+      });
+    } catch (error) {
+      return res.status(500).json({
+        message: getErrorMessage(error),
+      });
+    }
+  },
+);
 
 router.post("/verify-code", async (req: Request, res: Response) => {
   const { token, email, code } = req.body;

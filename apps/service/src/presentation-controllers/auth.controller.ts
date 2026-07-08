@@ -23,6 +23,11 @@ import { PrismaClient } from "../generated/prisma/index.js";
 import { uploadProfileImage } from "../application/service/uploadImages.js";
 import { RegisterController } from "../controllers/register.js";
 import { authMiddleware } from "../core/http/middlewares/auth.middlewares.js";
+import {
+  loginLimiter,
+  codeEmailLimiter,
+  resetPasswordLimiter,
+} from "../core/http/middlewares/rateLimiter.middlewares.js";
 import { failure } from "../core/http/failure.js";
 import { GetMeUseCase } from "../application/usecases/profiles/getMe.usecase.js";
 import { success } from "../core/http/response.js";
@@ -76,7 +81,7 @@ const refreshTokenUseCase = new RefreshTokenUseCase(
 /**
  * LOGIN
  */
-router.post("/login", async (req: Request, res: Response) => {
+router.post("/login", loginLimiter, async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   let emailVO: Email;
@@ -143,42 +148,53 @@ router.post(
  * RESET PASSWORD
  * Accepts { token, newPassword } or { email, code, newPassword }
  */
-router.post("/reset-password", async (req: Request, res: Response) => {
-  const { token, newPassword } = req.body;
+router.post(
+  "/reset-password",
+  resetPasswordLimiter,
+  async (req: Request, res: Response) => {
+    const { token, newPassword } = req.body;
 
-  if (!token) {
-    return res.status(400).json({ message: "Token é obrigatório" });
-  }
+    if (!token) {
+      return res.status(400).json({ message: "Token é obrigatório" });
+    }
 
-  if (!newPassword) {
-    return res.status(400).json({ message: "Nova senha é obrigatória" });
-  }
+    if (!newPassword) {
+      return res.status(400).json({ message: "Nova senha é obrigatória" });
+    }
 
-  try {
-    const payload = verifyResetToken(token);
-    const targetEmail = payload.email;
-
-    let emailVO: Email;
     try {
-      emailVO = Email.create(targetEmail);
-    } catch (err: unknown) {
-      return res.status(400).json({ message: "Email inválido" });
+      const payload = verifyResetToken(token);
+      const targetEmail = payload.email;
+
+      let emailVO: Email;
+      try {
+        emailVO = Email.create(targetEmail);
+      } catch (err: unknown) {
+        return res.status(400).json({ message: "Email inválido" });
+      }
+
+      const user = await usersRepo.findByEmail(emailVO);
+      if (!user) {
+        // Não revelar se o usuário existe ou não
+        return res.status(200).json({
+          message:
+            "Se o email existe em nosso sistema, você receberá um link para resetar sua senha",
+        });
+      }
+
+      const newHash = await passwordService.hash(newPassword);
+      user.changePassword(newHash);
+      await usersRepo.save(user);
+
+      return res.status(200).json({
+        message:
+          "Se o email existe em nosso sistema, você receberá um link para resetar sua senha",
+      });
+    } catch (error) {
+      return res.status(400).json({ message: getErrorMessage(error) });
     }
-
-    const user = await usersRepo.findByEmail(emailVO);
-    if (!user) {
-      return res.status(404).json({ message: "Usuário não encontrado" });
-    }
-
-    const newHash = await passwordService.hash(newPassword);
-    user.changePassword(newHash);
-    await usersRepo.save(user);
-
-    return res.status(200).json({ message: "Senha alterada com sucesso" });
-  } catch (error) {
-    return res.status(400).json({ message: getErrorMessage(error) });
-  }
-});
+  },
+);
 
 router.get("/me", authMiddleware, async (req: Request, res: Response) => {
   try {
