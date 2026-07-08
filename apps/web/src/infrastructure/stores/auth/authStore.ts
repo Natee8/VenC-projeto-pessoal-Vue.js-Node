@@ -83,6 +83,20 @@ export const useAuthStore = defineStore("auth", {
       }
     },
 
+    setAuth(data: {
+      accessToken: string;
+      refreshToken: string;
+      user: { id: number; role: Role };
+    }) {
+      this.accessToken = data.accessToken;
+      this.refreshToken = data.refreshToken;
+      this.user = data.user;
+      this.isAuthenticated = true;
+
+      localStorage.setItem("accessToken", data.accessToken);
+      localStorage.setItem("refreshToken", data.refreshToken);
+    },
+
     async logout() {
       try {
         if (this.refreshToken) {

@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { Routes } from "./routes";
+import { setupAuthGuard } from "src/interface/utils/authGuard";
 
 const Home = () => import("../interface/view/home/Home.vue");
 const Login = () => import("../interface/view/auth/Login.vue");
@@ -27,6 +28,12 @@ export const router = createRouter({
       path: Routes.home,
       name: "home",
       component: Home,
+    },
+    {
+      path: Routes.carregivers.carregiversWork,
+      name: "caregivers-work",
+      meta: { requiresAuth: true },
+      component: carregiversWork,
     },
     {
       path: Routes.about,
@@ -77,3 +84,5 @@ export const router = createRouter({
     },
   ],
 });
+
+setupAuthGuard(router);

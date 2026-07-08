@@ -14,6 +14,7 @@ export type AuthAccount = {
 export type AuthSession = {
   accessToken: string;
   refreshToken: string;
+  user: AuthAccount;
   expiresAt: Date;
 };
 

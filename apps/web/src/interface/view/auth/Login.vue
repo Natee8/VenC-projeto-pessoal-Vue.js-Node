@@ -41,7 +41,11 @@ const handleLogin = async () => {
       throw new Error("Token não veio na resposta");
     }
 
-    authStore.setToken(response.data.accessToken);
+    authStore.setAuth({
+      accessToken: response.data.accessToken,
+      refreshToken: response.data.refreshToken,
+      user: response.data.user,
+    });
     await authStore.fetchMe();
 
     await showSnackbarAndWait(
