@@ -121,6 +121,17 @@ export class CaregiverRepository {
       isActive: true,
     };
 
+    if (filters?.petTypes?.length) {
+      where.petPreferences = {
+        some: {
+          animalType: {
+            in: filters.petTypes.map((p) => p.toLowerCase()),
+          },
+          accepted: true,
+        },
+      };
+    }
+
     if (filters?.city || filters?.state) {
       where.address = {};
 
@@ -176,6 +187,7 @@ export class CaregiverRepository {
     }
     console.log("🟢 WHERE FINAL:");
     console.log(JSON.stringify(where, null, 2));
+    console.log("🐶 PET TYPES:", filters?.petTypes);
 
     const records = await this.prisma.caregiver.findMany({
       where,
@@ -183,6 +195,7 @@ export class CaregiverRepository {
       include: {
         address: true,
         user: true,
+        petPreferences: true,
 
         services: {
           where: {

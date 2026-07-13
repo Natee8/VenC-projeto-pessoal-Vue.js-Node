@@ -3,6 +3,7 @@ import { CaregiverRepository } from "../infrastructure/repositories/user/userCar
 import { failure } from "../core/http/failure.js";
 import { success } from "../core/http/success.js";
 import { ListPublicCaregiversUseCase } from "../application/usecases/caregiver/getPublicCaregiver.usecase.js";
+import { PetSpecies } from "@packages/types/petTypes.js";
 
 export const router = Router();
 
@@ -12,16 +13,30 @@ const caregiverUseCase = new ListPublicCaregiversUseCase(caregiverRepo);
 
 router.get("/public", async (req: Request, res: Response) => {
   try {
-    const { state, city, minRating, serviceIds } = req.query;
+    const { state, city, minRating, serviceIds, petTypes } = req.query;
 
+    const petTypesArray = petTypes
+      ? Array.isArray(petTypes)
+        ? petTypes
+        : [petTypes]
+      : undefined;
     const filters = {
       state: state ? String(state) : undefined,
       city: city ? String(city) : undefined,
       minRating: minRating ? Number(minRating) : undefined,
+
       serviceIds: serviceIds
         ? Array.isArray(serviceIds)
           ? serviceIds.map(Number)
           : [Number(serviceIds)]
+        : undefined,
+
+      petTypes: petTypesArray?.filter((p): p is PetSpecies =>
+        Object.values(PetSpecies).includes(p as PetSpecies),
+      ).length
+        ? petTypesArray.filter((p): p is PetSpecies =>
+            Object.values(PetSpecies).includes(p as PetSpecies),
+          )
         : undefined,
     };
 

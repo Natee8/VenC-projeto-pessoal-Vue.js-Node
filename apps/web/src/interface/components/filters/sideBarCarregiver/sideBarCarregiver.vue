@@ -151,7 +151,8 @@ watch(
       </section>
       <section>
         <h2 class="font-semibold text-white mb-3">Tipo de animal:</h2>
-        <div class="flex flex-col gap-6">
+
+        <div class="grid grid-cols-2 gap-4">
           <Checkbox
             v-for="type in petSpeciesOptions"
             :key="type"

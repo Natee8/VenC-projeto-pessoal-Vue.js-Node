@@ -1,3 +1,5 @@
+import { PetSpecies } from "@packages/types/petTypes.js";
+
 export type ListCaregiversFilters = {
   city?: string;
   state?: string;
@@ -6,4 +8,5 @@ export type ListCaregiversFilters = {
   maxPrice?: number;
   minRating?: number;
   offersHosting?: boolean;
+  petTypes?: PetSpecies[];
 };
