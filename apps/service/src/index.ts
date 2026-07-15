@@ -10,6 +10,7 @@ import { router as verification } from "./presentation-controllers/emailCode.con
 import { router as serviceSearch } from "./presentation-controllers/search.controller.js";
 import { router as serviceOffer } from "./presentation-controllers/serviceOffer.controller.js";
 import { router as caregiverPetPreference } from "./presentation-controllers/caregiverPetPreference.controller.js";
+import { router as profile } from "./presentation-controllers/profile.controller.js";
 
 const app = express();
 const PORT = process.env.APP_PORT || 3000;
@@ -25,6 +26,7 @@ app.use(bodyParser.json());
 
 app.use("/auth", auth);
 app.use("/caregivers", caregiver, caregiverPetPreference);
+app.use("/profile", profile);
 app.use("/services", service, serviceOffer);
 app.use("/services", serviceSearch);
 app.use("/verification", verification);

@@ -14,5 +14,6 @@ export const Routes = {
   caregiversPublic: "/caregivers/public",
   carregivers: {
     carregiversWork: "/caregivers/work",
+    carregiversProfile: "/caregivers/profile",
   },
 } as const;

@@ -1,4 +1,4 @@
-import { State } from "@packages";
+import { PetSpecies, State } from "@packages";
 import { z } from "zod";
 
 import { addressSchema } from "./address.validator.js";
@@ -36,12 +36,18 @@ export const listCaregiversQuerySchema = z.object({
   petTypes: z
     .union([z.string(), z.array(z.string())])
     .optional()
-    .transform((val) => {
+    .transform((val): PetSpecies[] | undefined => {
       if (!val) return undefined;
 
-      if (Array.isArray(val)) return val;
+      const values = Array.isArray(val) ? val : val.split(",");
 
-      return val.split(",");
+      return values.map((v) => {
+        if (!(v in PetSpecies)) {
+          throw new Error(`Invalid pet type: ${v}`);
+        }
+
+        return PetSpecies[v as keyof typeof PetSpecies];
+      });
     }),
 });
 

@@ -20,6 +20,8 @@ const caregiversPublic = () =>
 const forOwners = () => import("../interface/view/ForOwners/Owners.vue");
 const carregiversWork = () =>
   import("../interface/view/Carregivers/Work/CarregiversWork.vue");
+const carregiversProfile = () =>
+  import("../interface/view/Carregivers/Profile/CarregiversProfile.vue");
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -34,6 +36,12 @@ export const router = createRouter({
       name: "caregivers-work",
       meta: { requiresAuth: true },
       component: carregiversWork,
+    },
+    {
+      path: Routes.carregivers.carregiversProfile,
+      name: "caregivers-profile",
+      meta: { requiresAuth: true },
+      component: carregiversProfile,
     },
     {
       path: Routes.about,
