@@ -9,6 +9,7 @@ export default {
         details: "#69CE96",
         primaryHover: "#C9552A",
         secondary: "#12354D",
+        secondaryHover: "#0C2B4A",
         bgColor: "#FFFCFB",
         headerColor: "#FFFAF6",
         default: "#eeebea",
@@ -24,6 +25,8 @@ export default {
           backgroundImage: {
             "gradient-about":
               "linear-gradient(180deg, #69CE96 63%, #163A5D 63%)",
+            "gradient-profile":
+              "linear-gradient(180deg, #163A5D 63%, #69CE96 63%)",
           },
           errors: {
             success: "#69CE96",
