@@ -3,7 +3,6 @@ export * from "./domain/entities/caregiverEntity.js";
 export * from "./domain/entities/petEntity.js";
 export * from "./domain/entities/refreshTokenEntity.js";
 export * from "./domain/entities/userReviewEntity.js";
-export * from "./domain/entities/serviceReviewEntity.js";
 export * from "./domain/entities/schedulingEntity.js";
 export * from "./domain/entities/serviceOfferEntity.js";
 export * from "./domain/entities/userAuthEntity.js";
@@ -17,6 +16,8 @@ export * from "./domain/dtos/IUser.dto.js";
 export * from "./domain/dtos/ICarregiver.dto.js";
 export * from "./domain/dtos/IOwner.dto.js";
 export * from "./domain/dtos/IService.dto.js";
+export * from "./domain/dtos/IReview.dto.js";
+export * from "./domain/dtos/IProfile.dto.js";
 
 export * from "./domain/repositories/userBase.repository.js";
 export * from "./domain/repositories/emailCode.repository.js";

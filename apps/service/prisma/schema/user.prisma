@@ -17,7 +17,6 @@ model UserAuth {
   userReviewsGiven     UserReview[] @relation("Reviewer")
   userReviewsReceived  UserReview[] @relation("Target")
 
-  serviceReviewsGiven  ServiceReview[]
   notifications Notification[]
 }
 

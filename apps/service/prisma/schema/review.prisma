@@ -1,19 +1,5 @@
 
 
-model ServiceReview {
-  id             Int      @id @default(autoincrement())
-  serviceOfferId Int
-  reviewerUserId Int
-  rating         Int
-  comment        String?
-  createdAt      DateTime @default(now())
-
-  serviceOffer ServiceOffer @relation(fields: [serviceOfferId], references: [id])
-
-  @@unique([reviewerUserId, serviceOfferId])
-  reviewer UserAuth @relation(fields: [reviewerUserId], references: [id])
-}
-
 model UserReview {
   id             Int      @id @default(autoincrement())
   reviewerUserId Int

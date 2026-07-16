@@ -1,5 +1,6 @@
 import { IAddress, ServiceOfferDTO } from "../..";
 import { CaregiverPetPreferenceDTO } from "./ICarregiverPetPreference.dto";
+import { IUserReviewDTO } from "./IReview.dto";
 
 export type ProfileDTO = {
   user: {
@@ -23,12 +24,8 @@ export type ProfileDTO = {
     serviceRadiusKm: number;
     isVerified: boolean;
     isPublicProfile: boolean;
-    averageRating: number;
-    reviewsCount: number;
     address: IAddress;
+    services: ServiceOfferDTO[];
+    preferences: CaregiverPetPreferenceDTO[];
   } | null;
-
-  services: ServiceOfferDTO[];
-  preferences: CaregiverPetPreferenceDTO[];
-  reviews: any[];
 };

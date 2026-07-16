@@ -18,8 +18,6 @@ model ServiceOffer {
   caregiver Caregiver @relation(fields: [caregiverId], references: [id])
   service   Service   @relation(fields: [serviceId], references: [id])
 
-  reviews ServiceReview[]
-
   @@unique([caregiverId, serviceId]) 
   @@index([serviceId])
 }
