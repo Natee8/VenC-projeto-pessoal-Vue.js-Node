@@ -27,5 +27,6 @@ export type ProfileDTO = {
     address: IAddress;
     services: ServiceOfferDTO[];
     preferences: CaregiverPetPreferenceDTO[];
+    averagePrice: number;
   } | null;
 };

@@ -19,6 +19,17 @@ export class ServiceOfferRepository {
     };
   }
 
+  async getAveragePriceByCaregiver(caregiverId: number): Promise<number> {
+    const result = await this.prisma.serviceOffer.aggregate({
+      where: { caregiverId },
+      _avg: {
+        price: true,
+      },
+    });
+
+    return result._avg.price ?? 0;
+  }
+
   async create(data: {
     caregiverId: number;
     serviceId: number;

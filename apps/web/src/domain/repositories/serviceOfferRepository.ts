@@ -1,4 +1,7 @@
-import { CreateServiceOfferParams, UpdateServiceOfferParams } from "../dtos/serviceOffer.dto.js";
+import {
+  CreateServiceOfferParams,
+  UpdateServiceOfferParams,
+} from "../dtos/serviceOffer.dto.js";
 import { IServiceOffer } from "../entities/IServiceOfferEntity.js";
 
 export interface ServiceOfferRepository {
@@ -6,7 +9,7 @@ export interface ServiceOfferRepository {
 
   update(
     serviceOfferId: string,
-    params: UpdateServiceOfferParams
+    params: UpdateServiceOfferParams,
   ): Promise<IServiceOffer>;
 
   getById(serviceOfferId: string): Promise<IServiceOffer | null>;
@@ -16,4 +19,6 @@ export interface ServiceOfferRepository {
   activate(serviceOfferId: string): Promise<void>;
 
   deactivate(serviceOfferId: string): Promise<void>;
+
+  getAveragePriceByCaregiver(caregiverId: string): Promise<number>;
 }

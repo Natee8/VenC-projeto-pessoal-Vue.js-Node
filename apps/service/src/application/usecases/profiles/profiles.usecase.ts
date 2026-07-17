@@ -52,9 +52,10 @@ export class ProfileUseCase {
     }
 
     // 👇 Se for caregiver
-    const [services, preferences] = await Promise.all([
+    const [services, preferences, averagePrice] = await Promise.all([
       this.serviceRepo.findByCaregiver(caregiver.id),
       this.preferenceRepo.findByCaregiverId(caregiver.id),
+      this.serviceRepo.getAveragePriceByCaregiver(caregiver.id),
     ]);
 
     return {
@@ -66,6 +67,7 @@ export class ProfileUseCase {
         preferences: preferences.map((preference) =>
           this.mapPreferenceToDTO(preference),
         ),
+        averagePrice,
       },
     };
   }
@@ -110,6 +112,7 @@ export class ProfileUseCase {
       isVerified: caregiver.hasVerification(),
       isPublicProfile: caregiver.isPublic(),
       address: caregiver.getAddress().toPrimitives(),
+      averagePrice: 0, // Inicialmente definido como 0, será atualizado posteriormente
     };
   }
 

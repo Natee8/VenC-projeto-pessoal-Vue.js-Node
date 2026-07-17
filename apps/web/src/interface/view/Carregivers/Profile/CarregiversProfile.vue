@@ -38,6 +38,10 @@ const services = computed<Service[]>(() => {
 <template>
   <section class="py-10 px-72 flex flex-col gap-10">
     <CardPhoto :profile="profile" :loading="loading" />
-    <CardService v-if="!loading" :services="services" />
+    <CardService
+      v-if="!loading"
+      :services="services"
+      :averagePrice="profile.averagePrice"
+    />
   </section>
 </template>

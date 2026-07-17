@@ -10,6 +10,7 @@ interface Service {
 
 const props = defineProps<{
   services: Service[];
+  averagePrice: number;
 }>();
 
 const selectedIds = ref<number[]>([]);
@@ -21,6 +22,12 @@ const toggleService = (id: number) => {
     selectedIds.value.push(id);
   }
 };
+
+const formattedAveragePrice = computed(() => {
+  if (!props.averagePrice) return "R$ 0,00";
+
+  return `R$ ${props.averagePrice.toFixed(2).replace(".", ",")}`;
+});
 
 const isSelected = (id: number) => {
   return selectedIds.value.includes(id);
@@ -124,7 +131,7 @@ const isSelected = (id: number) => {
 
       <input
         type="text"
-        value="R$ --,--"
+        :value="formattedAveragePrice"
         disabled
         class="w-full bg-gray-100 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 mb-4"
       />
