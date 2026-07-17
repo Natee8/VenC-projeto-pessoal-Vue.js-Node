@@ -13,6 +13,9 @@ export default {
         bgColor: "#FFFCFB",
         headerColor: "#FFFAF6",
         default: "#eeebea",
+        softs: {
+          primary: "#F9C6B3",
+        },
         texts: {
           primary: "#614B44",
           "primary-dark": "#3B2923",

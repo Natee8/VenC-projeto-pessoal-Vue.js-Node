@@ -1,10 +1,23 @@
-import type { Caregiver, OwnerProfile } from "@packages";
+import type {
+  Caregiver,
+  OwnerProfile,
+  CaregiverPetPreference,
+} from "@packages";
 import { UsersRepository } from "apps/service/src/infrastructure/repositories/auth/authLogin.repository.js";
 import { OwnerProfileRepository } from "../../../infrastructure/repositories/user/userOwner.repository.js";
 import { CaregiverRepository } from "../../../infrastructure/repositories/user/userCaregiver.repository.js";
 import { CaregiverPetPreferenceRepository } from "apps/service/src/infrastructure/repositories/user/caregiverPetPreference.repository.js";
 import { ServiceOfferRepository } from "apps/service/src/infrastructure/repositories/services/serviceOffer.repository.js";
 import { ProfileDTO } from "@packages";
+
+type CaregiverProfileBaseDTO = Omit<
+  Exclude<ProfileDTO["caregiverProfile"], null>,
+  "services" | "preferences"
+>;
+type CaregiverPetPreferenceDTO = Exclude<
+  ProfileDTO["caregiverProfile"],
+  null
+>["preferences"][number];
 
 export class ProfileUseCase {
   constructor(
@@ -29,35 +42,31 @@ export class ProfileUseCase {
     const userDTO = this.mapUserToDTO(user);
     const ownerProfileDTO = this.mapOwnerProfileToDTO(ownerProfile);
 
+    // 👇 Se NÃO for caregiver
     if (!caregiver?.id) {
-      const services: ProfileDTO["services"] = [];
-      const preferences: ProfileDTO["preferences"] = [];
-      const reviews: ProfileDTO["reviews"] = [];
-
       return {
         user: userDTO,
         ownerProfile: ownerProfileDTO,
         caregiverProfile: null,
-        services,
-        preferences,
-        reviews,
       };
     }
 
+    // 👇 Se for caregiver
     const [services, preferences] = await Promise.all([
       this.serviceRepo.findByCaregiver(caregiver.id),
       this.preferenceRepo.findByCaregiverId(caregiver.id),
     ]);
 
-    const reviews: ProfileDTO["reviews"] = [];
-
     return {
       user: userDTO,
       ownerProfile: ownerProfileDTO,
-      caregiverProfile: this.mapCaregiverProfileToDTO(caregiver),
-      services,
-      preferences,
-      reviews,
+      caregiverProfile: {
+        ...this.mapCaregiverProfileToDTO(caregiver),
+        services,
+        preferences: preferences.map((preference) =>
+          this.mapPreferenceToDTO(preference),
+        ),
+      },
     };
   }
 
@@ -92,7 +101,7 @@ export class ProfileUseCase {
 
   private mapCaregiverProfileToDTO(
     caregiver: Caregiver,
-  ): ProfileDTO["caregiverProfile"] {
+  ): CaregiverProfileBaseDTO {
     return {
       id: caregiver.id,
       userId: caregiver.getUserId().getValue(),
@@ -100,9 +109,22 @@ export class ProfileUseCase {
       serviceRadiusKm: caregiver.getServiceRadius(),
       isVerified: caregiver.hasVerification(),
       isPublicProfile: caregiver.isPublic(),
-      averageRating: caregiver.getAverageRating(),
-      reviewsCount: caregiver.getReviewsCount(),
       address: caregiver.getAddress().toPrimitives(),
+    };
+  }
+
+  private mapPreferenceToDTO(
+    preference: CaregiverPetPreference,
+  ): CaregiverPetPreferenceDTO {
+    return {
+      id: preference.id,
+      caregiverId: preference.caregiverId,
+      animalType: preference.animalType,
+      category: preference.category,
+      minSize: preference.minSize,
+      maxSize: preference.maxSize,
+      accepted: preference.accepted,
+      notes: preference.notes ?? null,
     };
   }
 }
