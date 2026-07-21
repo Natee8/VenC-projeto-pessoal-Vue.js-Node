@@ -19,4 +19,9 @@ export type ServiceOfferDTO = {
   description?: string | null;
   price: number;
   isActive: boolean;
+  service?: {
+    id: number;
+    name: string;
+    description: string;
+  };
 };

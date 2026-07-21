@@ -26,11 +26,11 @@ onMounted(async () => {
 });
 
 const services = computed<Service[]>(() => {
-  return (profile.value?.services ?? []).map((s: any) => ({
+  return (profile.value?.caregiverProfile?.services ?? []).map((s: any) => ({
     id: s.id,
-    name: s.service?.name ?? "Serviço",
-    price: s.price ?? 0,
-    description: s.service?.description ?? "",
+    name: s.service.name,
+    price: s.price,
+    description: s.description ?? "",
   }));
 });
 </script>
@@ -41,7 +41,7 @@ const services = computed<Service[]>(() => {
     <CardService
       v-if="!loading"
       :services="services"
-      :averagePrice="profile.averagePrice"
+      :averagePrice="profile.caregiverProfile.averagePrice"
     />
   </section>
 </template>

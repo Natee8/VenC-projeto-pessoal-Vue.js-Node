@@ -8,7 +8,15 @@ import {
 export class ServiceOfferRepository {
   constructor(private prisma: PrismaClient) {}
 
-  private toDTO(offer: PrismaServiceOffer): ServiceOfferDTO {
+  private toDTO(
+    offer: PrismaServiceOffer & {
+      service?: {
+        id: number;
+        name: string;
+        description: string;
+      };
+    },
+  ): ServiceOfferDTO {
     return {
       id: offer.id,
       caregiverId: offer.caregiverId,
@@ -16,6 +24,14 @@ export class ServiceOfferRepository {
       description: offer.description,
       price: offer.price,
       isActive: offer.isActive,
+
+      service: offer.service
+        ? {
+            id: offer.service.id,
+            name: offer.service.name,
+            description: offer.service.description,
+          }
+        : undefined,
     };
   }
 
@@ -54,6 +70,9 @@ export class ServiceOfferRepository {
   async findByCaregiver(caregiverId: number): Promise<ServiceOfferDTO[]> {
     const records = await this.prisma.serviceOffer.findMany({
       where: { caregiverId },
+      include: {
+        service: true,
+      },
     });
 
     return records.map((offer) => this.toDTO(offer));
