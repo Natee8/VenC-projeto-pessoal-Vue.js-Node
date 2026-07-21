@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
+import ModalBase from "../modal/ModalBase.vue";
+import ModalProfileService from "../modal/modalProfileService.vue";
+
+const showModal = ref(false);
 
 interface Service {
   id: number;
@@ -43,6 +47,7 @@ const isSelected = (id: number) => {
       </p>
 
       <button
+        @click="showModal = true"
         class="flex items-center gap-2 bg-secondary text-white text-sm px-6 py-2 rounded-lg"
       >
         <i class="fas fa-plus"></i>
@@ -151,4 +156,7 @@ const isSelected = (id: number) => {
       </div>
     </footer>
   </div>
+  <ModalBase :show="showModal" width="700px" @close="showModal = false">
+    <ModalProfileService />
+  </ModalBase>
 </template>

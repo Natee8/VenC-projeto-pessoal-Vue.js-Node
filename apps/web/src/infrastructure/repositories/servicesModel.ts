@@ -14,4 +14,19 @@ export const serviceModelRepository = {
 
     return data;
   },
+  async createCarregiverService(
+    caregiverId: number,
+    serviceId: number,
+    price: number,
+    description?: string,
+  ) {
+    const { data } = await apiInstance.post("/services/offer-create", {
+      caregiverId,
+      serviceId,
+      price,
+      description,
+    });
+
+    return data;
+  },
 };

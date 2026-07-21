@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { jwtDecode } from "jwt-decode";
 import { authRepository } from "src/infrastructure/repositories/authRepository";
 import { AuthState } from "./types/state";
+import { profileRepository } from "src/infrastructure/repositories/profileRepository";
 
 export type Role = "OWNER" | "CAREGIVER";
 
@@ -16,6 +17,7 @@ export const useAuthStore = defineStore("auth", {
     accessToken: null,
     refreshToken: null,
     user: null,
+    profile: null,
     isAuthenticated: false,
   }),
 
@@ -34,22 +36,21 @@ export const useAuthStore = defineStore("auth", {
     },
 
     async fetchMe() {
-      console.log("🚀 fetchMe chamado");
-
-      if (!this.accessToken) {
-        console.log("❌ SEM TOKEN");
-        return;
-      }
+      if (!this.accessToken) return;
 
       try {
-        const user = await authRepository.me();
+        const response = await profileRepository.getProfile();
 
-        console.log("👤 USER DO /me:", user);
+        const profile = response.data;
 
-        this.user = user;
+        console.log("PROFILE:", profile);
+
+        this.profile = profile;
+        this.user = profile.user;
+
         this.isAuthenticated = true;
       } catch (e) {
-        console.log("❌ ERRO NO /me:", e);
+        console.error(e);
         this.logout();
       }
     },
