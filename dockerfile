@@ -17,8 +17,11 @@ RUN npm install -g pnpm
 # Instala todas as deps do workspace já com os links internos corretos
 RUN pnpm install --frozen-lockfile
 
+# Compila o pacote compartilhado (@venC/packages)
+RUN pnpm --filter @venC/packages build
+
 # Gera Prisma Client para Linux
-RUN pnpm --filter service prisma generate -- --binary-targets native,debian-openssl-3.0.x
+RUN pnpm --filter service exec prisma generate --schema=prisma/schema
 
 EXPOSE 3000
 

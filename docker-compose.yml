@@ -26,9 +26,39 @@ services:
       - .env
     volumes:
       - .:/app
+      - /app/node_modules
+      - /app/apps/service/node_modules
+      - /app/apps/web/node_modules
+      - /app/packages/node_modules
+      - /app/.pnpm-store
     depends_on:
       - postgres
-    command: pnpm dev
+    command: pnpm --filter service dev
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        HTTP_PROXY: ${HTTP_PROXY}
+        HTTPS_PROXY: ${HTTPS_PROXY}
+        http_proxy: ${http_proxy}
+        https_proxy: ${https_proxy}
+    container_name: web-app
+    ports:
+      - "5173:5173"
+    env_file:
+      - apps/web/.env
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/apps/service/node_modules
+      - /app/apps/web/node_modules
+      - /app/packages/node_modules
+      - /app/.pnpm-store
+    depends_on:
+      - service
+    command: pnpm --filter web exec vite --host 0.0.0.0
 
 volumes:
   postgres_data:
