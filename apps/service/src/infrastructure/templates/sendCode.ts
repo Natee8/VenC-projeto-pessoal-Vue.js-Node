@@ -1,3 +1,5 @@
+import { env } from "../../core/config/env.js";
+
 export const sendCodeEmail = ({
   code,
   token,
@@ -7,8 +9,9 @@ export const sendCodeEmail = ({
   token?: string;
   userName?: string;
 }) => {
-  const frontendUrl = process.env.FRONTEND_URL ?? "http://localhost:5173";
-  const resetLink = token ? `${frontendUrl}/reset-password?token=${token}` : "";
+  const resetLink = token
+    ? `${env.frontendUrl}/reset-password?token=${token}`
+    : "";
 
   return `
   <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">

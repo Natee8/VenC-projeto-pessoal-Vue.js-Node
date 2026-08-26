@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import "dotenv/config";
 
+import { env } from "./core/config/env.js";
 import { router as auth } from "./presentation-controllers/auth.controller.js";
 import { router as caregiver } from "./presentation-controllers/caregiver.controller.js";
 import { router as service } from "./presentation-controllers/serviceModel.controller.js";
@@ -17,7 +18,7 @@ const PORT = process.env.APP_PORT || 3000;
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: env.frontendUrl,
     credentials: true,
   }),
 );
