@@ -51,6 +51,12 @@ export class CaregiverPetPreferenceRepository {
     return this.mapToEntity(record);
   }
 
+  async runInTransaction<T>(
+    fn: (tx: Prisma.TransactionClient) => Promise<T>,
+  ): Promise<T> {
+    return this.prisma.$transaction(fn);
+  }
+
   async findByCaregiverId(
     caregiverId: number,
     tx?: Prisma.TransactionClient,

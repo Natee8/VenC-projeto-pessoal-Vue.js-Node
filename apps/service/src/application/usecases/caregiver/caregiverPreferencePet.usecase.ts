@@ -7,20 +7,26 @@ import {
 import { PetSpecies, sizePets, speciesCategoryMap } from "@packages";
 import { CaregiverPetPreferenceRepository } from "apps/service/src/infrastructure/repositories/user/caregiverPetPreference.repository.js";
 import { CaregiverPetPreference } from "@packages";
+import type { Prisma } from "../../../generated/prisma/index.js";
+
+type CreatePetPreferenceInput = {
+  caregiverId: number;
+  animalType: PetSpecies;
+  minSize?: sizePets;
+  maxSize?: sizePets;
+  accepted: boolean;
+  notes?: string;
+};
 
 export class CaregiverPetPreferenceFacadeUseCase {
   constructor(
     private caregiverPetPreferenceRepo: CaregiverPetPreferenceRepository,
   ) {}
 
-  async create(input: {
-    caregiverId: number;
-    animalType: PetSpecies;
-    minSize?: sizePets;
-    maxSize?: sizePets;
-    accepted: boolean;
-    notes?: string;
-  }): Promise<Either<Error, CaregiverPetPreference>> {
+  async create(
+    input: CreatePetPreferenceInput,
+    tx?: Prisma.TransactionClient,
+  ): Promise<Either<Error, CaregiverPetPreference>> {
     const category = speciesCategoryMap[input.animalType];
 
     if (!category) {
@@ -29,6 +35,7 @@ export class CaregiverPetPreferenceFacadeUseCase {
 
     const existing = await this.caregiverPetPreferenceRepo.findByCaregiverId(
       input.caregiverId,
+      tx,
     );
 
     const alreadyExists = existing.some(
@@ -61,9 +68,44 @@ export class CaregiverPetPreferenceFacadeUseCase {
       input.notes,
     );
 
-    const saved = await this.caregiverPetPreferenceRepo.create(preference);
+    const saved = await this.caregiverPetPreferenceRepo.create(
+      preference,
+      tx,
+    );
 
     return right(saved);
+  }
+
+  async createMany(
+    inputs: CreatePetPreferenceInput[],
+  ): Promise<Either<Error, CaregiverPetPreference[]>> {
+    try {
+      const created = await this.caregiverPetPreferenceRepo.runInTransaction(
+        async (tx) => {
+          const results: CaregiverPetPreference[] = [];
+
+          for (const input of inputs) {
+            const result = await this.create(input, tx);
+
+            if (result.type === "left") {
+              throw new Error(result.error.message);
+            }
+
+            results.push(result.value);
+          }
+
+          return results;
+        },
+      );
+
+      return right(created);
+    } catch (error) {
+      return left(
+        error instanceof Error
+          ? error
+          : new Error("Erro ao criar preferências"),
+      );
+    }
   }
 
   async listByCaregiver(
