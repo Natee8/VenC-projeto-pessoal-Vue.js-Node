@@ -1,4 +1,4 @@
-import { State } from "./stateEnum";
+import { State } from "./stateEnum.js";
 
 export interface AddressPrimitives {
   street: string;

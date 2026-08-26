@@ -1,6 +1,6 @@
-import { IAddress, ServiceOfferDTO } from "../..";
-import { CaregiverPetPreferenceDTO } from "./ICarregiverPetPreference.dto";
-import { IUserReviewDTO } from "./IReview.dto";
+import { IAddress, ServiceOfferDTO } from "../../index.js";
+import { CaregiverPetPreferenceDTO } from "./ICarregiverPetPreference.dto.js";
+import { IUserReviewDTO } from "./IReview.dto.js";
 
 export type ProfileDTO = {
   user: {

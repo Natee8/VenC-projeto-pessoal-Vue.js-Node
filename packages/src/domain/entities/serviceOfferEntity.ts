@@ -1,4 +1,4 @@
-import { Money } from "../../valuesObjects/money";
+import { Money } from "../../valuesObjects/money.js";
 
 export class ServiceOffer {
   constructor(

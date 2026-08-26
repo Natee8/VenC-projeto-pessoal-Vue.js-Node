@@ -1,4 +1,4 @@
-import { State } from "../../types/stateEnum";
+import { State } from "../../types/stateEnum.js";
 
 export interface IAddress {
   street: string;

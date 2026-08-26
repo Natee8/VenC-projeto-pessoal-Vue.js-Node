@@ -1,4 +1,4 @@
-import { IAddress } from "./IAddress.dto";
+import { IAddress } from "./IAddress.dto.js";
 
 export interface CaregiverDTO {
   id: number;

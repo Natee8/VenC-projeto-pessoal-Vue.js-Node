@@ -1,4 +1,4 @@
-import { AnimalCategory, PetSpecies, sizePets } from "../../types/petTypes";
+import { AnimalCategory, PetSpecies, sizePets } from "../../types/petTypes.js";
 
 export class CaregiverPetPreference {
   constructor(

@@ -1,4 +1,4 @@
-import { NotificationType } from "../../types/INotificationType";
+import { NotificationType } from "../../types/INotificationType.js";
 
 export class Notification {
   constructor(

@@ -1,4 +1,4 @@
-import { AddressPrimitives } from "../types/address";
+import { AddressPrimitives } from "../types/address.js";
 
 export class Address {
   private constructor(private readonly props: AddressPrimitives) {

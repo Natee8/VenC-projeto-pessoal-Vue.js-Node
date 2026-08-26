@@ -1,4 +1,4 @@
-import { MoneyProps } from "../types/moneyProps";
+import { MoneyProps } from "../types/moneyProps.js";
 
 export class Money {
   private constructor(private readonly props: MoneyProps) {

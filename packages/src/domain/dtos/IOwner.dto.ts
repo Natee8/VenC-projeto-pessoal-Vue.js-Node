@@ -1,4 +1,4 @@
-import { IAddress } from "../..";
+import { IAddress } from "../../index.js";
 
 export interface OwnerProfileDTO {
   userId: number;
