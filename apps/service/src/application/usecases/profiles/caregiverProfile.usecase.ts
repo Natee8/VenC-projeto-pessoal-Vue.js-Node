@@ -1,10 +1,4 @@
-import {
-  Address,
-  Caregiver,
-  CaregiverDTO,
-  CaregiverPublicDTO,
-  IAddress,
-} from "@packages";
+import { Address, Caregiver, CaregiverDTO, IAddress } from "@packages";
 import { UserId } from "@packages";
 import { CaregiverRepository } from "../../../infrastructure/repositories/user/userCaregiver.repository.js";
 import { Prisma } from "../../../generated/prisma/wasm.js";
@@ -14,7 +8,6 @@ import {
   left,
   right,
 } from "apps/service/src/core/interface/IEighter.js";
-import { ListCaregiversFilters } from "apps/service/src/domain/dtos/service.dto.js";
 
 export class CaregiverFacadeUseCase {
   constructor(
@@ -82,21 +75,6 @@ export class CaregiverFacadeUseCase {
     }
 
     return right(this.toDTO(caregiver));
-  }
-
-  async getPublicCaregivers(
-    filters?: ListCaregiversFilters,
-  ): Promise<Either<Error, CaregiverPublicDTO[]>> {
-    if (
-      filters?.minRating &&
-      (filters.minRating < 1 || filters.minRating > 5)
-    ) {
-      return left(new Error("minRating deve estar entre 1 e 5"));
-    }
-
-    const caregivers = await this.caregiverRepo.findPublicCaregivers(filters);
-
-    return right(caregivers);
   }
 
   private toDTO(caregiver: Caregiver): CaregiverDTO {
