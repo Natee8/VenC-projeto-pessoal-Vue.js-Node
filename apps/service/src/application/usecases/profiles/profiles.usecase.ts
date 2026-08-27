@@ -12,7 +12,7 @@ import { ProfileDTO } from "@packages";
 
 type CaregiverProfileBaseDTO = Omit<
   Exclude<ProfileDTO["caregiverProfile"], null>,
-  "services" | "preferences"
+  "services" | "preferences" | "averagePrice"
 >;
 type CaregiverPetPreferenceDTO = Exclude<
   ProfileDTO["caregiverProfile"],
@@ -112,7 +112,6 @@ export class ProfileUseCase {
       isVerified: caregiver.hasVerification(),
       isPublicProfile: caregiver.isPublic(),
       address: caregiver.getAddress().toPrimitives(),
-      averagePrice: 0, // Inicialmente definido como 0, será atualizado posteriormente
     };
   }
 
