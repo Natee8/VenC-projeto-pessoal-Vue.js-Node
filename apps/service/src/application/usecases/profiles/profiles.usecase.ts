@@ -2,12 +2,14 @@ import type {
   Caregiver,
   OwnerProfile,
   CaregiverPetPreference,
+  ServiceOffer,
 } from "@packages";
 import { UsersRepository } from "apps/service/src/infrastructure/repositories/auth/authLogin.repository.js";
 import { OwnerProfileRepository } from "../../../infrastructure/repositories/user/userOwner.repository.js";
 import { CaregiverRepository } from "../../../infrastructure/repositories/user/userCaregiver.repository.js";
 import { CaregiverPetPreferenceRepository } from "apps/service/src/infrastructure/repositories/user/caregiverPetPreference.repository.js";
 import { ServiceOfferRepository } from "apps/service/src/infrastructure/repositories/services/serviceOffer.repository.js";
+import { ServiceRepository } from "apps/service/src/infrastructure/repositories/services/serviceModel.repository.js";
 import { ProfileDTO } from "@packages";
 
 type CaregiverProfileBaseDTO = Omit<
@@ -18,13 +20,18 @@ type CaregiverPetPreferenceDTO = Exclude<
   ProfileDTO["caregiverProfile"],
   null
 >["preferences"][number];
+type ServiceOfferDTO = Exclude<
+  ProfileDTO["caregiverProfile"],
+  null
+>["services"][number];
 
 export class ProfileUseCase {
   constructor(
     private usersRepo: UsersRepository,
     private ownerProfileRepo: OwnerProfileRepository,
     private caregiverRepo: CaregiverRepository,
-    private serviceRepo: ServiceOfferRepository,
+    private serviceOfferRepo: ServiceOfferRepository,
+    private serviceRepo: ServiceRepository,
     private preferenceRepo: CaregiverPetPreferenceRepository,
   ) {}
 
@@ -52,18 +59,25 @@ export class ProfileUseCase {
     }
 
     // 👇 Se for caregiver
-    const [services, preferences, averagePrice] = await Promise.all([
-      this.serviceRepo.findByCaregiver(caregiver.id),
+    const [offers, preferences, averagePrice] = await Promise.all([
+      this.serviceOfferRepo.findByCaregiver(caregiver.id),
       this.preferenceRepo.findByCaregiverId(caregiver.id),
-      this.serviceRepo.getAveragePriceByCaregiver(caregiver.id),
+      this.serviceOfferRepo.getAveragePriceByCaregiver(caregiver.id),
     ]);
+
+    const services = await this.serviceRepo.findManyByIds(
+      offers.map((offer) => offer.getServiceId()),
+    );
+    const serviceById = new Map(services.map((service) => [service.id, service]));
 
     return {
       user: userDTO,
       ownerProfile: ownerProfileDTO,
       caregiverProfile: {
         ...this.mapCaregiverProfileToDTO(caregiver),
-        services,
+        services: offers.map((offer) =>
+          this.mapServiceOfferToDTO(offer, serviceById.get(offer.getServiceId())),
+        ),
         preferences: preferences.map((preference) =>
           this.mapPreferenceToDTO(preference),
         ),
@@ -112,6 +126,21 @@ export class ProfileUseCase {
       isVerified: caregiver.hasVerification(),
       isPublicProfile: caregiver.isPublic(),
       address: caregiver.getAddress().toPrimitives(),
+    };
+  }
+
+  private mapServiceOfferToDTO(
+    offer: ServiceOffer,
+    service?: { id: number; name: string; description: string },
+  ): ServiceOfferDTO {
+    return {
+      id: Number(offer.id),
+      caregiverId: Number(offer.caregiverId),
+      serviceId: offer.getServiceId(),
+      description: offer.getDescription(),
+      price: offer.getPrice().getAmount(),
+      isActive: offer.isEnabled(),
+      service,
     };
   }
 

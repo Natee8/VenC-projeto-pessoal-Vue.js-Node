@@ -1,4 +1,4 @@
-import { ServiceOfferDTO } from "@packages";
+import { Money, ServiceOffer } from "@packages";
 
 import {
   PrismaClient,
@@ -8,31 +8,17 @@ import {
 export class ServiceOfferRepository {
   constructor(private prisma: PrismaClient) {}
 
-  private toDTO(
-    offer: PrismaServiceOffer & {
-      service?: {
-        id: number;
-        name: string;
-        description: string;
-      };
-    },
-  ): ServiceOfferDTO {
-    return {
-      id: offer.id,
-      caregiverId: offer.caregiverId,
-      serviceId: offer.serviceId,
-      description: offer.description,
-      price: offer.price,
-      isActive: offer.isActive,
-
-      service: offer.service
-        ? {
-            id: offer.service.id,
-            name: offer.service.name,
-            description: offer.service.description,
-          }
-        : undefined,
-    };
+  private mapToEntity(offer: PrismaServiceOffer): ServiceOffer {
+    return new ServiceOffer(
+      String(offer.id),
+      String(offer.caregiverId),
+      offer.serviceId,
+      offer.description,
+      Money.create(offer.price),
+      offer.isActive,
+      new Date(),
+      new Date(),
+    );
   }
 
   async getAveragePriceByCaregiver(caregiverId: number): Promise<number> {
@@ -51,45 +37,42 @@ export class ServiceOfferRepository {
     serviceId: number;
     description?: string;
     price: number;
-  }): Promise<ServiceOfferDTO> {
+  }): Promise<ServiceOffer> {
     const record = await this.prisma.serviceOffer.create({
       data,
     });
 
-    return this.toDTO(record);
+    return this.mapToEntity(record);
   }
 
-  async findById(id: number): Promise<ServiceOfferDTO | null> {
+  async findById(id: number): Promise<ServiceOffer | null> {
     const record = await this.prisma.serviceOffer.findUnique({
       where: { id },
     });
 
-    return record ? this.toDTO(record) : null;
+    return record ? this.mapToEntity(record) : null;
   }
 
-  async findByCaregiver(caregiverId: number): Promise<ServiceOfferDTO[]> {
+  async findByCaregiver(caregiverId: number): Promise<ServiceOffer[]> {
     const records = await this.prisma.serviceOffer.findMany({
       where: { caregiverId },
-      include: {
-        service: true,
-      },
     });
 
-    return records.map((offer) => this.toDTO(offer));
+    return records.map((offer) => this.mapToEntity(offer));
   }
 
-  async findByService(serviceId: number): Promise<ServiceOfferDTO[]> {
+  async findByService(serviceId: number): Promise<ServiceOffer[]> {
     const records = await this.prisma.serviceOffer.findMany({
       where: { serviceId },
     });
 
-    return records.map((offer) => this.toDTO(offer));
+    return records.map((offer) => this.mapToEntity(offer));
   }
 
   async findByCaregiverAndService(
     caregiverId: number,
     serviceId: number,
-  ): Promise<ServiceOfferDTO | null> {
+  ): Promise<ServiceOffer | null> {
     const record = await this.prisma.serviceOffer.findUnique({
       where: {
         caregiverId_serviceId: {
@@ -99,24 +82,24 @@ export class ServiceOfferRepository {
       },
     });
 
-    return record ? this.toDTO(record) : null;
+    return record ? this.mapToEntity(record) : null;
   }
 
-  async updatePrice(id: number, price: number): Promise<ServiceOfferDTO> {
+  async updatePrice(id: number, price: number): Promise<ServiceOffer> {
     const record = await this.prisma.serviceOffer.update({
       where: { id },
       data: { price },
     });
 
-    return this.toDTO(record);
+    return this.mapToEntity(record);
   }
 
-  async toggleActive(id: number, isActive: boolean): Promise<ServiceOfferDTO> {
+  async toggleActive(id: number, isActive: boolean): Promise<ServiceOffer> {
     const record = await this.prisma.serviceOffer.update({
       where: { id },
       data: { isActive },
     });
 
-    return this.toDTO(record);
+    return this.mapToEntity(record);
   }
 }

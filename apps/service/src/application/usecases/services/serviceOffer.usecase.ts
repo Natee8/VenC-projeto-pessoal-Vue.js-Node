@@ -14,6 +14,21 @@ export class ServiceOfferUseCase {
     private serviceOfferRepo: ServiceOfferRepository,
   ) {}
 
+  private mapToDTO(
+    offer: ServiceOffer,
+    service?: { id: number; name: string; description: string },
+  ): ServiceOfferDTO {
+    return {
+      id: Number(offer.id),
+      caregiverId: Number(offer.caregiverId),
+      serviceId: offer.getServiceId(),
+      description: offer.getDescription(),
+      price: offer.getPrice().getAmount(),
+      isActive: offer.isEnabled(),
+      service,
+    };
+  }
+
   async create(input: {
     caregiverId: number;
     serviceId: number;
@@ -43,25 +58,16 @@ export class ServiceOfferUseCase {
       return left(new Error("Você já oferece esse serviço"));
     }
 
-    const offer = new ServiceOffer(
-      "0",
-      String(input.caregiverId),
-      input.serviceId,
-      input.description?.trim() ?? null,
-      Money.create(input.price),
-      true,
-      new Date(),
-      new Date(),
-    );
+    const price = Money.create(input.price);
 
     const created = await this.serviceOfferRepo.create({
       caregiverId: input.caregiverId,
       serviceId: input.serviceId,
-      price: offer.getPrice().getAmount(),
-      description: offer.getDescription() ?? undefined,
+      price: price.getAmount(),
+      description: input.description?.trim(),
     });
 
-    return right(created);
+    return right(this.mapToDTO(created, service));
   }
 
   async changePrice(
@@ -72,22 +78,11 @@ export class ServiceOfferUseCase {
       return left(new Error("Preço inválido"));
     }
 
-    const dto = await this.serviceOfferRepo.findById(id);
+    const offer = await this.serviceOfferRepo.findById(id);
 
-    if (!dto) {
+    if (!offer) {
       return left(new Error("Oferta não encontrada"));
     }
-
-    const offer = new ServiceOffer(
-      String(dto.id),
-      String(dto.caregiverId),
-      dto.serviceId,
-      dto.description ?? null,
-      Money.create(dto.price),
-      dto.isActive,
-      new Date(),
-      new Date(),
-    );
 
     offer.changePrice(Money.create(newPrice));
 
@@ -96,26 +91,15 @@ export class ServiceOfferUseCase {
       offer.getPrice().getAmount(),
     );
 
-    return right(updated);
+    return right(this.mapToDTO(updated));
   }
 
   async toggleActive(id: number): Promise<Either<Error, ServiceOfferDTO>> {
-    const dto = await this.serviceOfferRepo.findById(id);
+    const offer = await this.serviceOfferRepo.findById(id);
 
-    if (!dto) {
+    if (!offer) {
       return left(new Error("Oferta não encontrada"));
     }
-
-    const offer = new ServiceOffer(
-      String(dto.id),
-      String(dto.caregiverId),
-      dto.serviceId,
-      dto.description ?? null,
-      Money.create(dto.price),
-      dto.isActive,
-      new Date(),
-      new Date(),
-    );
 
     if (offer.isEnabled()) {
       offer.deactivate();
@@ -128,7 +112,7 @@ export class ServiceOfferUseCase {
       offer.isEnabled(),
     );
 
-    return right(updated);
+    return right(this.mapToDTO(updated));
   }
 
   async getByCaregiver(
@@ -140,6 +124,15 @@ export class ServiceOfferUseCase {
 
     const offers = await this.serviceOfferRepo.findByCaregiver(caregiverId);
 
-    return right(offers);
+    const services = await this.serviceRepo.findManyByIds(
+      offers.map((offer) => offer.getServiceId()),
+    );
+    const serviceById = new Map(services.map((service) => [service.id, service]));
+
+    return right(
+      offers.map((offer) =>
+        this.mapToDTO(offer, serviceById.get(offer.getServiceId())),
+      ),
+    );
   }
 }

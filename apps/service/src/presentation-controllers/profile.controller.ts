@@ -8,6 +8,7 @@ import { UsersRepository } from "../infrastructure/repositories/auth/authLogin.r
 import { OwnerProfileRepository } from "../infrastructure/repositories/user/userOwner.repository.js";
 import { CaregiverRepository } from "../infrastructure/repositories/user/userCaregiver.repository.js";
 import { ServiceOfferRepository } from "../infrastructure/repositories/services/serviceOffer.repository.js";
+import { ServiceRepository } from "../infrastructure/repositories/services/serviceModel.repository.js";
 import { CaregiverPetPreferenceRepository } from "../infrastructure/repositories/user/caregiverPetPreference.repository.js";
 import { PrismaClient } from "../generated/prisma/index.js";
 
@@ -17,13 +18,15 @@ const prisma = new PrismaClient();
 const usersRepo = new UsersRepository();
 const ownerRepo = new OwnerProfileRepository();
 const caregiverRepo = new CaregiverRepository();
-const serviceRepo = new ServiceOfferRepository(prisma);
+const serviceOfferRepo = new ServiceOfferRepository(prisma);
+const serviceRepo = new ServiceRepository(prisma);
 const preferenceRepo = new CaregiverPetPreferenceRepository();
 
 const useCase = new ProfileUseCase(
   usersRepo,
   ownerRepo,
   caregiverRepo,
+  serviceOfferRepo,
   serviceRepo,
   preferenceRepo,
 );
