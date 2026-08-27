@@ -4,6 +4,7 @@ import {
   PrismaClient,
   ServiceOffer as PrismaServiceOffer,
 } from "../../../generated/prisma/index.js";
+import type { Prisma } from "../../../generated/prisma/index.js";
 
 export class ServiceOfferRepository {
   constructor(private prisma: PrismaClient) {}
@@ -21,6 +22,12 @@ export class ServiceOfferRepository {
     );
   }
 
+  async runInTransaction<T>(
+    fn: (tx: Prisma.TransactionClient) => Promise<T>,
+  ): Promise<T> {
+    return this.prisma.$transaction(fn);
+  }
+
   async getAveragePriceByCaregiver(caregiverId: number): Promise<number> {
     const result = await this.prisma.serviceOffer.aggregate({
       where: { caregiverId },
@@ -32,13 +39,18 @@ export class ServiceOfferRepository {
     return result._avg.price ?? 0;
   }
 
-  async create(data: {
-    caregiverId: number;
-    serviceId: number;
-    description?: string;
-    price: number;
-  }): Promise<ServiceOffer> {
-    const record = await this.prisma.serviceOffer.create({
+  async create(
+    data: {
+      caregiverId: number;
+      serviceId: number;
+      description?: string;
+      price: number;
+    },
+    tx?: Prisma.TransactionClient,
+  ): Promise<ServiceOffer> {
+    const client = tx ?? this.prisma;
+
+    const record = await client.serviceOffer.create({
       data,
     });
 
@@ -72,8 +84,11 @@ export class ServiceOfferRepository {
   async findByCaregiverAndService(
     caregiverId: number,
     serviceId: number,
+    tx?: Prisma.TransactionClient,
   ): Promise<ServiceOffer | null> {
-    const record = await this.prisma.serviceOffer.findUnique({
+    const client = tx ?? this.prisma;
+
+    const record = await client.serviceOffer.findUnique({
       where: {
         caregiverId_serviceId: {
           caregiverId,

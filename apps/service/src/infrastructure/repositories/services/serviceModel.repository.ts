@@ -3,6 +3,7 @@ import {
   PrismaClient,
   Service as PrismaService,
 } from "../../../generated/prisma/index.js";
+import type { Prisma } from "../../../generated/prisma/index.js";
 
 export class ServiceRepository {
   constructor(private prisma: PrismaClient) {}
@@ -41,8 +42,13 @@ export class ServiceRepository {
     return records.map((service) => this.toDTO(service));
   }
 
-  async findById(id: number): Promise<ServiceModelDTO | null> {
-    const record = await this.prisma.service.findUnique({
+  async findById(
+    id: number,
+    tx?: Prisma.TransactionClient,
+  ): Promise<ServiceModelDTO | null> {
+    const client = tx ?? this.prisma;
+
+    const record = await client.service.findUnique({
       where: { id },
     });
 

@@ -21,14 +21,18 @@ router.post(
   authMiddleware,
   async (req: Request, res: Response) => {
     try {
-      const { caregiverId, serviceId, price, description } = req.body;
+      const body = Array.isArray(req.body) ? req.body : [req.body];
 
-      const result = await serviceOfferUseCase.create({
-        caregiverId,
-        serviceId,
-        price,
-        description,
-      });
+      const inputs = body.map(
+        ({ caregiverId, serviceId, price, description }) => ({
+          caregiverId,
+          serviceId,
+          price,
+          description,
+        }),
+      );
+
+      const result = await serviceOfferUseCase.createMany(inputs);
 
       if (result.type === "left") {
         return res.status(400).json({
@@ -38,7 +42,7 @@ router.post(
 
       return res.status(201).json({
         message: "Serviço ofertado criado com sucesso",
-        data: result.value,
+        data: Array.isArray(req.body) ? result.value : result.value[0],
       });
     } catch (error) {
       return res.status(500).json({

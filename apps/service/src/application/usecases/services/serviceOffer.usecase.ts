@@ -7,6 +7,14 @@ import {
 import { ServiceOfferRepository } from "apps/service/src/infrastructure/repositories/services/serviceOffer.repository.js";
 import { ServiceRepository } from "apps/service/src/infrastructure/repositories/services/serviceModel.repository.js";
 import { Money, ServiceOffer, ServiceOfferDTO } from "@packages";
+import type { Prisma } from "../../../generated/prisma/index.js";
+
+type CreateServiceOfferInput = {
+  caregiverId: number;
+  serviceId: number;
+  price: number;
+  description?: string;
+};
 
 export class ServiceOfferUseCase {
   constructor(
@@ -29,17 +37,15 @@ export class ServiceOfferUseCase {
     };
   }
 
-  async create(input: {
-    caregiverId: number;
-    serviceId: number;
-    price: number;
-    description?: string;
-  }): Promise<Either<Error, ServiceOfferDTO>> {
+  async create(
+    input: CreateServiceOfferInput,
+    tx?: Prisma.TransactionClient,
+  ): Promise<Either<Error, ServiceOfferDTO>> {
     if (!input.caregiverId || input.caregiverId <= 0) {
       return left(new Error("Caregiver inválido"));
     }
 
-    const service = await this.serviceRepo.findById(input.serviceId);
+    const service = await this.serviceRepo.findById(input.serviceId, tx);
 
     if (!service) {
       return left(new Error("Serviço não existe"));
@@ -52,6 +58,7 @@ export class ServiceOfferUseCase {
     const existing = await this.serviceOfferRepo.findByCaregiverAndService(
       input.caregiverId,
       input.serviceId,
+      tx,
     );
 
     if (existing) {
@@ -60,14 +67,49 @@ export class ServiceOfferUseCase {
 
     const price = Money.create(input.price);
 
-    const created = await this.serviceOfferRepo.create({
-      caregiverId: input.caregiverId,
-      serviceId: input.serviceId,
-      price: price.getAmount(),
-      description: input.description?.trim(),
-    });
+    const created = await this.serviceOfferRepo.create(
+      {
+        caregiverId: input.caregiverId,
+        serviceId: input.serviceId,
+        price: price.getAmount(),
+        description: input.description?.trim(),
+      },
+      tx,
+    );
 
     return right(this.mapToDTO(created, service));
+  }
+
+  async createMany(
+    inputs: CreateServiceOfferInput[],
+  ): Promise<Either<Error, ServiceOfferDTO[]>> {
+    try {
+      const created = await this.serviceOfferRepo.runInTransaction(
+        async (tx) => {
+          const results: ServiceOfferDTO[] = [];
+
+          for (const input of inputs) {
+            const result = await this.create(input, tx);
+
+            if (result.type === "left") {
+              throw new Error(result.error.message);
+            }
+
+            results.push(result.value);
+          }
+
+          return results;
+        },
+      );
+
+      return right(created);
+    } catch (error) {
+      return left(
+        error instanceof Error
+          ? error
+          : new Error("Erro ao criar ofertas de serviço"),
+      );
+    }
   }
 
   async changePrice(
