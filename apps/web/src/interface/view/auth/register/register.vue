@@ -9,7 +9,7 @@ import { createRegisterForm } from "src/interface/utils/registerPayload";
 import { ref } from "vue";
 
 import { useRoute, useRouter } from "vue-router";
-import FormProfileBase from "src/interface/components/form/FormProfileBase.vue";
+import FormProfileBase from "src/interface/components/form/formProfileBase.vue";
 import { Role } from "@packages";
 
 const router = useRouter();
@@ -79,7 +79,7 @@ const handleFinalSubmit = async (profileData: any) => {
   try {
     isLoading.value = true;
 
-    const response = await registerRepository.register({
+    await registerRepository.register({
       name: form.base.name,
       email: form.base.email,
       birthDate: form.base.birthDate,
@@ -103,10 +103,7 @@ const handleFinalSubmit = async (profileData: any) => {
       profileImage: profileData.profileImage || DEFAULT_PROFILE_IMAGE,
     });
 
-    showSnackbar(
-      response.message || "Usuário cadastrado com sucesso",
-      "success",
-    );
+    showSnackbar("Usuário cadastrado com sucesso", "success");
 
     setTimeout(() => {
       router.push({ name: "login" });

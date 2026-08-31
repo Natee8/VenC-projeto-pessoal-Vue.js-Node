@@ -71,8 +71,7 @@ const handleAddService = async () => {
 onMounted(async () => {
   try {
     loading.value = true;
-    const data = await serviceModelRepository.getCatalog();
-    services.value = data.data;
+    services.value = await serviceModelRepository.getCatalog();
   } catch (error) {
     console.error("Erro ao buscar catálogo", error);
   } finally {

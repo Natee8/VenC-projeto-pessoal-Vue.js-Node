@@ -1,3 +1,8 @@
+import {
+  ApiResponse,
+  CaregiverPetPreferenceDTO,
+  CaregiverPublicDTO,
+} from "@packages";
 import { apiInstance } from "../config/ApiConfig";
 
 export const caregiverRepository = {
@@ -7,7 +12,7 @@ export const caregiverRepository = {
     minRating?: number;
     serviceIds?: number[];
     petTypes?: string[];
-  }) {
+  }): Promise<CaregiverPublicDTO[]> {
     const query = new URLSearchParams();
 
     if (params?.city) query.append("city", params.city);
@@ -26,18 +31,21 @@ export const caregiverRepository = {
       });
     }
 
-    const { data } = await apiInstance.get(
-      `/caregivers/public?${query.toString()}`,
-    );
+    const { data: body } = await apiInstance.get<
+      ApiResponse<CaregiverPublicDTO[]>
+    >(`/caregivers/public?${query.toString()}`);
 
-    return data;
+    return body.data;
   },
 
-  async getPetPreferences(caregiverId: number) {
-    const { data } = await apiInstance.get(
-      `/caregivers/${caregiverId}/preferences`,
-    );
-    return data;
+  async getPetPreferences(
+    caregiverId: number,
+  ): Promise<CaregiverPetPreferenceDTO[]> {
+    const { data: body } = await apiInstance.get<
+      ApiResponse<CaregiverPetPreferenceDTO[]>
+    >(`/caregivers/${caregiverId}/preferences`);
+
+    return body.data;
   },
 
   async createPetPreferences(
@@ -45,11 +53,11 @@ export const caregiverRepository = {
     payload: {
       petTypes: string[];
     },
-  ) {
-    const { data } = await apiInstance.post(
-      `/caregivers/${caregiverId}/preferences`,
-      payload,
-    );
-    return data;
+  ): Promise<CaregiverPetPreferenceDTO[]> {
+    const { data: body } = await apiInstance.post<
+      ApiResponse<CaregiverPetPreferenceDTO[]>
+    >(`/caregivers/${caregiverId}/preferences`, payload);
+
+    return body.data;
   },
 };

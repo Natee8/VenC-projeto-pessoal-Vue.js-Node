@@ -39,14 +39,17 @@ export const useAuthStore = defineStore("auth", {
       if (!this.accessToken) return;
 
       try {
-        const response = await profileRepository.getProfile();
-
-        const profile = response.data;
-
-        console.log("PROFILE:", profile);
+        const profile = await profileRepository.getProfile();
 
         this.profile = profile;
-        this.user = profile.user;
+
+        // `/profile` não devolve `role` — ele é derivado da presença do
+        // caregiverProfile, mesma regra do GetMeUseCase no back-end. Sem isso
+        // os getters isOwner/isCaregiver zeravam depois de um reload.
+        this.user = {
+          id: profile.user.id,
+          role: profile.caregiverProfile ? "CAREGIVER" : "OWNER",
+        };
 
         this.isAuthenticated = true;
       } catch (e) {

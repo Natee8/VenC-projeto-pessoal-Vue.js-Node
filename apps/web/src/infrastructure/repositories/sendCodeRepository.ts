@@ -1,21 +1,25 @@
+import { ApiResponse } from "@packages";
 import { apiInstance } from "../config/ApiConfig.js";
 
-export const verificationCodeRepository = {
-  async sendResetPasswordCode(email: string) {
-    const { data } = await apiInstance.post("/verification/send-code", {
-      email,
-    });
+export type VerifyResetCodeResult = {
+  email: string;
+  resetToken: string;
+};
 
-    return data;
+export const verificationCodeRepository = {
+  async sendResetPasswordCode(email: string): Promise<void> {
+    await apiInstance.post("/verification/send-code", { email });
   },
 
-  async verifyResetPasswordCode(email: string, code: string) {
-    const { data } = await apiInstance.post("/verification/verify-code", {
-      email,
-      code,
-    });
+  async verifyResetPasswordCode(
+    email: string,
+    code: string,
+  ): Promise<VerifyResetCodeResult> {
+    const { data: body } = await apiInstance.post<
+      ApiResponse<VerifyResetCodeResult>
+    >("/verification/verify-code", { email, code });
 
-    return data;
+    return body.data;
   },
 
   async resetPassword({
@@ -24,9 +28,7 @@ export const verificationCodeRepository = {
   }: {
     token: string;
     newPassword: string;
-  }) {
-    const payload = { token, newPassword };
-    const { data } = await apiInstance.post("/auth/reset-password", payload);
-    return data;
+  }): Promise<void> {
+    await apiInstance.post("/auth/reset-password", { token, newPassword });
   },
 };

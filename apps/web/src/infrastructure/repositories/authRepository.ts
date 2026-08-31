@@ -1,40 +1,26 @@
-// infra/repositories/authRepository.ts
-
+import { ApiResponse } from "@packages";
 import { AuthRepository } from "../../domain/repositories/authRepository";
+import { AuthSession } from "../../domain/dtos/auth.dto";
+import { User } from "../stores/auth/types/user";
 import { apiInstance } from "../config/ApiConfig";
-import api from "../config/axios";
 
 export const authRepository: AuthRepository = {
   async login({ email, password }) {
-    const { data } = await apiInstance.post("/auth/login", {
-      email,
-      password,
-    });
+    const { data: body } = await apiInstance.post<ApiResponse<AuthSession>>(
+      "/auth/login",
+      { email, password },
+    );
 
-    return data;
+    return body.data;
   },
+
   async me() {
-    const response = await api.get("/auth/me");
-    return response.data.data;
+    const { data: body } = await apiInstance.get<ApiResponse<User>>("/auth/me");
+
+    return body.data;
   },
 
   async logout(refreshToken: string) {
-    await api.post("/auth/logout", {
-      refreshToken,
-    });
+    await apiInstance.post("/auth/logout", { refreshToken });
   },
-  
-  /* async refreshToken(refreshToken) {
-    const { data } = await apiInstance.post("/refresh", {
-      refreshToken,
-    });
-
-    return data;
-  },
-
-  async logout(refreshToken) {
-    await apiInstance.post("/logout", {
-      refreshToken,
-    });
-  },*/
 };

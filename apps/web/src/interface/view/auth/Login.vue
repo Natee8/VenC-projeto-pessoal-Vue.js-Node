@@ -33,18 +33,16 @@ const handleLogin = async () => {
   loading.value = true;
 
   try {
-    const response = await authRepository.login(result.data);
+    const session = await authRepository.login(result.data);
 
-    console.log("✅ LOGIN RESPONSE:", response);
-
-    if (!response.data?.accessToken) {
+    if (!session?.accessToken) {
       throw new Error("Token não veio na resposta");
     }
 
     authStore.setAuth({
-      accessToken: response.data.accessToken,
-      refreshToken: response.data.refreshToken,
-      user: response.data.user,
+      accessToken: session.accessToken,
+      refreshToken: session.refreshToken,
+      user: session.user,
     });
     await authStore.fetchMe();
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import ModalBase from "../modal/ModalBase.vue";
-import ModalProfileService from "../modal/modalProfileService.vue";
+import ModalProfileService from "../modal/ModalProfileService.vue";
 
 const showModal = ref(false);
 

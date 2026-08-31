@@ -5,10 +5,9 @@ import {
   //ResetPasswordParams,
   //VerifyResetCodeParams,
 } from "../dtos/auth.dto.js";
-import { IResponse } from "src/types/IResponse.js";
 
 export interface AuthRepository {
-  login(params: LoginParams): Promise<IResponse<AuthSession>>;
+  login(params: LoginParams): Promise<AuthSession>;
 
   me(): Promise<User>;
 

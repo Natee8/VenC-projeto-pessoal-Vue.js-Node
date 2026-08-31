@@ -16,8 +16,7 @@ const loading = ref(true);
 
 onMounted(async () => {
   try {
-    const response = await profileRepository.getProfile();
-    profile.value = response.data;
+    profile.value = await profileRepository.getProfile();
   } catch (error) {
     console.error("Erro ao carregar perfil:", error);
   } finally {

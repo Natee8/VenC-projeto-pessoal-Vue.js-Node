@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
-import SideBarCarregiver from "src/interface/components/filters/sideBarCarregiver/SideBarCarregiver.vue";
+import SideBarCarregiver from "src/interface/components/filters/sideBarCarregiver/sideBarCarregiver.vue";
 import { serviceModelRepository } from "src/infrastructure/repositories/servicesModel";
 import type { ServiceResponseDTO } from "src/domain/dtos/serviceResponse.dto";
 import { caregiverRepository } from "src/infrastructure/repositories/carregiverRepository.js";
@@ -18,20 +18,18 @@ const caregivers = ref<any[]>([]);
 const loadingCaregivers = ref(false);
 
 const fetchCaregivers = async (customFilters?: CaregiverFilters) => {
-  const response = await caregiverRepository.getPublicCaregivers(
+  caregivers.value = await caregiverRepository.getPublicCaregivers(
     customFilters || filters.value,
   );
-
-  caregivers.value = response.data;
 };
 onMounted(async () => {
   try {
     loading.value = true;
 
-    const servicesRes = await serviceModelRepository.getCatalog();
+    const catalog = await serviceModelRepository.getCatalog();
 
-    services.value = servicesRes.data;
-    selectedService.value = servicesRes.data[0] ?? null;
+    services.value = catalog;
+    selectedService.value = catalog[0] ?? null;
   } catch (error) {
     console.error("Erro ao carregar dados", error);
   } finally {
