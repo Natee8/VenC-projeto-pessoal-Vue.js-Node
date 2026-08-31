@@ -14,6 +14,7 @@ export * from "./domain/dtos/IAddress.dto.js";
 export * from "./domain/dtos/IAuth.dto.js";
 export * from "./domain/dtos/IUser.dto.js";
 export * from "./domain/dtos/ICarregiver.dto.js";
+export * from "./domain/dtos/ICarregiverPetPreference.dto.js";
 export * from "./domain/dtos/IOwner.dto.js";
 export * from "./domain/dtos/IService.dto.js";
 export * from "./domain/dtos/IReview.dto.js";
@@ -26,6 +27,7 @@ export * from "./domain/repositories/userBase.repository.js";
 export * from "./domain/repositories/rating.repositories.js";
 
 export * from "./types/address.js";
+export * from "./types/apiResponse.js";
 export * from "./types/petTypes.js";
 export * from "./types/schedulingTypes.js";
 export * from "./types/serviceType.js";

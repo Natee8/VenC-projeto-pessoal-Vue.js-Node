@@ -10,6 +10,8 @@ import { SendResetPasswordCodeUseCase } from "../application/usecases/codeEmail/
 import { VerifyResetPasswordCodeUseCase } from "../application/usecases/codeEmail/verifyCodeEmail.usecase.js";
 import { UsersRepository } from "../infrastructure/repositories/auth/authLogin.repository.js";
 import { codeEmailLimiter } from "../core/http/middlewares/rateLimiter.middlewares.js";
+import { success } from "../core/http/success.js";
+import { failure } from "../core/http/failure.js";
 
 export const router: Router = Router();
 const prisma = new PrismaClient();
@@ -39,20 +41,22 @@ router.post(
     try {
       emailVO = Email.create(email);
     } catch (error: unknown) {
-      return res.status(400).json({
+      return failure(res, {
         message: getErrorMessage(error),
+        code: 400,
       });
     }
 
     try {
       await sendResetPasswordCodeUseCase.execute(emailVO);
 
-      return res.status(200).json({
+      return success(res, {
         message: "Código enviado com sucesso",
       });
     } catch (error) {
-      return res.status(500).json({
+      return failure(res, {
         message: getErrorMessage(error),
+        code: 500,
       });
     }
   },
@@ -69,22 +73,23 @@ router.post("/verify-code", async (req: Request, res: Response) => {
         m.verifyResetToken(token),
       );
 
-      return res.status(200).json({
+      return success(res, {
         message: "Token válido",
-        email: tokenEmail,
-        resetToken: token,
+        data: { email: tokenEmail, resetToken: token },
       });
     } catch (error) {
-      return res.status(400).json({
+      return failure(res, {
         message: getErrorMessage(error),
+        code: 400,
       });
     }
   }
 
   // Otherwise expect email + code flow and return a reset token
   if (!email || !code) {
-    return res.status(400).json({
+    return failure(res, {
       message: "Token ou email+code são obrigatórios",
+      code: 400,
     });
   }
 
@@ -93,8 +98,9 @@ router.post("/verify-code", async (req: Request, res: Response) => {
   try {
     emailVO = Email.create(email);
   } catch (error: unknown) {
-    return res.status(400).json({
+    return failure(res, {
       message: getErrorMessage(error),
+      code: 400,
     });
   }
 
@@ -104,13 +110,14 @@ router.post("/verify-code", async (req: Request, res: Response) => {
       code,
     });
 
-    return res.status(200).json({
+    return success(res, {
       message: "Código válido",
-      resetToken,
+      data: { email: emailVO.getValue(), resetToken },
     });
   } catch (error) {
-    return res.status(400).json({
+    return failure(res, {
       message: getErrorMessage(error),
+      code: 400,
     });
   }
 });

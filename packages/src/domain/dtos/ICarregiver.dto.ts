@@ -18,8 +18,10 @@ export type CaregiverPublicDTO = {
   avatarUrl: string | null;
   rating: number;
   reviewsCount: number;
-  city: string;
-  state: string;
+  // Opcionais: o cuidador pode não ter Address, e o repository monta esses
+  // campos com `r.address?.city` / `r.address?.state`.
+  city?: string;
+  state?: string;
   startingPrice: number | null;
   services: {
     id: number;

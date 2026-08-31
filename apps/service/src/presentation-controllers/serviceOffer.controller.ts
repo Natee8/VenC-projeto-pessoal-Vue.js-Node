@@ -4,6 +4,8 @@ import { ServiceOfferRepository } from "../infrastructure/repositories/services/
 import { ServiceRepository } from "../infrastructure/repositories/services/serviceModel.repository.js";
 import { PrismaClient } from "../generated/prisma/index.js";
 import { authMiddleware } from "../core/http/middlewares/auth.middlewares.js";
+import { success } from "../core/http/success.js";
+import { failure } from "../core/http/failure.js";
 
 const prisma = new PrismaClient();
 export const router = Router();
@@ -35,18 +37,21 @@ router.post(
       const result = await serviceOfferUseCase.createMany(inputs);
 
       if (result.type === "left") {
-        return res.status(400).json({
+        return failure(res, {
           message: result.error.message,
+          code: 400,
         });
       }
 
-      return res.status(201).json({
+      return success(res, {
         message: "Serviço ofertado criado com sucesso",
         data: Array.isArray(req.body) ? result.value : result.value[0],
+        code: 201,
       });
     } catch (error) {
-      return res.status(500).json({
+      return failure(res, {
         message: error instanceof Error ? error.message : "Erro desconhecido",
+        code: 500,
       });
     }
   },

@@ -4,6 +4,8 @@ import { ServiceModelUseCase } from "../application/usecases/services/serviceMod
 import { PrismaClient } from "../generated/prisma/index.js";
 import { VectorSearchService } from "../application/service/vectorSearchService.js";
 import { authMiddleware } from "../core/http/middlewares/auth.middlewares.js";
+import { success } from "../core/http/success.js";
+import { failure } from "../core/http/failure.js";
 
 const prisma = new PrismaClient();
 export const router = Router();
@@ -17,17 +19,20 @@ router.get("/catalogo", async (_, res) => {
     const result = await serviceUseCase.getAll();
 
     if (result.isException()) {
-      return res.status(400).json({
+      return failure(res, {
         message: result.error.message,
+        code: 400,
       });
     }
 
-    return res.status(200).json({
+    return success(res, {
+      message: "Catálogo de serviços carregado com sucesso",
       data: result.value,
     });
   } catch (error) {
-    return res.status(500).json({
+    return failure(res, {
       message: error instanceof Error ? error.message : "Erro desconhecido",
+      code: 500,
     });
   }
 });
@@ -45,18 +50,21 @@ router.post(
       });
 
       if (result.isException()) {
-        return res.status(400).json({
+        return failure(res, {
           message: result.error.message,
+          code: 400,
         });
       }
 
-      return res.status(201).json({
-        message: "Serviço de catalogo criado com sucesso",
+      return success(res, {
+        message: "Serviço de catálogo criado com sucesso",
         data: result.value,
+        code: 201,
       });
     } catch (error) {
-      return res.status(500).json({
+      return failure(res, {
         message: error instanceof Error ? error.message : "Erro desconhecido",
+        code: 500,
       });
     }
   },

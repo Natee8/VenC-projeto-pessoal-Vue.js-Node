@@ -1,5 +1,9 @@
 import { Response } from "express";
+import { ApiErrorResponse } from "@packages";
 
+/**
+ * Resposta de erro da API. Mesmo envelope do `success`, sem `data`.
+ */
 export function failure(
   res: Response,
   {
@@ -14,10 +18,12 @@ export function failure(
     errors?: Record<string, string[]>;
   },
 ) {
-  return res.status(code).json({
+  const body: ApiErrorResponse = {
     message,
     error,
     errors,
     code,
-  });
+  };
+
+  return res.status(code).json(body);
 }

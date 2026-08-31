@@ -29,7 +29,7 @@ import {
 } from "../core/http/middlewares/rateLimiter.middlewares.js";
 import { failure } from "../core/http/failure.js";
 import { GetMeUseCase } from "../application/usecases/profiles/getMe.usecase.js";
-import { success } from "../core/http/response.js";
+import { success } from "../core/http/success.js";
 import { LogoutUseCase } from "../application/usecases/auth/logout.usecase.js";
 
 export const router: Router = Router();
@@ -89,29 +89,32 @@ router.post("/login", loginLimiter, async (req: Request, res: Response) => {
   try {
     emailVO = Email.create(email);
   } catch (error: unknown) {
-    return res.status(400).json({
+    return failure(res, {
       message: getErrorMessage(error),
+      code: 400,
     });
   }
 
   const authResult = await authUseCase.execute(emailVO, password);
 
   if (authResult.isException()) {
-    return res.status(401).json({
+    return failure(res, {
       message: authResult.error.message,
+      code: 401,
     });
   }
 
   const tokenResult = await generateTokenUseCase.execute(authResult.value);
 
   if (tokenResult.isException()) {
-    return res.status(500).json({
+    return failure(res, {
       message: tokenResult.error.message,
+      code: 500,
     });
   }
 
-  return res.status(200).json({
-    message: "Login ok",
+  return success(res, {
+    message: "Login realizado com sucesso",
     data: tokenResult.value,
   });
 });
@@ -157,12 +160,13 @@ router.post("/refresh", async (req: Request, res: Response) => {
   const result = await refreshTokenUseCase.execute(refreshToken);
 
   if (result.isException()) {
-    return res.status(401).json({
+    return failure(res, {
       message: result.error.message,
+      code: 401,
     });
   }
 
-  return res.status(200).json({
+  return success(res, {
     message: "Token renovado com sucesso",
     data: result.value,
   });
@@ -187,12 +191,17 @@ router.post(
     const { token, newPassword } = req.body;
 
     if (!token) {
-      return res.status(400).json({ message: "Token é obrigatório" });
+      return failure(res, { message: "Token é obrigatório", code: 400 });
     }
 
     if (!newPassword) {
-      return res.status(400).json({ message: "Nova senha é obrigatória" });
+      return failure(res, { message: "Nova senha é obrigatória", code: 400 });
     }
+
+    // Mensagem única para email existente ou não — não vazamos quais emails
+    // estão cadastrados.
+    const neutralMessage =
+      "Se o email existe em nosso sistema, você receberá um link para resetar sua senha";
 
     try {
       const payload = verifyResetToken(token);
@@ -201,28 +210,22 @@ router.post(
       let emailVO: Email;
       try {
         emailVO = Email.create(targetEmail);
-      } catch (err: unknown) {
-        return res.status(400).json({ message: "Email inválido" });
+      } catch {
+        return failure(res, { message: "Email inválido", code: 400 });
       }
 
       const user = await usersRepo.findByEmail(emailVO);
       if (!user) {
-        return res.status(200).json({
-          message:
-            "Se o email existe em nosso sistema, você receberá um link para resetar sua senha",
-        });
+        return success(res, { message: neutralMessage });
       }
 
       const newHash = await passwordService.hash(newPassword);
       user.changePassword(newHash);
       await usersRepo.save(user);
 
-      return res.status(200).json({
-        message:
-          "Se o email existe em nosso sistema, você receberá um link para resetar sua senha",
-      });
+      return success(res, { message: neutralMessage });
     } catch (error) {
-      return res.status(400).json({ message: getErrorMessage(error) });
+      return failure(res, { message: getErrorMessage(error), code: 400 });
     }
   },
 );

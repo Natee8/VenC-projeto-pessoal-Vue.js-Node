@@ -4,6 +4,8 @@ import { ServiceRepository } from "../infrastructure/repositories/services/servi
 import { VectorSearchService } from "../application/service/vectorSearchService.js";
 import { SearchServicesUseCase } from "../application/usecases/search/searchService.usecase.js";
 import { FuzzySearchService } from "../application/service/fuseSearchService.js";
+import { success } from "../core/http/success.js";
+import { failure } from "../core/http/failure.js";
 
 const prisma = new PrismaClient();
 export const router = Router();
@@ -23,17 +25,22 @@ router.get("/search", async (req: Request, res: Response) => {
     const { q } = req.query;
 
     if (!q || typeof q !== "string" || q.trim().length < 2) {
-      return res.status(400).json({
+      return failure(res, {
         message: "Query inválida",
+        code: 400,
       });
     }
 
     const result = await searchUseCase.execute(q.trim());
 
-    return res.status(200).json(result);
+    return success(res, {
+      message: "Busca realizada com sucesso",
+      data: result,
+    });
   } catch (error) {
-    return res.status(500).json({
+    return failure(res, {
       message: error instanceof Error ? error.message : "Erro desconhecido",
+      code: 500,
     });
   }
 });
