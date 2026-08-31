@@ -5,7 +5,7 @@ import { Caregiver, UserId, Address, State } from "@packages";
 import { CaregiverWithAddress } from "apps/service/src/utils/usersWithAddress.js";
 
 export class CaregiverRepository {
-  private prisma = new PrismaClient();
+  constructor(private prisma: PrismaClient) {}
 
   private mapToEntity(record: CaregiverWithAddress): Caregiver {
     if (!record.address) {

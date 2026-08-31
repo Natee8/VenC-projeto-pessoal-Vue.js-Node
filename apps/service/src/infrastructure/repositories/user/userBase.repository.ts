@@ -13,7 +13,7 @@ import { Name } from "@packages";
 import { IUsersRepository } from "@packages";
 
 export class UsersRepository implements IUsersRepository<Prisma.TransactionClient> {
-  private prisma = new PrismaClient();
+  constructor(private prisma: PrismaClient) {}
 
   private mapToEntity(record: PrismaUserAuth): UserAuth {
     return new UserAuth(

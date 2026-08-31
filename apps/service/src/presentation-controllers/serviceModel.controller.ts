@@ -1,13 +1,12 @@
 import { Router, Request, Response } from "express";
 import { ServiceRepository } from "../infrastructure/repositories/services/serviceModel.repository.js";
 import { ServiceModelUseCase } from "../application/usecases/services/serviceModel.usecase.js";
-import { PrismaClient } from "../generated/prisma/index.js";
+import { prisma } from "../infrastructure/database/config/prisma.js";
 import { VectorSearchService } from "../application/service/vectorSearchService.js";
 import { authMiddleware } from "../core/http/middlewares/auth.middlewares.js";
 import { success } from "../core/http/success.js";
 import { failure } from "../core/http/failure.js";
 
-const prisma = new PrismaClient();
 export const router = Router();
 
 const serviceRepo = new ServiceRepository(prisma);

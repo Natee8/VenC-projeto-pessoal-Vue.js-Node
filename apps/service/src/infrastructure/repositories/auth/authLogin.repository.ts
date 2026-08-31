@@ -10,7 +10,7 @@ import type { Prisma } from "../../../generated/prisma/index.js";
 import { IUsersRepository, UserAuth } from "@packages";
 
 export class UsersRepository implements IUsersRepository<Prisma.TransactionClient> {
-  private prisma = new PrismaClient();
+  constructor(private prisma: PrismaClient) {}
 
   private mapToEntity(record: PrismaUserAuth): UserAuth {
     return new UserAuth(

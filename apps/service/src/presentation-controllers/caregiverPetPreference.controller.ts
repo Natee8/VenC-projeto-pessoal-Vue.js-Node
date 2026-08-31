@@ -4,10 +4,11 @@ import { success } from "../core/http/success.js";
 import { CaregiverPetPreferenceFacadeUseCase } from "../application/usecases/caregiver/caregiverPreferencePet.usecase.js";
 import { CaregiverPetPreferenceRepository } from "../infrastructure/repositories/user/caregiverPetPreference.repository.js";
 import { authMiddleware } from "../core/http/middlewares/auth.middlewares.js";
+import { prisma } from "../infrastructure/database/config/prisma.js";
 
 export const router = Router();
 
-const repo = new CaregiverPetPreferenceRepository();
+const repo = new CaregiverPetPreferenceRepository(prisma);
 const useCase = new CaregiverPetPreferenceFacadeUseCase(repo);
 
 router.post(

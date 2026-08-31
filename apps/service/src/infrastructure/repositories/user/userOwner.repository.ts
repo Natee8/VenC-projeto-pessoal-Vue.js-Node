@@ -8,7 +8,7 @@ import { Phone } from "@packages";
 import { OwnerProfileWithAddress } from "./types/ownerProfileWhitAdrress.js";
 
 export class OwnerProfileRepository {
-  private prisma = new PrismaClient();
+  constructor(private prisma: PrismaClient) {}
 
   private mapToEntity(record: OwnerProfileWithAddress): OwnerProfile {
     if (!record.address) {

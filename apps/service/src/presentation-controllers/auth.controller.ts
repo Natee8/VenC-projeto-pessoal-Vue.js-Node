@@ -19,7 +19,7 @@ import { GeolocationService } from "../infrastructure/repositories/geolocation/g
 import { CreateUserBaseUseCase } from "../application/usecases/profiles/createUserBase.usecase.js";
 import { OwnerProfileFacadeUseCase } from "../application/usecases/profiles/ownerProfile.usecase.js";
 import { CaregiverFacadeUseCase } from "../application/usecases/profiles/caregiverProfile.usecase.js";
-import { PrismaClient } from "../generated/prisma/index.js";
+import { prisma } from "../infrastructure/database/config/prisma.js";
 import { uploadProfileImage } from "../application/service/uploadImages.js";
 import { RegisterController } from "../controllers/register.js";
 import { authMiddleware } from "../core/http/middlewares/auth.middlewares.js";
@@ -33,14 +33,13 @@ import { success } from "../core/http/success.js";
 import { LogoutUseCase } from "../application/usecases/auth/logout.usecase.js";
 
 export const router: Router = Router();
-const prisma = new PrismaClient();
 
-const ownerRepo = new OwnerProfileRepository();
-const caregiverRepo = new CaregiverRepository();
+const ownerRepo = new OwnerProfileRepository(prisma);
+const caregiverRepo = new CaregiverRepository(prisma);
 const geolocationService = new GeolocationService();
 
-const usersRepo = new UsersRepository();
-const refreshTokenRepo = new RefreshTokenRepository();
+const usersRepo = new UsersRepository(prisma);
+const refreshTokenRepo = new RefreshTokenRepository(prisma);
 const passwordService = new PasswordService();
 const tokenGenerator = new JwtTokenGenerator();
 

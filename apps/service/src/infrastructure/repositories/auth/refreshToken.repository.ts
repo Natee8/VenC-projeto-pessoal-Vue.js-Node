@@ -4,7 +4,7 @@ import { UserId } from "@packages";
 import { PrismaClient, RefreshToken } from "../../../generated/prisma/index.js";
 
 export class RefreshTokenRepository implements IRefreshTokenRepository {
-  private prisma = new PrismaClient();
+  constructor(private prisma: PrismaClient) {}
 
   private mapToEntity(record: RefreshToken): RefreshTokenEntity {
     return new RefreshTokenEntity({

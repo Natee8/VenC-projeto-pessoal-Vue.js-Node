@@ -13,7 +13,7 @@ import {
 } from "@packages";
 
 export class CaregiverPetPreferenceRepository {
-  private prisma = new PrismaClient();
+  constructor(private prisma: PrismaClient) {}
 
   private mapToEntity(
     record: PrismaCaregiverPetPreference,

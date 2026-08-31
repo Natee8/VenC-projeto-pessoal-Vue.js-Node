@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 
-import { PrismaClient } from "../generated/prisma/index.js";
+import { prisma } from "../infrastructure/database/config/prisma.js";
 
 import { getErrorMessage } from "../utils/getErrorMessage.js";
 import { Email } from "@packages";
@@ -14,11 +14,10 @@ import { success } from "../core/http/success.js";
 import { failure } from "../core/http/failure.js";
 
 export const router: Router = Router();
-const prisma = new PrismaClient();
 
 const verificationCodeRepo = new PrismaVerificationCodeRepository(prisma);
 const emailService = new NodemailerEmailService();
-const usersRepository = new UsersRepository();
+const usersRepository = new UsersRepository(prisma);
 
 const verifyResetPasswordCodeUseCase = new VerifyResetPasswordCodeUseCase(
   verificationCodeRepo,

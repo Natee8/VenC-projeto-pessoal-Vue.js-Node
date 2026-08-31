@@ -10,17 +10,16 @@ import { CaregiverRepository } from "../infrastructure/repositories/user/userCar
 import { ServiceOfferRepository } from "../infrastructure/repositories/services/serviceOffer.repository.js";
 import { ServiceRepository } from "../infrastructure/repositories/services/serviceModel.repository.js";
 import { CaregiverPetPreferenceRepository } from "../infrastructure/repositories/user/caregiverPetPreference.repository.js";
-import { PrismaClient } from "../generated/prisma/index.js";
+import { prisma } from "../infrastructure/database/config/prisma.js";
 
 export const router = Router();
-const prisma = new PrismaClient();
 
-const usersRepo = new UsersRepository();
-const ownerRepo = new OwnerProfileRepository();
-const caregiverRepo = new CaregiverRepository();
+const usersRepo = new UsersRepository(prisma);
+const ownerRepo = new OwnerProfileRepository(prisma);
+const caregiverRepo = new CaregiverRepository(prisma);
 const serviceOfferRepo = new ServiceOfferRepository(prisma);
 const serviceRepo = new ServiceRepository(prisma);
-const preferenceRepo = new CaregiverPetPreferenceRepository();
+const preferenceRepo = new CaregiverPetPreferenceRepository(prisma);
 
 const useCase = new ProfileUseCase(
   usersRepo,

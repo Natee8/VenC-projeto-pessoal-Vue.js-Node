@@ -6,9 +6,10 @@ import { CPF } from "@packages";
 import { Name } from "@packages";
 import { PasswordService } from "../../../application/service/passwordComparer.js";
 import { UsersRepository } from "../../repositories/auth/authLogin.repository.js";
+import { prisma } from "../config/prisma.js";
 
 export async function seedUsers() {
-  const usersRepo = new UsersRepository();
+  const usersRepo = new UsersRepository(prisma);
   const passwordService = new PasswordService();
 
   const passwordHash = await passwordService.hash("46058515");

@@ -4,10 +4,11 @@ import { failure } from "../core/http/failure.js";
 import { success } from "../core/http/success.js";
 import { ListPublicCaregiversUseCase } from "../application/usecases/caregiver/getPublicCaregiver.usecase.js";
 import { PetSpecies } from "@packages/types/petTypes.js";
+import { prisma } from "../infrastructure/database/config/prisma.js";
 
 export const router = Router();
 
-const caregiverRepo = new CaregiverRepository();
+const caregiverRepo = new CaregiverRepository(prisma);
 
 const caregiverUseCase = new ListPublicCaregiversUseCase(caregiverRepo);
 

@@ -3,9 +3,10 @@ import { UsersRepository } from "../../repositories/auth/authLogin.repository.js
 import { RefreshTokenRepository } from "../../repositories/auth/refreshToken.repository.js";
 import { RefreshTokenEntity } from "@packages";
 import { Email } from "@packages";
+import { prisma } from "../config/prisma.js";
 export async function seedAuth() {
-  const usersRepo = new UsersRepository();
-  const authRepo = new RefreshTokenRepository();
+  const usersRepo = new UsersRepository(prisma);
+  const authRepo = new RefreshTokenRepository(prisma);
 
   const user = await usersRepo.findByEmail(
     Email.create("testeemail@gmail.com"),
