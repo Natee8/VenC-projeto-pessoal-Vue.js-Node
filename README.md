@@ -8,10 +8,13 @@ Cuidadores visualizam oportunidades, enviam propostas e se comunicam via chat.
 
 ## Estrutura do Monorepo
 
+```
 apps/
-web/ → Front-end (Vue.js)
-services/
-api/ → API REST
+  web/      → Front-end (Vue.js)
+  service/  → API REST (Node.js + Prisma)
+packages/   → Domínio compartilhado: entidades, DTOs, value objects
+specs/      → Planos de feature (ver specs/README.md)
+```
 
 ## Features
 
